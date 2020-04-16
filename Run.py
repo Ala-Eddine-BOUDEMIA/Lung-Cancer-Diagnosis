@@ -1,11 +1,21 @@
-# -*- coding: UTF-8 -*-
-#!/usr/bin/python
+import Split
+import Patches
+import Make_CSV_files
+#####################
 
-import Read_patch as rp
-import Repiece
+def Main():
+	ans = 0
+	while ans != 4:
 
-input_path_rp = '/home/ala/Desktop/PFE/Input_Images_WSI/image.svs'	
-(i, w, h, incr_x, incr_y) = rp.read_patch(input_path_rp)
+		print("1-Split the data")
+		print("2-Create csv files containing training, validating and testing labels")
+		print("3-Create patches from the original WSI (SVS to JPEG)")
+		print("4-Quit")
+		ans = input("Enter your choice: ")
 
-input_path_repiece = '/home/ala/Desktop/PFE/Output_Patches/image'
-Repiece.repiece(input_path_repiece, i, w, h, incr_x, incr_y)
+	if ans == 1:
+		Split.split()
+	elif ans == 2:
+		Make_CSV_files.Make_csv_labels_files()
+	elif ans == 3:
+		Patches.read_patch()
