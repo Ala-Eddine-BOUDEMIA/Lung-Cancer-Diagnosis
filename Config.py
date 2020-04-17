@@ -72,19 +72,19 @@ parser.add_argument("--Test_labels",
 parser.add_argument("--Train_Patches", 
 					metavar = 't_patches', 
 					type = Path, 
-					default = Path("Data_sets/Train_folder"), 
+					default = Path("Data_sets/Train_patches"), 
 					help = "Location to be created to store jpeg patches training set")
 
 parser.add_argument("--Validation_Patches", 
 					metavar = 'v_patches', 
 					type = Path, 
-					default = Path("Data_sets/Validation_folder"), 
+					default = Path("Data_sets/Validation_patches"), 
 					help = "Location to be created to store jpeg patches validation set")
 
 parser.add_argument("--Test_Patches", 
 					metavar = 'Tst_patches', 
 					type = Path, 
-					default = Path("Data_sets/Test_folder"), 
+					default = Path("Data_sets/Test_patches"), 
 					help = "Location to be created to store jpeg patches testing set")
 ##########################
 ######__Processing__######
