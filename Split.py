@@ -31,3 +31,8 @@ def split():
 					shutil.move(src, dst)
 					r.append(n)
 					length += 1
+
+	Utils.Make_csv_labels_files(FoldersToBeCreated)
+
+if __name__ == '__main__':
+	split()

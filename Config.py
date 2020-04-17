@@ -4,13 +4,13 @@ from pathlib import Path
 #source: https://docs.python.org/3/library/argparse.html
 ########################################################
 parser = argparse.ArgumentParser(description = "Outils pour le PFE", formatter_class = argparse.ArgumentDefaultsHelpFormatter)
-######################
-######__Inputs__######
-######################
+#######################
+######__General__######
+#######################
 parser.add_argument("--All_WSI", 
 					metavar = 'wsi', 
 					type = Path, 
-					default = Path("Input_Images_WSI"), 
+					default = Path("All_WSI"), 
 					help = "Location of all WSI")
 
 parser.add_argument("--All_Data_sets", 
@@ -18,21 +18,9 @@ parser.add_argument("--All_Data_sets",
 					type = Path, 
 					default = Path("Data_sets"), 
 					help = "Data sets directory")
-
-parser.add_argument("--Validation_WSI_Size", 
-					metavar = 'v_size', 
-					type = int, 
-					default = 20, 
-					help = "Number of validation WSI per class")
-
-parser.add_argument("--Test_WSI_Size", 
-					metavar = 't_size', 
-					type = int, 
-					default = 30, 
-					help = "Number of test WSI per class")
-#####################################
-######__Folders_to_be_created__######
-#####################################
+#####################
+######__Split__######
+#####################
 parser.add_argument("--Train_WSI", 
 					metavar = 't_wsi', 
 					type = Path, 
@@ -45,12 +33,26 @@ parser.add_argument("--Validation_WSI",
 					default = Path("Data_sets/WSI_val"), 
 					help = "Location to be created to store WSI validation set")
 
+parser.add_argument("--Validation_WSI_Size", 
+					metavar = 'v_size', 
+					type = int, 
+					default = 20, 
+					help = "Number of validation WSI per class")
+
 parser.add_argument("--Test_WSI", 
 					metavar = 'Tst_wsi', 
 					type = Path, 
 					default = Path("Data_sets/WSI_test"), 
 					help = "Location to be created to store WSI testing set")
 
+parser.add_argument("--Test_WSI_Size", 
+					metavar = 't_size', 
+					type = int, 
+					default = 30, 
+					help = "Number of test WSI per class")
+##############################
+######__Make_CSV_files__######
+##############################
 parser.add_argument("--Train_labels", 
 					metavar = 't_l', 
 					type = Path, 
@@ -68,7 +70,9 @@ parser.add_argument("--Test_labels",
 					type = Path, 
 					default = Path("Data_sets/WSI_test/Test_labels/"), 
 					help = "Location to be created store the test_labels.csv file")
-
+##########################
+######__Processing__######
+##########################
 parser.add_argument("--Train_Patches", 
 					metavar = 't_patches', 
 					type = Path, 
@@ -86,10 +90,33 @@ parser.add_argument("--Test_Patches",
 					type = Path, 
 					default = Path("Data_sets/Test_patches"), 
 					help = "Location to be created to store jpeg patches testing set")
-##########################
-######__Processing__######
-##########################
-#parser.add_argument()
+#####################
+######__Model__######
+#####################
+parser.add_argument("--num_epochs",
+                    type=int,
+                    default=20,
+                    help="Number of epochs for training")
+
+parser.add_argument("--learning_rate",
+                    type=float,
+                    default=0.001,
+                    help="Learning rate to use for gradient descent")
+
+parser.add_argument("--batch_size",
+                    type=int,
+                    default=16,
+                    help="Mini-batch size to use for training")
+
+parser.add_argument("--learning_rate_decay",
+                    type=float,
+                    default=0.85,
+                    help="Learning rate decay amount per epoch")
+
+parser.add_argument("--weight_decay",
+                    type=float,
+                    default=1e-4,
+                    help="Weight decay (L2 penalty) to use in optimizer")
 #########################
 ######__Arguments__######
 #########################
