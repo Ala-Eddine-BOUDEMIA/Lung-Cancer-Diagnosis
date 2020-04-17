@@ -27,8 +27,15 @@ def generate_patches():
 			
 			w,h = img.level_dimensions[0] 
 			print("converting image.svs with width ", w," and height ", h)
-			increment_x = w // Window_size + 1
-			increment_y = h // Window_size + 1
+			if w % Window_size == 0:
+				increment_x = w // Window_size  
+			else:
+				increment_x = w // Window_size + 1
+
+			if h % Window_size == 0:
+				increment_y = h // Window_size  
+			else:
+				increment_y = h // Window_size + 1
 
 			i = 1
 			for incre_x in range(increment_x):
