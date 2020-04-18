@@ -16,7 +16,7 @@ parser.add_argument("--All_WSI",
 parser.add_argument("--All_Data_sets", 
 					metavar = 'ds', 
 					type = Path, 
-					default = Path("Data_sets"), 
+					default = Path("All_Data_sets"), 
 					help = "Data sets directory")
 #####################
 ######__Split__######
@@ -24,31 +24,31 @@ parser.add_argument("--All_Data_sets",
 parser.add_argument("--Train_WSI", 
 					metavar = 't_wsi', 
 					type = Path, 
-					default = Path("Data_sets/WSI_train"), 
+					default = Path("All_Data_sets/WSI_train"), 
 					help = "Location to be created to store WSI training set")
 
 parser.add_argument("--Validation_WSI", 
 					metavar = 'v_wsi', 
 					type = Path, 
-					default = Path("Data_sets/WSI_val"), 
+					default = Path("All_Data_sets/WSI_val"), 
 					help = "Location to be created to store WSI validation set")
 
 parser.add_argument("--Validation_WSI_Size", 
 					metavar = 'v_size', 
 					type = int, 
-					default = 20, 
+					default = 1, 
 					help = "Number of validation WSI per class")
 
 parser.add_argument("--Test_WSI", 
 					metavar = 'Tst_wsi', 
 					type = Path, 
-					default = Path("Data_sets/WSI_test"), 
+					default = Path("All_Data_sets/WSI_test"), 
 					help = "Location to be created to store WSI testing set")
 
 parser.add_argument("--Test_WSI_Size", 
 					metavar = 't_size', 
 					type = int, 
-					default = 30, 
+					default = 1, 
 					help = "Number of test WSI per class")
 ##############################
 ######__Make_CSV_files__######
@@ -73,22 +73,28 @@ parser.add_argument("--Test_labels",
 ##########################
 ######__Processing__######
 ##########################
+parser.add_argument("--Train_folder",
+					metavar = 'train',
+					type = Path,
+					default = Path("Train_folder"),
+					help = "Location to be created to contain train-val-test patches directories")
+
 parser.add_argument("--Train_Patches", 
 					metavar = 't_patches', 
 					type = Path, 
-					default = Path("Data_sets/Train_patches"), 
+					default = Path("Train_folder/Train_patches"), 
 					help = "Location to be created to store jpeg patches training set")
 
 parser.add_argument("--Validation_Patches", 
 					metavar = 'v_patches', 
 					type = Path, 
-					default = Path("Data_sets/Validation_patches"), 
+					default = Path("Train_folder/Validation_patches"), 
 					help = "Location to be created to store jpeg patches validation set")
 
 parser.add_argument("--Test_Patches", 
 					metavar = 'Tst_patches', 
 					type = Path, 
-					default = Path("Data_sets/Test_patches"), 
+					default = Path("Train_folder/Test_patches"), 
 					help = "Location to be created to store jpeg patches testing set")
 #####################
 ######__Model__######

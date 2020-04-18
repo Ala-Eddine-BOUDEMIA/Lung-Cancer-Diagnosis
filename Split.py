@@ -2,7 +2,8 @@ import Utils
 import Config
 import random
 import shutil
-#############
+from pathlib import Path
+########################
 
 def split():
 	
@@ -32,7 +33,7 @@ def split():
 					r.append(n)
 					length += 1
 
-	Utils.Make_csv_labels_files(FoldersToBeCreated)
+	#Utils.Make_csv_labels_files(FoldersToBeCreated)
 
 if __name__ == '__main__':
 	split()
