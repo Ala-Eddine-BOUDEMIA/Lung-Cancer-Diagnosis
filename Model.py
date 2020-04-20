@@ -5,7 +5,7 @@ import random
 import numpy as np          
 import pandas as pd         
 from PIL import Image        
-##########################
+#####################
 import torch                                
 import torchvision                          
 from torch import nn                        
@@ -46,13 +46,17 @@ def create_model():
 
     return model                                                                     
 
-def Train(weight_decay = Config.args.weight_decay, loss_func = nn.CrossEntropyLoss(),
+def Train_Val(weight_decay = Config.args.weight_decay, loss_func = nn.CrossEntropyLoss(),
         lr = Config.args.learning_rate,  learning_rate_decay = Config.args.learning_rate_decay, 
         num_epochs = Config.args.num_epochs, batch_size = Config.args.batch_size): 
+	
+	since = time.time()
 
     data_transforms = transforms.Compose(transforms=[transforms.ToTensor()])
-    image_datasets = datasets.ImageFolder(root = str(Config.args.Train_Patches), transform = data_transforms)  
-    train_loader = torch.utils.data.DataLoader(dataset = image_datasets, batch_size = batch_size, shuffle = True)
+    train_image_datasets = datasets.ImageFolder(root = str(Config.args.Train_Patches), transform = data_transforms)  
+    train_loader = torch.utils.data.DataLoader(dataset = train_image_datasets, batch_size = batch_size, shuffle = True)
+    val_image_datasets = datasets.ImageFolder(root = str(Config.args.Validation_Patches), transform = data_transforms)
+    val_loader = torch.utils.data.DataLoader(dataset = val_image_datasets, batch_size = batch_size, shuffle = False)
 
     model = create_model()    
     optimizer = optim.Adam(params = model.parameters(), lr = lr, weight_decay = weight_decay)
@@ -63,22 +67,72 @@ def Train(weight_decay = Config.args.weight_decay, loss_func = nn.CrossEntropyLo
         model.train(mode = True)
 
         train_running_loss = 0.0
-        correct_outputs  = 0
+        train_corrects  = 0
+	        
+	    for i, (train_inputs, train_labels) in enumerate(train_loader):
+	            
+	            optimizer.zero_grad()
+
+	            with torch.no_grad():
+
+	            	train_outputs = model(train_inputs)
+	            	_, predicted = torch.max(train_outputs.data, 1)
+		            train_loss = loss_func(train_outputs, train_labels)
+		            train_loss.backward()
+		            optimizer.step()
+			
+			train_corrects += (predicted == train_labels).sum().item()
+            train_running_loss += train_loss.item() * train_inputs.size(0)
+
+			start = i * batch_size
+            end = start + batch_size
+
+			train_all_labels[start:end] = train_labels
+            train_all_predicts[start:end] = predicted
+
+			calculate_confusion_matrix(all_labels = train_all_labels.numpy(), all_predicts = train_all_predicts.numpy())
+
+			train_loss = train_running_loss / len(train_image_datasets)
+        	train_acc = train_corrects / len(train_image_datasets)
+
+        val_running_loss = 0.0
+        val_corrects = 0
+
+        for i, (val_inputs, val_labels) in enumerate(val_loader):
+
+            with torch.no_grad():
+                
+                val_outputs = model(val_inputs)
+                _, val_preds = torch.max(val_outputs, 1)
+                val_loss = loss_func(val_outputs, val_labels)
+
+            val_running_loss += val_loss.item() * val_inputs.size(0)
+            val_running_corrects += (predicted == labels).sum().item()
+
+            start = i * batch_size
+            end = start + batch_size
+
+            val_all_labels[start:end] = val_labels
+            val_all_predicts[start:end] = val_preds
+
+        calculate_confusion_matrix(all_labels = val_all_labels.numpy(), all_predicts = val_all_predicts.numpy())
+
+        val_loss = val_running_loss / len(val_image_datasets)
+        val_acc = val_running_corrects / len(val_image_datasets) 
         
-        for i, (train_inputs, labels) in enumerate(train_loader):
-            
-            optimizer.zero_grad()
-            train_outputs = model(train_inputs)
-            train_loss = loss_func(train_outputs, labels)
-            train_loss.backward()
-            optimizer.step()
-
-            train_running_loss += train_loss.item()
-            if i % 100 == 0:
-                print('[%d, %5d] loss: %.3f' %(epoch + 1, i + 1, train_running_loss / 100))
-                train_running_loss = 0.0
-
         scheduler.step()
+		
+		current_lr = None
+        for group in optimizer.param_groups:
+            current_lr = group["lr"]
+            
+        print(f"Epoch {epoch} with lr "
+              f"{current_lr:.15f}: "
+              f"t_loss: {train_loss:.4f} "
+              f"t_acc: {train_acc:.4f} ")
+
+    print(f"\ntraining complete in "
+          f"{(time.time() - since) // 60:.2f} minutes")
 
 if __name__ == '__main__':
-    Train()
+    Train_Val()
