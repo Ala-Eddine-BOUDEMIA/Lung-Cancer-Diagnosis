@@ -129,7 +129,9 @@ def Train_Val(weight_decay = Config.args.weight_decay, loss_func = nn.CrossEntro
         print(f"Epoch {epoch} with lr "
               f"{current_lr:.15f}: "
               f"t_loss: {train_loss:.4f} "
-              f"t_acc: {train_acc:.4f} ")
+              f"t_acc: {train_acc:.4f} "
+              f"v_loss: {val_loss:.4f} "
+              f"v_acc: {val_acc:.4f} ")
 
     print(f"\ntraining complete in "
           f"{(time.time() - since) // 60:.2f} minutes")
