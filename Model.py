@@ -1,11 +1,10 @@
 ###########
+import copy
 import time                 
-import Config
-import random                                           
-import numpy as np          
-import pandas as pd         
-from PIL import Image        
-#####################
+import Config                                                            
+#############
+from matplotlib import pyplt as plt
+###################################
 import torch                                
 import torchvision                          
 from torch import nn                        
@@ -16,125 +15,151 @@ from torchvision import datasets
 from torchvision import transforms                      
 from torch.optim import lr_scheduler              
 from torch.optim.lr_scheduler import ExponentialLR      
-##################################################                                                                                 
-                                            
-def calculate_confusion_matrix(all_labels, all_predicts):                     
-                                                  
-    classes = ["lepidic", "acinar", "papillary", "micropapillary", "solid", "normal"]       
-    num_classes = len(classes)                                    
-    remap_classes = {}  
+##################################################   
 
-    for i in range(len(classes)):    
+def load_data(path, batch_size, shuffle):
 
-        remap_classes[i] = classes[i]                               
-                                                        
-        pd.options.display.float_format = "{:.2f}".format                         
-        pd.options.display.width = 0                                  
-                                                      
-        actual = pd.Series(data = pd.Series(all_labels).replace(remap_classes), name="Actual")      
-        predicted = pd.Series(data = pd.Series(all_predicts).replace(remap_classes), name="Predicted")  
-                                                        
-        confusion_matrix = pd.crosstab(index=actual, columns=predicted, normalize="index")        
-        print(confusion_matrix)                                                                                         
+	data_transforms = transforms.Compose(transforms = [transforms.ToTensor()])
 
-def create_model():                             
+	images_dataset = datasets.ImageFolder(root = str(path), transform = data_transforms) 
+	dataloaders = torch.utils.data.DataLoader(dataset = images_dataset, batch_size = batch_size, shuffle = shuffle, num_workers = 8)
+
+	return dataloaders
+
+def create_model(device):
                                                 
     model = models.resnet18(pretrained = True)  
     num_ftrs = model.fc.in_features             
     model.fc = nn.Linear(num_ftrs, 6)              
     model_summary = summary(model, (3,224,224))
+    model.to(device)
 
-    return model                                                                     
+    return model
 
-def Train_Val(weight_decay = Config.args.weight_decay, loss_func = nn.CrossEntropyLoss(),
-        lr = Config.args.learning_rate,  learning_rate_decay = Config.args.learning_rate_decay, 
-        num_epochs = Config.args.num_epochs, batch_size = Config.args.batch_size): 
+def optimizer(model, learning_rate = Config.args.learning_rate, 
+	learning_rate_decay = Config.args.learning_rate_decay, 
+	weight_decay = Config.args.weight_decay):
+
+	opt = optim.Adam(params = model.parameters(), lr = learning_rate, weight_decay = weight_decay)
+	scheduler = lr_scheduler.ExponentialLR(optimizer = opt, gamma = learning_rate_decay)
+
+	current_lr = None
+	for group in opt.param_groups:
+		current_lr = group["lr"]
+
+	return opt, scheduler, current_lr
+
+def metrics_batch(output, target):
 	
-	since = time.time()
+	predicted = torch.argmax(output, dim = 1, keepdim = True)
+	corrects = predicted.eq(target.view_as(predicted)).sum().item()
 
-    data_transforms = transforms.Compose(transforms=[transforms.ToTensor()])
-    train_image_datasets = datasets.ImageFolder(root = str(Config.args.Train_Patches), transform = data_transforms)  
-    train_loader = torch.utils.data.DataLoader(dataset = train_image_datasets, batch_size = batch_size, shuffle = True)
-    val_image_datasets = datasets.ImageFolder(root = str(Config.args.Validation_Patches), transform = data_transforms)
-    val_loader = torch.utils.data.DataLoader(dataset = val_image_datasets, batch_size = batch_size, shuffle = False)
+	return corrects 
 
-    model = create_model()    
-    optimizer = optim.Adam(params = model.parameters(), lr = lr, weight_decay = weight_decay)
-    scheduler = lr_scheduler.ExponentialLR(optimizer = optimizer, gamma = learning_rate_decay) 
+def loss_batch(output, target, optimizer, loss_function = nn.CrossEntropyLoss()):
 
-    for epoch in range(num_epochs):
+ 	loss = loss_function(output, target) 
+ 	metric_b = metrics_batch(output, target)
 
-        model.train(mode = True)
+ 	if optimizer is None:
+ 		optimizer.zero_grad()
+ 		loss.backward()
+ 		optimizer.step()
 
-        train_running_loss = 0.0
-        train_corrects  = 0
-	        
-	    for i, (train_inputs, train_labels) in enumerate(train_loader):
-	            
-	            optimizer.zero_grad()
+ 	return loss.item(), metric_b   
 
-	            with torch.no_grad():
+def loss_epoch(model, device, loader, optimizer, sanity_check):
 
-	            	train_outputs = model(train_inputs)
-	            	_, predicted = torch.max(train_outputs.data, 1)
-		            train_loss = loss_func(train_outputs, train_labels)
-		            train_loss.backward()
-		            optimizer.step()
-			
-			train_corrects += (predicted == train_labels).sum().item()
-            train_running_loss += train_loss.item() * train_inputs.size(0)
+	running_loss = 0.0
+	runing_metric = 0.0
+	
+	for i, (inputs, labels) in enumerate(loader):
 
-			start = i * batch_size
-            end = start + batch_size
+		inputs = inputs.to(device)
+		labels = labels.to(device)
 
-			train_all_labels[start:end] = train_labels
-            train_all_predicts[start:end] = predicted
+		outputs = model(inputs)
+		loss_b, metric_b = loss_batch(outputs, labels, optimizer)
+		running_loss += loss_b
 
-			calculate_confusion_matrix(all_labels = train_all_labels.numpy(), all_predicts = train_all_predicts.numpy())
+		if metric_b is not None:
+			runing_metric += metric_b
 
-			train_loss = train_running_loss / len(train_image_datasets)
-        	train_acc = train_corrects / len(train_image_datasets)
+		if sanity_check is True:
+			break
 
-        val_running_loss = 0.0
-        val_corrects = 0
+	len_data = len(loader)
+	loss = running_loss / float(len_data)
+	metric = runing_metric / float(len_data)
 
-        for i, (val_inputs, val_labels) in enumerate(val_loader):
+	return loss, metric
 
-            with torch.no_grad():
-                
-                val_outputs = model(val_inputs)
-                _, val_preds = torch.max(val_outputs, 1)
-                val_loss = loss_func(val_outputs, val_labels)
+def Train_Val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batch_size, 
+	path2weights = Config.args.Path2Weights, Train_Patches_path = Config.args.Train_Patches, 
+	Validation_Patches_path = Config.args.Validation_Patches, sanity_check = Config.args.Sanity_Check):
 
-            val_running_loss += val_loss.item() * val_inputs.size(0)
-            val_running_corrects += (predicted == labels).sum().item()
+	device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-            start = i * batch_size
-            end = start + batch_size
+	train_loader = load_data(path = Train_Patches_path, batch_size = batch_size, shuffle = True)
+	val_loader = load_data(path = Validation_Patches_path, batch_size = batch_size, shuffle = False)
 
-            val_all_labels[start:end] = val_labels
-            val_all_predicts[start:end] = val_preds
+	model = create_model(device)
+	best_model = copy.deepcopy(model.state_dict())
+	best_loss = float("inf")
 
-        calculate_confusion_matrix(all_labels = val_all_labels.numpy(), all_predicts = val_all_predicts.numpy())
+	opt, scheduler, current_lr = optimizer(model)
 
-        val_loss = val_running_loss / len(val_image_datasets)
-        val_acc = val_running_corrects / len(val_image_datasets) 
-        
-        scheduler.step()
+	loss_history = {"train": [], "val": []}
+	metric_history = {"train": [], "val": []}
+
+
+	for epoch in range(num_epochs):
+
+		print('Epoch {}/{}, current lr={}'.format(epoch + 1, num_epochs, current_lr))
 		
-		current_lr = None
-        for group in optimizer.param_groups:
-            current_lr = group["lr"]
-            
-        print(f"Epoch {epoch} with lr "
-              f"{current_lr:.15f}: "
-              f"t_loss: {train_loss:.4f} "
-              f"t_acc: {train_acc:.4f} "
-              f"v_loss: {val_loss:.4f} "
-              f"v_acc: {val_acc:.4f} ")
+		model.train()
+		train_loss, train_metric = loss_epoch(model, device, train_loader, opt, sanity_check = sanity_check)
+		loss_history["train"].append(train_loss)
+		metric_history["train"].append(train_metric)
 
-    print(f"\ntraining complete in "
-          f"{(time.time() - since) // 60:.2f} minutes")
+		model.eval()
+		with torch.no_grad():
+			val_loss, val_metric = loss_epoch(model, device, val_loader, opt, sanity_check = sanity_check)
+			loss_history["val"].append(val_loss)
+			metric_history["val"].append(val_metric)
+
+			if val_loss < best_loss:
+				best_loss = val_loss
+				best_model = copy.deepcopy(model.state_dict())
+				torch.save(model.state_dict(), path2weights) 
+				print("Copied best model weights")
+
+		scheduler.step()
+
+		print("train loss: %.6f, val loss: %.6f, accuracy: %.2f"%(train_loss, val_loss, 100*val_metric))
+
+	model.load_state_dict(best_model)
+
+	return model, loss_history, metric_history
+
+def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epochs):
+
+	plt.title("Train-Val Loss")
+	plt.plot(range(1, num_epochs + 1), loss_history["train"], label = "train")
+	plt.plot(range(1, num_epochs + 1), loss_history["val"], label = "val")
+	plt.ylabel("Loss")
+	plt.xlabel("Training Epochs")
+	plt.legend()
+	plt.show()
+
+	plt.title("Train-Val Accuracy")
+	plt.plot(range(1,num_epochs + 1), metric_history["train"], label = "train")
+	plt.plot(range(1,num_epochs + 1), metric_history["val"], label = "val")
+	plt.ylabel("Accuracy")
+	plt.xlabel("Training Epochs")
+	plt.legend()
+	plt.show()
 
 if __name__ == '__main__':
-    Train_Val()
+    model, loss_history, metric_history = Train_Val()
+    plot_graphs(loss_history, metric_history)
