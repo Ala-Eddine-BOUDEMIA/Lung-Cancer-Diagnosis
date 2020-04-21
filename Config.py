@@ -100,29 +100,39 @@ parser.add_argument("--Test_Patches",
 ######__Model__######
 #####################
 parser.add_argument("--num_epochs",
-                    type=int,
-                    default=20,
-                    help="Number of epochs for training")
+                    type = int,
+                    default = 20,
+                    help = "Number of epochs for training")
 
 parser.add_argument("--learning_rate",
-                    type=float,
-                    default=0.001,
-                    help="Learning rate to use for gradient descent")
+                    type = float,
+                    default = 0.001,
+                    help = "Learning rate to use for gradient descent")
 
 parser.add_argument("--batch_size",
-                    type=int,
-                    default=16,
-                    help="Mini-batch size to use for training")
+                    type = int,
+                    default = 16,
+                    help = "Mini-batch size to use for training")
 
 parser.add_argument("--learning_rate_decay",
-                    type=float,
-                    default=0.85,
-                    help="Learning rate decay amount per epoch")
+                    type = float,
+                    default = 0.85,
+                    help = "Learning rate decay amount per epoch")
 
 parser.add_argument("--weight_decay",
-                    type=float,
-                    default=1e-4,
-                    help="Weight decay (L2 penalty) to use in optimizer")
+                    type = float,
+                    default = 0.0001,
+                    help = "Weight decay (L2 penalty) to use in optimizer")
+
+parser.add_argument("--Path2Weights",
+					type = Path,
+					default = Path("Train_folder/models/weights.pt"),
+					help = "Location to store best model")
+
+parser.add_argument("--Sanity_Check",
+					type = bool,
+					default = False,
+					help = "Wether to stop training after one batch or not")
 #########################
 ######__Arguments__######
 #########################
