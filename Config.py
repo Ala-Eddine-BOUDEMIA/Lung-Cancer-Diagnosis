@@ -101,7 +101,7 @@ parser.add_argument("--Test_Patches",
 #####################
 parser.add_argument("--num_epochs",
                     type = int,
-                    default = 20,
+                    default = 2,
                     help = "Number of epochs for training")
 
 parser.add_argument("--learning_rate",
@@ -111,27 +111,27 @@ parser.add_argument("--learning_rate",
 
 parser.add_argument("--batch_size",
                     type = int,
-                    default = 16,
+                    default = 2,
                     help = "Mini-batch size to use for training")
 
 parser.add_argument("--learning_rate_decay",
                     type = float,
-                    default = 0.85,
+                    default = 0.0001,
                     help = "Learning rate decay amount per epoch")
 
 parser.add_argument("--weight_decay",
                     type = float,
-                    default = 0.0001,
+                    default = 0.85,
                     help = "Weight decay (L2 penalty) to use in optimizer")
 
 parser.add_argument("--Path2Weights",
 					type = Path,
-					default = Path("Train_folder/models/weights.pt"),
+					default = Path("weights.pt"),
 					help = "Location to store best model")
 
 parser.add_argument("--Sanity_Check",
 					type = bool,
-					default = False,
+					default = True,
 					help = "Wether to stop training after one batch or not")
 #########################
 ######__Arguments__######
