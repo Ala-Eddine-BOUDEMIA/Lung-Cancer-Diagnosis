@@ -1,8 +1,13 @@
 ###########
-import copy
-import time                 
-import Config                                                            
+import Utils                
+import Config
 #############
+import time 
+import copy
+import pandas as pd                                                            
+###################
+from matplotlib import pyplot as plt
+####################################  
 import torch                                
 import torchvision                          
 from torch import nn                        
@@ -14,25 +19,22 @@ from torchvision import transforms
 from torch.optim import lr_scheduler              
 from torch.optim.lr_scheduler import ExponentialLR      
 ##################################################
-from matplotlib import pyplot as plt
-####################################  
 
 def load_data(path, batch_size, shuffle):
 
-	data_transforms = transforms.Compose(transforms = [transforms.ToTensor()])
+	data_transforms = transforms.Compose(transforms = [transforms.ToTensor()]) #Create a function get_data_transforms
 
 	images_dataset = datasets.ImageFolder(root = str(path), transform = data_transforms) 
 	dataloaders = torch.utils.data.DataLoader(dataset = images_dataset, batch_size = batch_size, shuffle = shuffle, num_workers = 8)
 
 	return dataloaders, images_dataset
 
-def create_model(device):
+def create_model():
                                                 
     model = models.resnet18(pretrained = True)  
     num_ftrs = model.fc.in_features             
     model.fc = nn.Linear(num_ftrs, 6)              
     model_summary = summary(model, (3,224,224))
-    model.to(device)
 
     return model
 
@@ -51,23 +53,27 @@ def metrics_batch(output, target):
 
 	return corrects    
 
-def Train_Val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batch_size, 
-	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
+def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batch_size, 
+	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, device = Config.device 
 	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
 	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches, 
 	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss()):
 
-	device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+	since = time.time()
 
 	train_loader, train_set = load_data(path = Train_Patches_path, batch_size = batch_size, shuffle = True)
 	val_loader, val_set = load_data(path = Validation_Patches_path, batch_size = batch_size, shuffle = False)
 
 	model = create_model(device)
+	model.to(device)
 	best_model = copy.deepcopy(model.state_dict())
 	best_loss = float("inf")
 
 	opt = optim.Adam(params = model.parameters(), lr = learning_rate, weight_decay = weight_decay)
 	scheduler = lr_scheduler.ExponentialLR(optimizer = opt, gamma = learning_rate_decay)
+
+	#Initialize from best_model and checkpoint
+	#Print the model's hyperparameters #Code a seprate function to print
 
 	loss_history = {"train": [], "val": []}
 	metric_history = {"train": [], "val": []}
@@ -80,6 +86,7 @@ def Train_Val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 		model.train()
 		train_running_loss = 0.0
 		train_runing_metric = 0.0
+		train_running_corrects = 0.0
 
 		for i, (inputs, labels) in enumerate(train_loader):
 
@@ -87,16 +94,19 @@ def Train_Val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 			train_labels = labels.to(device)
 
 			train_outputs = model(train_inputs)
-			train_loss_b = loss_function(train_outputs, train_labels) 
 			train_metric_b = metrics_batch(train_outputs, train_labels)
+			train_loss_b = loss_function(train_outputs, train_labels) 
 
 			opt.zero_grad()
 			train_loss_b.backward()
 			opt.step()
-			train_running_loss += train_loss_b
+
+			train_running_loss += train_loss_b # in deepslide they multiplied it by train_inputs.size(0)
 
 			if train_metric_b is not None:
 				train_runing_metric += train_metric_b
+
+		#Add a confusion matrix here
 
 		train_len_data = len(train_set)
 		train_loss = train_running_loss / float(train_len_data)
@@ -124,13 +134,15 @@ def Train_Val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 					torch.save(model.state_dict(), path2weights) 
 					print("Copied best model weights")
 
-			val_running_loss += val_loss_b
+			val_running_loss += val_loss_b # in deepslide they multiplied it by val_inputs.size(0)
 
 			if val_metric_b is not None:
 				val_runing_metric += val_metric_b
 
 			if sanity_check is True:
 				break
+
+		#Add a confusion matrix here
 
 		val_len_data = len(val_set)
 		val_loss = val_running_loss / float(val_len_data)
@@ -142,9 +154,42 @@ def Train_Val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 
 		print("train loss: %.6f, val loss: %.6f, accuracy: %.2f"%(train_loss, val_loss, 100*val_metric))
 
+		#Create a checkpoint 
+	#Create a csv file to store loss_history and metric_history
+	
+	print(f"\ntraining complete in " f"{(time.time() - since) // 60:.2f} minutes")
+
 	model.load_state_dict(best_model)
 
 	return model, loss_history, metric_history
+
+def predict(model = best_model, batch_size = Config.args.batch_size, 
+	Test_Patches_path = Config.args.Test_Patches, device = Config.device):
+
+	model.eval()
+
+	classes = Config.args.Classes
+	remap_classes = {}
+	for i in range(len(classes)):
+		remap_classes[i] = classes[i]
+
+	start = time.time()
+
+	test_loader, test_set = load_data(path = Test_Patches_path, batch_size = batch_size, shuffle = False)
+	test_len_data = len(test_set)
+	
+	output_file = Utils.create_folder(Config.args.Predictions) 
+
+	#https://stackoverflow.com/questions/56699048/how-to-get-the-filename-of-a-sample-from-a-dataloader
+	with open (str(output_file) + "predictions.csv", "w") as w:
+		for i, (test_inputs, test_labels, image_name) in enumerate(test_loader, 0):
+			with torch.no_grad():
+				test_outputs = model(test_inputs)
+				_, predicted = torch.max(test_outputs, 1)[1]
+				predicted = pd.Series(predicted).replace(remap_classes)
+				w.write("\n".join([", ".join(x) for x in zip(map(str, predicted.cpu().tolist()), image_name)]) + "\n")
+				#confidences, test_preds = torch.max(nn.Softmax(dim = 1)(model(test_inputs.to(device))), dim = 1)
+				#print(confidences)
 
 def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epochs):
 
@@ -165,5 +210,6 @@ def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epoch
 	plt.show()
 
 if __name__ == '__main__':
-    model, loss_history, metric_history = Train_Val()
+    best_model, loss_history, metric_history = train_val()
     plot_graphs(loss_history, metric_history)
+    predict(best_model)
