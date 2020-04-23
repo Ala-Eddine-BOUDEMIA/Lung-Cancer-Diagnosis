@@ -18,6 +18,11 @@ parser.add_argument("--All_Data_sets",
 					type = Path, 
 					default = Path("All_Data_sets"), 
 					help = "Data sets directory")
+
+parser.add_argument("--Classes",
+					type = list,
+					default = ["Normal", "Acinar", "Solid", "Papillary", "Micropaipllary", "Lepidic"],
+					help = "Diffrent subtype of cancer")
 #####################
 ######__Split__######
 #####################
@@ -36,7 +41,7 @@ parser.add_argument("--Validation_WSI",
 parser.add_argument("--Validation_WSI_Size", 
 					metavar = 'v_size', 
 					type = int, 
-					default = 1, 
+					default = 30, 
 					help = "Number of validation WSI per class")
 
 parser.add_argument("--Test_WSI", 
@@ -48,7 +53,7 @@ parser.add_argument("--Test_WSI",
 parser.add_argument("--Test_WSI_Size", 
 					metavar = 't_size', 
 					type = int, 
-					default = 1, 
+					default = 20, 
 					help = "Number of test WSI per class")
 ##############################
 ######__Make_CSV_files__######
@@ -101,7 +106,7 @@ parser.add_argument("--Test_Patches",
 #####################
 parser.add_argument("--num_epochs",
                     type = int,
-                    default = 2,
+                    default = 20,
                     help = "Number of epochs for training")
 
 parser.add_argument("--learning_rate",
@@ -126,14 +131,20 @@ parser.add_argument("--weight_decay",
 
 parser.add_argument("--Path2Weights",
 					type = Path,
-					default = Path("weights.pt"),
+					default = Path("Best_model_weights/weights.pth"),
 					help = "Location to store best model")
 
 parser.add_argument("--Sanity_Check",
 					type = bool,
 					default = True,
-					help = "Wether to stop training after one batch or not")
+					help = "Weither to stop training after one batch or not")
+
+parser.add_argument("--Predictions",
+					type = Path,
+					default = Path("Predictions/"),
+					type = "Location to write out the predictions.")
 #########################
 ######__Arguments__######
 #########################
 args = parser.parse_args()
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
