@@ -29,12 +29,13 @@ def load_data(path, batch_size, shuffle):
 
 	return dataloaders, images_dataset
 
-def create_model():
+def create_model(device = Config.device):
                                                 
     model = models.resnet18(pretrained = True)  
     num_ftrs = model.fc.in_features             
     model.fc = nn.Linear(num_ftrs, 6)              
     model_summary = summary(model, (3,224,224))
+    model.to(device)
 
     return model
 
@@ -54,7 +55,7 @@ def metrics_batch(output, target):
 	return corrects    
 
 def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batch_size, 
-	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, device = Config.device 
+	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
 	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
 	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches, 
 	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss()):
@@ -64,8 +65,7 @@ def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 	train_loader, train_set = load_data(path = Train_Patches_path, batch_size = batch_size, shuffle = True)
 	val_loader, val_set = load_data(path = Validation_Patches_path, batch_size = batch_size, shuffle = False)
 
-	model = create_model(device)
-	model.to(device)
+	model = create_model()
 	best_model = copy.deepcopy(model.state_dict())
 	best_loss = float("inf")
 
@@ -105,7 +105,6 @@ def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 
 			if train_metric_b is not None:
 				train_runing_metric += train_metric_b
-
 		#Add a confusion matrix here
 
 		train_len_data = len(train_set)
@@ -163,33 +162,21 @@ def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 
 	return model, loss_history, metric_history
 
-def predict(model = best_model, batch_size = Config.args.batch_size, 
-	Test_Patches_path = Config.args.Test_Patches, device = Config.device):
-
+def predict(model, batch_size = Config.args.batch_size, Test_Patches_path = Config.args.Test_Patches, device = Config.device):
+"""
 	model.eval()
 
 	classes = Config.args.Classes
-	remap_classes = {}
-	for i in range(len(classes)):
-		remap_classes[i] = classes[i]
-
-	start = time.time()
 
 	test_loader, test_set = load_data(path = Test_Patches_path, batch_size = batch_size, shuffle = False)
 	test_len_data = len(test_set)
 	
 	output_file = Utils.create_folder(Config.args.Predictions) 
-
+"""
 	#https://stackoverflow.com/questions/56699048/how-to-get-the-filename-of-a-sample-from-a-dataloader
-	with open (str(output_file) + "predictions.csv", "w") as w:
-		for i, (test_inputs, test_labels, image_name) in enumerate(test_loader, 0):
-			with torch.no_grad():
-				test_outputs = model(test_inputs)
-				_, predicted = torch.max(test_outputs, 1)[1]
-				predicted = pd.Series(predicted).replace(remap_classes)
-				w.write("\n".join([", ".join(x) for x in zip(map(str, predicted.cpu().tolist()), image_name)]) + "\n")
-				#confidences, test_preds = torch.max(nn.Softmax(dim = 1)(model(test_inputs.to(device))), dim = 1)
-				#print(confidences)
+	#confidences, test_preds = torch.max(nn.Softmax(dim = 1)(model(test_inputs.to(device))), dim = 1)
+	pass
+				
 
 def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epochs):
 
@@ -212,4 +199,4 @@ def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epoch
 if __name__ == '__main__':
     best_model, loss_history, metric_history = train_val()
     plot_graphs(loss_history, metric_history)
-    predict(best_model)
+    #predict(best_model)

@@ -1,3 +1,5 @@
+import torch
+############
 import argparse
 from pathlib import Path
 ########################
@@ -142,7 +144,7 @@ parser.add_argument("--Sanity_Check",
 parser.add_argument("--Predictions",
 					type = Path,
 					default = Path("Predictions/"),
-					type = "Location to write out the predictions.")
+					help = "Location to write out the predictions.")
 #########################
 ######__Arguments__######
 #########################
