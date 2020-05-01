@@ -118,7 +118,7 @@ parser.add_argument("--learning_rate",
 
 parser.add_argument("--batch_size",
                     type = int,
-                    default = 2,
+                    default = 32,
                     help = "Mini-batch size to use for training")
 
 parser.add_argument("--learning_rate_decay",

@@ -2,6 +2,7 @@
 import Utils                
 import Config
 #############
+import csv
 import time 
 import copy
 import pandas as pd                                                            
@@ -20,7 +21,7 @@ from torch.optim import lr_scheduler
 from torch.optim.lr_scheduler import ExponentialLR      
 ##################################################
 
-def load_data(path, batch_size, shuffle):
+def load_data(path, shuffle, batch_size = Config.args.batch_size):
 
 	data_transforms = transforms.Compose(transforms = [transforms.ToTensor()]) #Create a function get_data_transforms
 
@@ -54,7 +55,7 @@ def metrics_batch(output, target):
 
 	return corrects    
 
-def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batch_size, 
+def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
 	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
 	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches, 
@@ -62,8 +63,8 @@ def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 
 	since = time.time()
 
-	train_loader, train_set = load_data(path = Train_Patches_path, batch_size = batch_size, shuffle = True)
-	val_loader, val_set = load_data(path = Validation_Patches_path, batch_size = batch_size, shuffle = False)
+	train_loader, train_set = load_data(path = Train_Patches_path, shuffle = True)
+	val_loader, val_set = load_data(path = Validation_Patches_path, shuffle = False)
 
 	model = create_model()
 	best_model = copy.deepcopy(model.state_dict())
@@ -92,7 +93,6 @@ def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 
 			train_inputs = inputs.to(device)
 			train_labels = labels.to(device)
-
 			train_outputs = model(train_inputs)
 			train_metric_b = metrics_batch(train_outputs, train_labels)
 			train_loss_b = loss_function(train_outputs, train_labels) 
@@ -162,21 +162,33 @@ def train_val(num_epochs = Config.args.num_epochs, batch_size = Config.args.batc
 
 	return model, loss_history, metric_history
 
-def predict(model, batch_size = Config.args.batch_size, Test_Patches_path = Config.args.Test_Patches, device = Config.device):
-"""
+def predict(model, Test_Patches_path = Config.args.Test_Patches, device = Config.device):
+	
 	model.eval()
 
-	classes = Config.args.Classes
-
-	test_loader, test_set = load_data(path = Test_Patches_path, batch_size = batch_size, shuffle = False)
+	test_loader, test_set = load_data(path = Test_Patches_path, shuffle = False, batch_size = 1)
 	test_len_data = len(test_set)
 	
-	output_file = Utils.create_folder(Config.args.Predictions) 
-"""
-	#https://stackoverflow.com/questions/56699048/how-to-get-the-filename-of-a-sample-from-a-dataloader
-	#confidences, test_preds = torch.max(nn.Softmax(dim = 1)(model(test_inputs.to(device))), dim = 1)
-	pass
-				
+	output_folder = Utils.create_folder(Config.args.Predictions) 
+	predictions = str(output_folder) + "/predictions.csv"
+
+	with open(predictions, "w") as w:
+		writer = csv.writer(w, delimiter = "\t")
+		writer.writerow(["Image name", "Prediction", "Confidence"])
+		for i, (inputs, labels) in enumerate(test_loader, 0):
+			
+			test_inputs = inputs.to(device)
+			test_labels = labels.to(device)
+
+			test_outputs = model(test_inputs)
+			_, predicted = torch.max(test_outputs.data, 1)
+			confidence = torch.max(nn.Softmax(dim = 1)(test_outputs))
+			
+			#https://stackoverflow.com/questions/56699048/how-to-get-the-filename-of-a-sample-from-a-dataloader	
+			sample_name, _ = test_loader.dataset.samples[i]
+			sample_name = sample_name.split("/")[-1][:-5]
+			
+			writer.writerow([sample_name, predicted.item(), confidence.item()*100])
 
 def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epochs):
 
@@ -199,4 +211,4 @@ def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epoch
 if __name__ == '__main__':
     best_model, loss_history, metric_history = train_val()
     plot_graphs(loss_history, metric_history)
-    #predict(best_model)
+    predict(best_model)

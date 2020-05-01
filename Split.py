@@ -7,7 +7,7 @@ from pathlib import Path
 
 def split():
 	
-	path_list, wsi_paths, annotation_paths = Utils.parse_dir(Config.args.All_WSI)
+	path_list, wsi_paths = Utils.parse_dir(Config.args.All_WSI, "svs")
 
 	FoldersToBeCreated = [Config.args.Validation_WSI, Config.args.Test_WSI, Config.args.Train_WSI]
 
@@ -24,7 +24,7 @@ def split():
 								(FoldersToBeCreated[2], Train_set_size)):
 		length = 0
 		while length < set_size :
-			n = random.randint(0,len(wsi_paths)-1)
+			n = random.randint(0,len(path_list)-1)
 			if n not in r :
 				if path_list[n].exists() == True:
 					src = str(path_list[n])

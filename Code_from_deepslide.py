@@ -1,9 +1,10 @@
+import numpy as np
 from skimage.measure import block_reduce
 ########################################
 ##################################
 ######___utils_processing.py___###
 ##################################
-def is_purple(crop, purple_threshold = 100, purple_scale_size = 15) -> bool:
+def is_purple(crop, purple_threshold = 100 * 2, purple_scale_size = 15) -> bool:
 
     """
     Determines if a given portion of an image is purple.

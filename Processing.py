@@ -5,18 +5,19 @@ import openslide
 import numpy as np
 from PIL import Image
 import Code_from_deepslide
-########################################
+##########################
 
 def generate_patches():
 
-	Window_size = 224
+	Window_size = 224 * 5
+	compression_factor = 5
 
 	WSI_sets = [Config.args.Train_WSI, Config.args.Validation_WSI, Config.args.Test_WSI]
 	output_folders = [Config.args.Train_Patches, Config.args.Validation_Patches, Config.args.Test_Patches]
 
 	for k in range(len(WSI_sets)):	
 
-		path_list, wsi_paths, annotation_paths = Utils.parse_dir(input_directories = WSI_sets[k])
+		path_list, wsi_paths = Utils.parse_dir(input_directories = WSI_sets[k], forme = "svs")
 		Utils.create_folder(output_folders[k])
 		
 		for i in range(len(wsi_paths)): 
@@ -59,10 +60,12 @@ def generate_patches():
 					
 					patch_rgb = Image.new("RGB", patch.size,(255,255,255))
 					patch_rgb.paste(patch) 
-					patch_rgb = patch_rgb.resize((int(patch_w), int(patch_h)), Image.ANTIALIAS) 
-					if Code_from_deepslide.is_purple(patch_rgb) == True:
-						patch_rgb.save(str(output_folders[k]) + "/" + image_name.split("/")[-1][:-4] + "_" + str(incre_x) + "_" + str(incre_y) + '.jpeg') 
+					patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), int(patch_h/compression_factor)), Image.ANTIALIAS) 
+					path = str(output_folders[k]) + "/" + image_name.split("/")[-1][:-4] + "_" + str(incre_x) + "_" + str(incre_y) + '.jpeg'
 					
+					if Code_from_deepslide.is_purple(patch_rgb) == True :
+						patch_rgb.save(path) 
+					#modify the code to save white patches on the validation and test set
 					i += 1 
 
 if __name__ == '__main__':
