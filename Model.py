@@ -166,29 +166,32 @@ def predict(model, Test_Patches_path = Config.args.Test_Patches, device = Config
 	
 	model.eval()
 
-	test_loader, test_set = load_data(path = Test_Patches_path, shuffle = False, batch_size = 1)
-	test_len_data = len(test_set)
-	
-	output_folder = Utils.create_folder(Config.args.Predictions) 
-	predictions = str(output_folder) + "/predictions.csv"
+	path_list, jpeg_paths = Utils.parse_dir(input_directories = Test_Patches_path, forme = "jpeg")
 
-	with open(predictions, "w") as w:
-		writer = csv.writer(w, delimiter = "\t")
-		writer.writerow(["Image name", "Prediction", "Confidence"])
-		for i, (inputs, labels) in enumerate(test_loader, 0):
-			
-			test_inputs = inputs.to(device)
-			test_labels = labels.to(device)
+	for path in path_list:
+		test_loader, test_set = load_data(path = str(path), shuffle = False, batch_size = 1)
+		test_len_data = len(test_set)
+		print(path)
+		#output_folder = Utils.create_folder(Config.args.Predictions) 
+		predictions = str(path) + "/predictions.csv"
 
-			test_outputs = model(test_inputs)
-			_, predicted = torch.max(test_outputs.data, 1)
-			confidence = torch.max(nn.Softmax(dim = 1)(test_outputs))
-			
-			#https://stackoverflow.com/questions/56699048/how-to-get-the-filename-of-a-sample-from-a-dataloader	
-			sample_name, _ = test_loader.dataset.samples[i]
-			sample_name = sample_name.split("/")[-1][:-5]
-			
-			writer.writerow([sample_name, predicted.item(), confidence.item()*100])
+		with open(predictions, "w") as w:
+			writer = csv.writer(w, delimiter = "\t")
+			writer.writerow(["Image name", "Prediction", "Confidence"])
+			for i, (inputs, labels) in enumerate(test_loader, 0):
+				
+				test_inputs = inputs.to(device)
+				test_labels = labels.to(device)
+
+				test_outputs = model(test_inputs)
+				_, predicted = torch.max(test_outputs.data, 1)
+				confidence = torch.max(nn.Softmax(dim = 1)(test_outputs))
+				
+				#https://stackoverflow.com/questions/56699048/how-to-get-the-filename-of-a-sample-from-a-dataloader	
+				sample_name, _ = test_loader.dataset.samples[i]
+				sample_name = sample_name.split("/")[-1][:-5]
+				
+				writer.writerow([sample_name, predicted.item(), confidence.item()*100])
 
 def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epochs):
 
@@ -209,6 +212,7 @@ def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epoch
 	plt.show()
 
 if __name__ == '__main__':
+
     best_model, loss_history, metric_history = train_val()
     plot_graphs(loss_history, metric_history)
     predict(best_model)
