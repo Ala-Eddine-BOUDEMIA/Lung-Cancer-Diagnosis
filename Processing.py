@@ -1,11 +1,12 @@
-import os
 import Utils
 import Config
+import Code_from_deepslide
+##########################
+import os
 import openslide
 import numpy as np
 from PIL import Image
-import Code_from_deepslide
-##########################
+#####################
 
 def generate_patches():
 
@@ -61,11 +62,18 @@ def generate_patches():
 					patch_rgb = Image.new("RGB", patch.size,(255,255,255))
 					patch_rgb.paste(patch) 
 					patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), int(patch_h/compression_factor)), Image.ANTIALIAS) 
-					path = str(output_folders[k]) + "/" + image_name.split("/")[-1][:-4] + "_" + str(incre_x) + "_" + str(incre_y) + '.jpeg'
 					
-					if Code_from_deepslide.is_purple(patch_rgb) == True :
+					patch_name = image_name + "_" + str(incre_x) + "_" + str(incre_y) + '.jpeg'
+					if k != 2 :
+						if Code_from_deepslide.is_purple(patch_rgb) == True :
+							path = str(output_folders[k]) + "/" + patch_name
+							patch_rgb.save(path) 
+					elif k == 2:
+						folder = str(output_folders[k]) + "/" + image_name
+						Utils.create_folder(folder)
+						path = folder + "/" + patch_name
 						patch_rgb.save(path) 
-					#modify the code to save white patches on the validation and test set
+
 					i += 1 
 
 if __name__ == '__main__':
