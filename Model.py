@@ -1,7 +1,8 @@
 ###########
 import Utils                
 import Config
-#############
+import Code_from_deepslide
+##########################
 import csv
 import time 
 import copy
@@ -56,10 +57,10 @@ def metrics_batch(output, target):
 	return corrects    
 
 def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
+	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(),
 	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
 	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
-	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches, 
-	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss()):
+	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches): 
 
 	since = time.time()
 
@@ -105,8 +106,9 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 
 			if train_metric_b is not None:
 				train_runing_metric += train_metric_b
+		
 		#Add a confusion matrix here
-
+		
 		train_len_data = len(train_set)
 		train_loss = train_running_loss / float(train_len_data)
 		train_metric = train_runing_metric / float(train_len_data)
