@@ -22,9 +22,26 @@ from torch.optim import lr_scheduler
 from torch.optim.lr_scheduler import ExponentialLR      
 ##################################################
 
-def load_data(path, shuffle, batch_size = Config.args.batch_size):
+def get_data_transforms(Train = True):
 
-	data_transforms = transforms.Compose(transforms = [transforms.ToTensor()]) #Create a function get_data_transforms
+	if Train:
+		data_transforms = transforms.Compose(transforms = [ 
+			transforms.ColorJitter(brightness = 0.5, contrast = 0.5, saturation = 0.5, hue = 0.2),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
+            Code_from_deepslide.Random90Rotation(),
+            transforms.ToTensor()])
+            #transforms.Normalize(mean = path_mean, std = path_std)])
+	else :
+		data_transforms = transforms.Compose(transforms = [ 
+			transforms.ToTensor()])
+            #transforms.Normalize(mean = path_mean, std = path_std)])
+
+    return data_transforms
+
+def load_data(path, shuffle, Train, batch_size = Config.args.batch_size):
+
+	data_transforms = get_data_transforms(Train)
 
 	images_dataset = datasets.ImageFolder(root = str(path), transform = data_transforms) 
 	dataloaders = torch.utils.data.DataLoader(dataset = images_dataset, batch_size = batch_size, shuffle = shuffle, num_workers = 8)
@@ -65,7 +82,7 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	since = time.time()
 
 	train_loader, train_set = load_data(path = Train_Patches_path, shuffle = True)
-	val_loader, val_set = load_data(path = Validation_Patches_path, shuffle = False)
+	val_loader, val_set = load_data(path = Validation_Patches_path, shuffle = False, Train = False)
 
 	model = create_model()
 	best_model = copy.deepcopy(model.state_dict())
@@ -94,6 +111,7 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 
 			train_inputs = inputs.to(device)
 			train_labels = labels.to(device)
+
 			train_outputs = model(train_inputs)
 			train_metric_b = metrics_batch(train_outputs, train_labels)
 			train_loss_b = loss_function(train_outputs, train_labels) 
@@ -173,8 +191,6 @@ def predict(model, Test_Patches_path = Config.args.Test_Patches, device = Config
 	for path in path_list:
 		test_loader, test_set = load_data(path = str(path), shuffle = False, batch_size = 1)
 		test_len_data = len(test_set)
-		print(path)
-		#output_folder = Utils.create_folder(Config.args.Predictions) 
 		predictions = str(path) + "/predictions.csv"
 
 		with open(predictions, "w") as w:
