@@ -1,7 +1,10 @@
 #############
 import Config
 #############
+import random
 import numpy as np
+import torchvision
+from PIL import Image
 from skimage.measure import block_reduce
 from typing import (Dict, IO, List, Tuple)
 ##########################################
@@ -38,61 +41,27 @@ def is_purple(crop, purple_threshold = 100 * 2, purple_scale_size = 15) -> bool:
 
     return num_purple > purple_threshold
 
-#############################
-######___utils_model.py___###
-#############################
-def calculate_confusion_matrix(all_labels, all_predicts, classes = Config.args.Classes) -> None:
-
-    remap_classes = {x: classes[x] for x in range(len(classes))}
-
-    pd.options.display.float_format = "{:.2f}".format
-    pd.options.display.width = 0
-
-    actual = pd.Series(pd.Categorical(
-        pd.Series(all_labels).replace(remap_classes), categories=classes),
-                       name="Actual")
-
-    predicted = pd.Series(pd.Categorical(
-        pd.Series(all_predicts).replace(remap_classes), categories=classes),
-                          name="Predicted")
-
-    cm = pd.crosstab(index=actual, columns=predicted, normalize="index")
-
-    cm.style.hide_index()
-    print(cm)
-
+##################################
+######___utils_processing.py___###
+##################################
 class Random90Rotation:
     def __init__(self, degrees: Tuple[int] = None) -> None:
+        """
+        Randomly rotate the image for training. Credits to Naofumi Tomita.
 
+        Args:
+            degrees: Degrees available for rotation.
+        """
         self.degrees = (0, 90, 180, 270) if (degrees is None) else degrees
 
     def __call__(self, im: Image) -> Image:
+        """
+        Produces a randomly rotated image every time the instance is called.
 
+        Args:
+            im: The image to rotate.
+
+        Returns:    
+            Randomly rotated image.
+        """
         return im.rotate(angle=random.sample(population=self.degrees, k=1)[0])
-
-def get_data_transforms(color_jitter_brightness: float,
-                        color_jitter_contrast: float,
-                        color_jitter_saturation: float,
-                        color_jitter_hue: float, path_mean: List[float],
-                        path_std: List[float]
-                        ) -> Dict[str, torchvision.transforms.Compose]:
-
-    return {
-        "train":
-        transforms.Compose(transforms=[
-            transforms.ColorJitter(brightness=color_jitter_brightness,
-                                   contrast=color_jitter_contrast,
-                                   saturation=color_jitter_saturation,
-                                   hue=color_jitter_hue),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomVerticalFlip(),
-            Random90Rotation(),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=path_mean, std=path_std)
-        ]),
-        "val":
-        transforms.Compose(transforms=[
-            transforms.ToTensor(),
-            transforms.Normalize(mean=path_mean, std=path_std)
-        ])
-    }
