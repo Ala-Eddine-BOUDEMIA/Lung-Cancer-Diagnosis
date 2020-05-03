@@ -2,8 +2,9 @@
 import Config
 #############
 import random
-import numpy as np
 import torchvision
+import numpy as np
+import pandas as pd
 from PIL import Image
 from skimage.measure import block_reduce
 from typing import (Dict, IO, List, Tuple)
@@ -41,9 +42,9 @@ def is_purple(crop, purple_threshold = 100 * 2, purple_scale_size = 15) -> bool:
 
     return num_purple > purple_threshold
 
-##################################
-######___utils_processing.py___###
-##################################
+#############################
+######___utils_model.py___###
+#############################
 class Random90Rotation:
     def __init__(self, degrees: Tuple[int] = None) -> None:
         """
@@ -65,3 +66,37 @@ class Random90Rotation:
             Randomly rotated image.
         """
         return im.rotate(angle=random.sample(population=self.degrees, k=1)[0])
+
+
+def calculate_confusion_matrix(all_labels, all_predicts, classes = Config.args.Classes) -> None:
+    """
+    Prints the confusion matrix from the given data.
+
+    Args:
+        all_labels: The ground truth labels.
+        all_predicts: The predicted labels.
+        classes: Names of the classes in the dataset.
+        num_classes: Number of classes in the dataset.
+    """
+    remap_classes = {x: classes[x] for x in range(len(classes))}
+
+    # Set print options.
+    # Sources:
+    #   1. https://stackoverflow.com/questions/42735541/customized-float-formatting-in-a-pandas-dataframe
+    #   2. https://stackoverflow.com/questions/11707586/how-do-i-expand-the-output-display-to-see-more-columns-of-a-pandas-dataframe
+    #   3. https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html
+    pd.options.display.float_format = "{:.2f}".format
+    pd.options.display.width = 0
+
+    actual = pd.Series(pd.Categorical(
+        pd.Series(all_labels).replace(remap_classes), categories=classes),
+                       name="Actual")
+
+    predicted = pd.Series(pd.Categorical(
+        pd.Series(all_predicts).replace(remap_classes), categories=classes),
+                          name="Predicted")
+
+    cm = pd.crosstab(index=actual, columns=predicted, normalize="index")
+
+    cm.style.hide_index()
+    print(cm)
