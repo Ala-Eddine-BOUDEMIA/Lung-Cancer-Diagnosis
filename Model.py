@@ -44,9 +44,7 @@ def get_data_transforms(Train):
 
 def load_data(path, shuffle, Train = True, batch_size = Config.args.batch_size):
 
-	data_transforms = get_data_transforms(Train)
-
-	images_dataset = datasets.ImageFolder(root = str(path), transform = data_transforms) 
+	images_dataset = datasets.ImageFolder(root = str(path), transform = get_data_transforms(Train)) 
 	dataloaders = torch.utils.data.DataLoader(dataset = images_dataset, batch_size = batch_size, shuffle = shuffle, num_workers = 8)
 
 	return dataloaders, images_dataset
@@ -67,14 +65,7 @@ def get_current_lr(opt):
 	for group in opt.param_groups:
 		current_lr = group["lr"]
 
-	return current_lr
-
-def metrics_batch(output, target):
-	
-	predicted = torch.argmax(output, dim = 1, keepdim = True)
-	corrects = predicted.eq(target.view_as(predicted)).sum().item()
-
-	return corrects    
+	return current_lr  
 
 def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(),
@@ -108,7 +99,8 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 		model.train()
 		train_running_loss = 0.0
 		train_runing_metric = 0.0
-		train_running_corrects = 0.0
+		train_all_labels = []
+		train_all_predictions = []
 
 		for i, (inputs, labels) in enumerate(train_loader):
 
@@ -116,19 +108,26 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 			train_labels = labels.to(device)
 
 			train_outputs = model(train_inputs)
-			train_metric_b = metrics_batch(train_outputs, train_labels)
-			train_loss_b = loss_function(train_outputs, train_labels) 
+			__, predicted = torch.max(train_outputs.data, dim = 1)
+			corrects = predicted.eq(train_labels.view_as(predicted)).sum().item()
+			
+			train_loss = loss_function(train_outputs, train_labels) 
 
 			opt.zero_grad()
-			train_loss_b.backward()
+			train_loss.backward()
 			opt.step()
 
-			train_running_loss += train_loss_b # in deepslide they multiplied it by train_inputs.size(0)
+			train_running_loss += train_loss # in deepslide they multiplied it by train_inputs.size(0)
 
-			if train_metric_b is not None:
-				train_runing_metric += train_metric_b
-		
-		#Add a confusion matrix here
+			if corrects is not None:
+				train_runing_metric += corrects
+
+			for x in predicted.numpy():
+				train_all_labels.append(x)
+			for x in train_labels.numpy():
+				train_all_predictions.append(x)
+
+		Code_from_deepslide.calculate_confusion_matrix(train_all_labels, train_all_predictions)
 		
 		train_len_data = len(train_set)
 		train_loss = train_running_loss / float(train_len_data)
@@ -139,6 +138,8 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 		model.eval()
 		val_running_loss = 0.0
 		val_runing_metric = 0.0
+		val_all_labels = []
+		val_all_predictions = []
 
 		for i, (inputs, labels) in enumerate(val_loader):
 
@@ -147,24 +148,30 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 
 			with torch.no_grad():
 				val_outputs = model(val_inputs)
-				val_loss_b = loss_function(val_outputs, val_labels) 
-				val_metric_b = metrics_batch(val_outputs, val_labels)
+				val_loss = loss_function(val_outputs, val_labels) 
+				__, predicted = torch.max(val_outputs.data, dim = 1)
+				corrects = predicted.eq(val_labels.view_as(predicted)).sum().item()
 
-				if val_loss_b < best_loss:
-					best_loss = val_loss_b
+				if val_loss < best_loss:
+					best_loss = val_loss
 					best_model = copy.deepcopy(model.state_dict())
 					torch.save(model.state_dict(), path2weights) 
 					print("Copied best model weights")
 
-			val_running_loss += val_loss_b # in deepslide they multiplied it by val_inputs.size(0)
+			val_running_loss += val_loss # in deepslide they multiplied it by val_inputs.size(0)
 
-			if val_metric_b is not None:
-				val_runing_metric += val_metric_b
+			if corrects is not None:
+				val_runing_metric += corrects
+
+			for x in predicted.numpy():
+				val_all_labels.append(x)
+			for x in train_labels.numpy():
+				val_all_predictions.append(x)
 
 			if sanity_check is True:
 				break
 
-		#Add a confusion matrix here
+		Code_from_deepslide.calculate_confusion_matrix(val_all_labels, val_all_predictions)
 
 		val_len_data = len(val_set)
 		val_loss = val_running_loss / float(val_len_data)
