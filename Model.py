@@ -1,6 +1,7 @@
 ###########
 import Utils                
 import Config
+import Compute_mean_std
 import Code_from_deepslide
 ##########################
 import csv
@@ -22,24 +23,26 @@ from torch.optim import lr_scheduler
 from torch.optim.lr_scheduler import ExponentialLR      
 ##################################################
 
-def get_data_transforms(Train = True):
+def get_data_transforms(Train):
 
 	if Train:
+		mean, std = Compute_mean_std.compute_mean_std(Config.args.Train_Patches)
 		data_transforms = transforms.Compose(transforms = [ 
 			transforms.ColorJitter(brightness = 0.5, contrast = 0.5, saturation = 0.5, hue = 0.2),
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
             Code_from_deepslide.Random90Rotation(),
-            transforms.ToTensor()])
-            #transforms.Normalize(mean = path_mean, std = path_std)])
+            transforms.ToTensor(),
+            transforms.Normalize(mean = mean, std = std)])
 	else :
+		mean, std = Compute_mean_std.compute_mean_std(Config.args.Validation_Patches)
 		data_transforms = transforms.Compose(transforms = [ 
-			transforms.ToTensor()])
-            #transforms.Normalize(mean = path_mean, std = path_std)])
+			transforms.ToTensor(),
+            transforms.Normalize(mean = mean, std = std)])
 
-    return data_transforms
+	return data_transforms
 
-def load_data(path, shuffle, Train, batch_size = Config.args.batch_size):
+def load_data(path, shuffle, Train = True, batch_size = Config.args.batch_size):
 
 	data_transforms = get_data_transforms(Train)
 
