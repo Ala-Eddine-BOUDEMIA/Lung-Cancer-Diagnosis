@@ -1,27 +1,5 @@
-###########
-import Utils                
-import Config
-import Compute_mean_std
-import Code_from_deepslide
-##########################
-import csv
-import time 
-import copy
-import pandas as pd                                                            
-###################
-from matplotlib import pyplot as plt
-####################################  
-import torch                                
-import torchvision                          
-from torch import nn                        
-from torch import optim                        
-from torchvision import models            
-from torchsummary import summary
-from torchvision import datasets            
-from torchvision import transforms                      
-from torch.optim import lr_scheduler              
-from torch.optim.lr_scheduler import ExponentialLR      
-##################################################
+import Imports
+##############
 
 def get_data_transforms(Train):
 

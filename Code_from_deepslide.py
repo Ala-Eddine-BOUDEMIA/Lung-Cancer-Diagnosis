@@ -1,14 +1,5 @@
-#############
-import Config
-#############
-import random
-import torchvision
-import numpy as np
-import pandas as pd
-from PIL import Image
-from skimage.measure import block_reduce
-from typing import (Dict, IO, List, Tuple)
-##########################################
+import Imports
+##############
 
 ##################################
 ######___utils_processing.py___###
