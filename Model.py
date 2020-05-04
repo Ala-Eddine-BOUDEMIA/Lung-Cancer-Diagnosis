@@ -68,7 +68,7 @@ def get_current_lr(opt):
 	return current_lr  
 
 def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
-	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(),
+	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(), 
 	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
 	checkpoints_folder = Config.args.Checkpoints_folder, save_interval = Config.args.Save_interval, 
 	resume_checkpoint = Config.args.Resume_checkpoint, checkpoint_file =Config.args.Checkpoint_file,
@@ -93,12 +93,10 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 		opt.load_state_dict(state_dict = ckpt["optimizer_state_dict"])
 		scheduler.load_state_dict(state_dict = ckpt["scheduler_state_dict"])
 		start_epoch = ckpt["epoch"]
-		print(f"model loaded from {checkpoint_file}")
+		print("Model loaded from: ", checkpoint_file)
 	else:
 		start_epoch = 0
-
-	#Print the model's hyperparameters #Code a seprate function to print
-
+	
 	loss_history = {"train": [], "val": []}
 	metric_history = {"train": [], "val": []}
 
@@ -203,8 +201,6 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
                 "epoch": epoch + 1}, f = str(output_path))
 
 		print("train loss: %.6f, val loss: %.6f, accuracy: %.2f"%(train_loss, val_loss, 100*val_metric))
-
-	#Create a csv file to store loss_history and metric_history
 	
 	print(f"\ntraining complete in " f"{(time.time() - since) // 60:.2f} minutes")
 
@@ -212,7 +208,10 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 
 	return model, loss_history, metric_history
 
-def predict(model, Test_Patches_path = Config.args.Test_Patches, device = Config.device):
+def predict(path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches, device = Config.device):
+	
+	model = create_model()
+	model.load_state_dict(torch.load(path2weights))
 	
 	model.eval()
 
@@ -261,6 +260,6 @@ def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epoch
 
 if __name__ == '__main__':
 
-    best_model, loss_history, metric_history = train_val()
+    loss_history, metric_history = train_val()
     plot_graphs(loss_history, metric_history)
-    predict(best_model)
+    predict()
