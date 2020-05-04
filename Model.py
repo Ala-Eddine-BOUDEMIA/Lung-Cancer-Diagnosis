@@ -70,8 +70,10 @@ def get_current_lr(opt):
 def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(),
 	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
+	checkpoints_folder = Config.args.Checkpoints_folder, save_interval = Config.args.Save_interval, 
+	resume_checkpoint = Config.args.Resume_checkpoint, checkpoint_file =Config.args.Checkpoint_file,
 	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
-	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches): 
+	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches):
 
 	since = time.time()
 
@@ -85,7 +87,16 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	opt = optim.Adam(params = model.parameters(), lr = learning_rate, weight_decay = weight_decay)
 	scheduler = lr_scheduler.ExponentialLR(optimizer = opt, gamma = learning_rate_decay)
 
-	#Initialize from best_model and checkpoint
+	if resume_checkpoint:
+		ckpt = torch.load(f = checkpoint_file)
+		model.load_state_dict(state_dict = ckpt["model_state_dict"])
+		opt.load_state_dict(state_dict = ckpt["optimizer_state_dict"])
+		scheduler.load_state_dict(state_dict = ckpt["scheduler_state_dict"])
+		start_epoch = ckpt["epoch"]
+		print(f"model loaded from {checkpoint_file}")
+	else:
+		start_epoch = 0
+
 	#Print the model's hyperparameters #Code a seprate function to print
 
 	loss_history = {"train": [], "val": []}
@@ -181,9 +192,18 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 
 		scheduler.step()
 
+		if epoch % save_interval == 0:
+			output_path = checkpoints_folder.joinpath(f"resnet18_e{epoch}_val{val_metric:.5f}.pt")
+			Utils.create_folder(checkpoints_folder)
+
+			torch.save(obj = {
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": opt.state_dict(),
+                "scheduler_state_dict": scheduler.state_dict(),
+                "epoch": epoch + 1}, f = str(output_path))
+
 		print("train loss: %.6f, val loss: %.6f, accuracy: %.2f"%(train_loss, val_loss, 100*val_metric))
 
-		#Create a checkpoint 
 	#Create a csv file to store loss_history and metric_history
 	
 	print(f"\ntraining complete in " f"{(time.time() - since) // 60:.2f} minutes")
