@@ -145,6 +145,26 @@ parser.add_argument("--Predictions",
 					type = Path,
 					default = Path("Train_folder/Model/Predictions/"),
 					help = "Location to write out the predictions.")
+
+parser.add_argument("--Save_interval",
+                    type = int,
+                    default = 1,
+                    help = "Number of epochs between saving checkpoints")
+
+parser.add_argument("--Checkpoints_folder",
+                    type = Path,
+                    default = Path("Train_folder/Model/Checkpoints"),
+                    help = "Directory to save model checkpoints to")
+
+parser.add_argument("--Resume_checkpoint",
+                    type = bool,
+                    default = False,
+                    help = "Resume model from checkpoint file")
+
+parser.add_argument("--Checkpoint_file",
+    				type = Path,
+    				default = Path("Train_folder/Model/Checkpoints/resnet18_e0_val0.50000.pt"),
+    				help = "Checkpoint file to load if resume_checkpoint_path is True")
 #########################
 ######__Arguments__######
 #########################
