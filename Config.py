@@ -103,6 +103,16 @@ parser.add_argument("--Test_Patches",
 					type = Path, 
 					default = Path("Train_folder/Test_patches"), 
 					help = "Location to be created to store jpeg patches testing set")
+
+parser.add_argument("--Window_size",  
+					type = int, 
+					default = 224 * 5, 
+					help = "Size of the sliding window")
+
+parser.add_argument("--Compression_factor",  
+					type = int, 
+					default = 5, 
+					help = "The compression factor")
 #####################
 ######__Model__######
 #####################
