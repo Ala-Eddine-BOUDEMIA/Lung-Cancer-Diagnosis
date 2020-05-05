@@ -6,12 +6,8 @@ def generate_patches():
 	Window_size = 224 * 5
 	compression_factor = 5
 
-	WSI_sets = [Imports.Config.args.Train_WSI, 
-				Imports.Config.args.Validation_WSI, 
-				Imports.Config.args.Test_WSI]
-	output_folders = [Imports.Config.args.Train_Patches, 
-					Imports.Config.args.Validation_Patches, 
-					Imports.Config.args.Test_Patches]
+	WSI_sets = [Config.args.Train_WSI, Config.args.Validation_WSI, Config.args.Test_WSI]
+	output_folders = [Config.args.Train_Patches, Config.args.Validation_Patches, Config.args.Test_Patches]
 
 	for k in range(len(WSI_sets)):	
 
@@ -72,3 +68,6 @@ def generate_patches():
 						patch_rgb.save(path) 
 
 					i += 1 
+
+if __name__ == '__main__':
+	generate_patches()

@@ -3,17 +3,15 @@ import Imports
 
 def split():
 	
-	path_list, wsi_paths = Utils.parse_dir(Imports.Config.args.All_WSI, "svs")
+	path_list, wsi_paths = Utils.parse_dir(Config.args.All_WSI, "svs")
 
-	FoldersToBeCreated = [Imports.Config.args.Validation_WSI, 
-						Imports.Config.args.Test_WSI, 
-						Imports.Config.args.Train_WSI]
+	FoldersToBeCreated = [Config.args.Validation_WSI, Config.args.Test_WSI, Config.args.Train_WSI]
 
 	for x in FoldersToBeCreated:
 		Utils.create_folder(x)
 
-	Val_set_size = Imports.Config.args.Validation_WSI_Size
-	Test_set_size = Imports.Config.args.Test_WSI_Size
+	Val_set_size = Config.args.Validation_WSI_Size
+	Test_set_size = Config.args.Test_WSI_Size
 	Train_set_size = len(path_list) - Val_set_size - Test_set_size
 
 	r = []
@@ -32,3 +30,6 @@ def split():
 					length += 1
 
 	#Utils.Make_csv_labels_files(FoldersToBeCreated)
+
+if __name__ == '__main__':
+	split()

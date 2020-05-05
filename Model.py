@@ -4,7 +4,7 @@ import Imports
 def get_data_transforms(Train):
 
 	if Train:
-		mean, std = Compute_mean_std.compute_mean_std(Imports.Config.args.Train_Patches)
+		mean, std = Compute_mean_std.compute_mean_std(Config.args.Train_Patches)
 		data_transforms = transforms.Compose(transforms = [ 
 			transforms.ColorJitter(brightness = 0.5, contrast = 0.5, saturation = 0.5, hue = 0.2),
             transforms.RandomHorizontalFlip(),
@@ -13,21 +13,21 @@ def get_data_transforms(Train):
             transforms.ToTensor(),
             transforms.Normalize(mean = mean, std = std)])
 	else :
-		mean, std = Compute_mean_std.compute_mean_std(Imports.Config.args.Validation_Patches)
+		mean, std = Compute_mean_std.compute_mean_std(Config.args.Validation_Patches)
 		data_transforms = transforms.Compose(transforms = [ 
 			transforms.ToTensor(),
             transforms.Normalize(mean = mean, std = std)])
 
 	return data_transforms
 
-def load_data(path, shuffle, Train = True, batch_size = Imports.Config.args.batch_size):
+def load_data(path, shuffle, Train = True, batch_size = Config.args.batch_size):
 
 	images_dataset = datasets.ImageFolder(root = str(path), transform = get_data_transforms(Train)) 
 	dataloaders = torch.utils.data.DataLoader(dataset = images_dataset, batch_size = batch_size, shuffle = shuffle, num_workers = 8)
 
 	return dataloaders, images_dataset
 
-def create_model(device = Imports.Config.device):
+def create_model(device = Config.device):
                                                 
     model = models.resnet18(pretrained = True)  
     num_ftrs = model.fc.in_features             
@@ -45,9 +45,13 @@ def get_current_lr(opt):
 
 	return current_lr  
 
-def train_val(num_epochs, device, sanity_check, loss_function, weight_decay, path2weights, 
-	checkpoints_folder, save_interval, resume_checkpoint, checkpoint_file, learning_rate, 
-	learning_rate_decay, Train_Patches_path, Validation_Patches_path):
+def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
+	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(), 
+	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
+	checkpoints_folder = Config.args.Checkpoints_folder, save_interval = Config.args.Save_interval, 
+	resume_checkpoint = Config.args.Resume_checkpoint, checkpoint_file =Config.args.Checkpoint_file,
+	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
+	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches):
 
 	since = time.time()
 
@@ -182,7 +186,7 @@ def train_val(num_epochs, device, sanity_check, loss_function, weight_decay, pat
 
 	return model, loss_history, metric_history
 
-def predict(path2weights, Test_Patches_path, device):
+def predict(path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches, device = Config.device):
 	
 	model = create_model()
 	model.load_state_dict(torch.load(path2weights))
@@ -214,7 +218,7 @@ def predict(path2weights, Test_Patches_path, device):
 				
 				writer.writerow([sample_name, predicted.item(), confidence.item()*100])
 
-def plot_graphs(loss_history, metric_history, num_epochs):
+def plot_graphs(loss_history, metric_history, num_epochs = Config.args.num_epochs):
 
 	plt.title("Train-Val Loss")
 	plt.plot(range(1, num_epochs + 1), loss_history["train"], label = "train")
@@ -231,3 +235,9 @@ def plot_graphs(loss_history, metric_history, num_epochs):
 	plt.xlabel("Training Epochs")
 	plt.legend()
 	plt.show()
+
+if __name__ == '__main__':
+
+    loss_history, metric_history = train_val()
+    plot_graphs(loss_history, metric_history)
+    predict()
