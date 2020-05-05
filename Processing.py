@@ -1,5 +1,12 @@
-import Imports
-##############
+import Utils
+import Config
+import Code_from_deepslide
+##########################
+import os
+import openslide
+import numpy as np
+from PIL import Image
+#####################
 
 def generate_patches():
 
