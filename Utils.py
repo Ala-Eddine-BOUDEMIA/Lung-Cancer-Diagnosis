@@ -24,7 +24,9 @@ def parse_dir(input_directories, forme):
 
 def Make_csv_labels_files(extraction_paths):
 	
-	FoldersToBeCreated = [Config.args.Validation_labels, Config.args.Test_labels, Config.args.Train_labels]
+	FoldersToBeCreated = [Imports.Config.args.Validation_labels, 
+						Imports.Config.args.Test_labels, 
+						Imports.Config.args.Train_labels]
 
 	for i in range (len(FoldersToBeCreated)):
 		x = Utils.create_folder(FoldersToBeCreated[i])
