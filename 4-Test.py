@@ -4,9 +4,10 @@ import Model_Utils
 import Code_from_deepslide
 ##########################
 import torch
-############
+from torch import nn 
+####################
 
-def test(batch_size = Config.args.batch_size, device = Config.device,
+def test(batch_size = 2, device = Config.device,
 	path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches):
 	
 	model = Model_Utils.create_model()
@@ -17,29 +18,47 @@ def test(batch_size = Config.args.batch_size, device = Config.device,
 	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, batch_size = batch_size, Train = False)
 	test_len_data = len(test_set)
 
-	test_all_labels, test_all_predictions = [], []
-	test_running_metric = 0.0
+	test_all_labels, test_all_predictions, names, confidence_stats = [], [], [], []
+	test_running_metric, confidence_running_metric = 0.0, 0.0
 
 	for i, (inputs, labels) in enumerate(test_loader):
 		
 		test_inputs = inputs.to(device)
 		test_labels = labels.to(device)
 
+		start = i * batch_size 
+		end = start + batch_size
+
+		for j in range(start, end):
+			sample_name, _ = test_loader.dataset.samples[j]
+			sample_name = sample_name.split("/")[-1][:-5]
+			names.append(sample_name)
+
 		test_outputs = model(test_inputs)
 		__, predicted = torch.max(test_outputs.data, 1)
 		corrects = (predicted == test_labels).sum().item()
+		test_running_metric += corrects
+		confidences = nn.Softmax(dim = 1)(test_outputs)
 
-		if corrects is not None:
-			test_running_metric += corrects
-
+		
+		for confidence in confidences:
+			confidence = torch.max(confidence).item()
+			confidence_running_metric += confidence
+			confidence_stats.append(confidence)
+		
 		for x in predicted.numpy():
 			test_all_labels.append(x)
 		for x in test_labels.numpy():
 			test_all_predictions.append(x)
 
+	preds = {}
+	for x in range(1, len(names)):
+		preds[names[x]] = confidence_stats[x]
+
 	Code_from_deepslide.calculate_confusion_matrix(test_all_labels, test_all_predictions)
 
-	print(f"Accuracy of the network on the {test_len_data} test images: {100 * test_running_metric / test_len_data}")
+	print(f"Accuracy of the network on the {test_len_data} test images: {100 * test_running_metric / test_len_data}\n"
+		f"Averge confidence of the model on the {test_len_data} test images: {100 * confidence_running_metric / test_len_data}\n")
 
 if __name__ == '__main__':
 
