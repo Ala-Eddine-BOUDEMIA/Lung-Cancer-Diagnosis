@@ -60,8 +60,8 @@ def test(batch_size = 2, device = Config.device, predictions_folder = Config.arg
 	with open(predictions_path, "w") as f:
 		writer = csv.writer(f, delimiter = "\t")
 		writer.writerow(["Patch name", "Prediction", "Confidence"])
-		for x in range(1, test_len_data):
-			writer.writerow([names[x], preds[x], confidence_stats[x]])
+		for x in range(0, test_len_data):
+			writer.writerow([names[x], preds[x], f"{100*confidence_stats[x]:.6}"])
 
 	Code_from_deepslide.calculate_confusion_matrix(test_all_labels, test_all_predictions)
 
