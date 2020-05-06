@@ -3,6 +3,7 @@ import Config
 import Code_from_deepslide
 ##########################
 import os
+import csv
 import openslide
 import numpy as np
 from PIL import Image
@@ -23,7 +24,7 @@ def generate_patches(Train_WSI = Config.args.Train_WSI, Validation_WSI = Config.
 		
 		for i in range(len(wsi_paths)): 
 
-			image_name = str(wsi_paths[i]).split("/")[-1][:-4]  
+			image_name = str(wsi_paths[i]).split("/")[-1][:-4] 
 
 			img = openslide.OpenSlide(str(wsi_paths[i]))
 			l = img.level_count
@@ -41,7 +42,7 @@ def generate_patches(Train_WSI = Config.args.Train_WSI, Validation_WSI = Config.
 			else:
 				increment_y = h // Window_size + 1
 
-			i = 1
+			i, j = 1, 0
 			for incre_x in range(increment_x):
 				for incre_y in range(increment_y): 
 
@@ -64,17 +65,20 @@ def generate_patches(Train_WSI = Config.args.Train_WSI, Validation_WSI = Config.
 					patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), int(patch_h/compression_factor)), Image.ANTIALIAS) 
 					
 					patch_name = image_name + "_" + str(incre_x) + "_" + str(incre_y) + '.jpeg'
+					path = str(output_folders[k]) + "/" + patch_name
 					if k != 2 :
 						if Code_from_deepslide.is_purple(patch_rgb) == True :
-							path = str(output_folders[k]) + "/" + patch_name
 							patch_rgb.save(path) 
+							j += 1 
 					elif k == 2:
-						folder = str(output_folders[k]) + "/" + image_name
-						Utils.create_folder(folder)
-						path = folder + "/" + patch_name
 						patch_rgb.save(path) 
+						j += 1
 
-					i += 1 
+					i += 1
+
+			with open(str(output_folders[k]) + "/" + "images names.csv", "a") as f:
+				writer = csv.writer(f, delimiter = "\t")
+				writer.writerow([image_name, str(j)])
 
 if __name__ == '__main__':
 	generate_patches()
