@@ -3,11 +3,13 @@ import Config
 import Model_Utils
 import Code_from_deepslide
 ##########################
+import csv
+##########
 import torch
 from torch import nn 
 ####################
 
-def test(batch_size = 2, device = Config.device,
+def test(batch_size = 2, device = Config.device, predictions_folder = Config.args.Predictions,
 	path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches):
 	
 	model = Model_Utils.create_model()
@@ -18,7 +20,7 @@ def test(batch_size = 2, device = Config.device,
 	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, batch_size = batch_size, Train = False)
 	test_len_data = len(test_set)
 
-	test_all_labels, test_all_predictions, names, confidence_stats = [], [], [], []
+	test_all_labels, test_all_predictions, names, confidence_stats, preds = [], [], [], [], []
 	test_running_metric, confidence_running_metric = 0.0, 0.0
 
 	for i, (inputs, labels) in enumerate(test_loader):
@@ -40,7 +42,9 @@ def test(batch_size = 2, device = Config.device,
 		test_running_metric += corrects
 		confidences = nn.Softmax(dim = 1)(test_outputs)
 
-		
+		for p in predicted:
+			preds.append(p.item())
+
 		for confidence in confidences:
 			confidence = torch.max(confidence).item()
 			confidence_running_metric += confidence
@@ -51,9 +55,13 @@ def test(batch_size = 2, device = Config.device,
 		for x in test_labels.numpy():
 			test_all_predictions.append(x)
 
-	preds = {}
-	for x in range(1, len(names)):
-		preds[names[x]] = confidence_stats[x]
+	Utils.create_folder(predictions_folder)
+	predictions_path = str(predictions_folder) + "/predictions.csv"
+	with open(predictions_path, "w") as f:
+		writer = csv.writer(f, delimiter = "\t")
+		writer.writerow(["Patch name", "Prediction", "Confidence"])
+		for x in range(1, test_len_data):
+			writer.writerow([names[x], preds[x], confidence_stats[x]])
 
 	Code_from_deepslide.calculate_confusion_matrix(test_all_labels, test_all_predictions)
 
