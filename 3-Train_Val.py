@@ -110,9 +110,10 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 
 				with torch.no_grad():
 					val_outputs = model(val_inputs)
-					val_loss = loss_function(val_outputs, val_labels) 
 					__, predicted = torch.max(val_outputs.data, dim = 1)
 					corrects = predicted.eq(val_labels.view_as(predicted)).sum().item()
+					
+					val_loss = loss_function(val_outputs, val_labels) 
 
 					if val_loss < best_loss:
 						best_loss = val_loss
