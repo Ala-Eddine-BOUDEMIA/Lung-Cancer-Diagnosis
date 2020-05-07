@@ -24,7 +24,7 @@ parser.add_argument("--All_Data_sets",
 parser.add_argument("--Classes",
 					type = list,
 					default = ["Normal", "Acinar", "Solid", "Papillary", "Micropaipllary", "Lepidic"],
-					help = "Diffrent subtype of cancer")
+					help = "Diffrent subtype of lung cancer")
 #####################
 ######__Split__######
 #####################

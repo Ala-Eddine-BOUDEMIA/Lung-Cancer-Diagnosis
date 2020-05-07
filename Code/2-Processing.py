@@ -52,6 +52,12 @@ def generate_patches(Train_WSI = Config.args.Train_WSI, Validation_WSI = Config.
 					end_y = min(h, begin_y + Window_size)
 					patch_w = end_x - begin_x
 					patch_h = end_y - begin_y
+					if patch_w != Window_size:
+						begin_x = begin_x - (Window_size - patch_w) 
+						patch_w = end_x - begin_x
+					if patch_h != Window_size:
+						begin_y = begin_y - (Window_size - patch_h)
+						patch_y = end_y - begin_y
 
 					print("N°: ",i)
 					print('begin x: ', begin_x, " end x: ", end_x)
