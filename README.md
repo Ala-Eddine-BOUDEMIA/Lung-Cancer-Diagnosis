@@ -62,7 +62,7 @@ python3 3-Train_Val.py
 We are using ResNet-18 You can change the model from `Model_Utils.py`. There is an option to retrain from a previous checkpoint. Model checkpoints are saved by default every epoch in `Checkpoints`. loss history and metrics history of each epoch are saved in a csv file at `Diagnostics`. The best model parameters are saved at `Best_model_weights`
 You can put `Sanity_Check` to True, to run only one epoch when you are testing the code.
 
-**Inputs**: `Train_folder`
+**Inputs**: `Validation_patches`, `Train_patches`
 
 **Outputs**: `Checkpoints`, `Diagnostics`, `Best_model_weights`
 
@@ -86,7 +86,16 @@ We automatically choose the model with the best validation accuracy. You can als
 
 **Outputs**: `Predictions`
 
-### Example
+## 5. 5-Evaluation
+
+Use the outputed csv file from `4-Test.py` and predict on WSI level, the results will be outputed in a csv file with the name of the WSI image and will contain classes that were predicted, the ratio of the predicted class ans its confidence.
+
 ```
-python3 4-Test.py
+python3 5-Evaluation.py
 ```
+
+We automatically choose the model with the best validation accuracy. You can also specify your own. 
+
+**Inputs**: `Predictions`
+
+**Outputs**: `WSI_Predictions`
