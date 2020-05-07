@@ -64,7 +64,7 @@ def generate_patches(Train_WSI = Config.args.Train_WSI, Validation_WSI = Config.
 					patch_rgb.paste(patch) 
 					patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), int(patch_h/compression_factor)), Image.ANTIALIAS) 
 					
-					patch_name = image_name + "_" + str(incre_x) + "_" + str(incre_y) + '.jpeg'
+					patch_name = image_name + "_" + str(incre_x).zfill(4) + "_" + str(incre_y).zfill(4) + '.jpeg'
 					path = str(output_folders[k]) + "/" + patch_name
 					if k != 2 :
 						if Code_from_deepslide.is_purple(patch_rgb) == True :
