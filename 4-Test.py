@@ -9,8 +9,9 @@ import torch
 from torch import nn 
 ####################
 
-def test(batch_size = 2, device = Config.device, predictions_folder = Config.args.Predictions,
-	path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches):
+def test(batch_size = Config.args.batch_size, device = Config.device, predictions_folder = Config.args.Predictions,
+	path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches, 
+	diagnostics_path = Config.args.Diagnostics):
 	
 	model = Model_Utils.create_model()
 	model.load_state_dict(torch.load(path2weights))
@@ -63,7 +64,8 @@ def test(batch_size = 2, device = Config.device, predictions_folder = Config.arg
 		for x in range(0, test_len_data):
 			writer.writerow([names[x], preds[x], f"{100*confidence_stats[x]:.6}"])
 
-	Code_from_deepslide.calculate_confusion_matrix(test_all_labels, test_all_predictions)
+	cm = Code_from_deepslide.calculate_confusion_matrix(test_all_labels, test_all_predictions)
+	cm.to_csv(str(diagnostics_path)+f"/cm_test.csv", sep='\t')
 
 	print(f"Accuracy of the network on the {test_len_data} test images: {100 * test_running_metric / test_len_data}\n"
 		f"Averge confidence of the model on the {test_len_data} test images: {100 * confidence_running_metric / test_len_data}\n")

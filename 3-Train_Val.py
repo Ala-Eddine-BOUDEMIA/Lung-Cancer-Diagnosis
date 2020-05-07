@@ -53,8 +53,8 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	metric_history = {"train": [], "val": []}
 
 	Utils.create_folder(diagnostics_path)
-	diagnostics_path = str(diagnostics_path) + "/Model_Diagnostics.csv"
-	with open(diagnostics_path, 'w') as file:
+	diagnostic_path = str(diagnostics_path) + "/Model_Diagnostics.csv"
+	with open(diagnostic_path, 'w') as file:
 		writer = csv.writer(file, delimiter = '\t')
 		writer.writerow(["Date", "Epoch", "Batch size", "Train loss", "Train accuracy", "Val loss", "Val accuracy"])
 		for epoch in range(num_epochs):
@@ -91,7 +91,8 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 				for x in train_labels.numpy():
 					train_all_predictions.append(x)
 
-			Code_from_deepslide.calculate_confusion_matrix(train_all_labels, train_all_predictions)
+			cm = Code_from_deepslide.calculate_confusion_matrix(train_all_labels, train_all_predictions)
+			cm.to_csv(str(diagnostics_path)+f"/cm_{epoch}_train.csv", sep='\t')
 			
 			train_len_data = len(train_set)
 			train_loss = train_running_loss / float(train_len_data)
@@ -134,7 +135,8 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 				if sanity_check is True:
 					break
 
-			Code_from_deepslide.calculate_confusion_matrix(val_all_labels, val_all_predictions)
+			cm = Code_from_deepslide.calculate_confusion_matrix(val_all_labels, val_all_predictions)
+			cm.to_csv(str(diagnostics_path)+f"/cm_{epoch}_val.csv", sep='\t')
 
 			val_len_data = len(val_set)
 			val_loss = val_running_loss / float(val_len_data)
