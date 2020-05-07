@@ -21,7 +21,7 @@ Take a look at `Config.py` before you begin to get a feel for what parameters ca
 
 ## 1. 1-Split:
 
-Splits the data into a validation and test set. Default validation whole-slide images (WSI) per class is 20 and test images per class is 30. You can change these numbers by changing the `--val_wsi_per_class` and `--test_wsi_per_class` flags at runtime. You can skip this step if you did a custom split (for example, you need to split by patients).
+Splits the data into a validation and test set. Default validation whole-slide images (WSI) per class is 20 and test images per class is 30. You can change these numbers by changing the `Validation_WSI_Size` and `Test_WSI_Size` flags at runtime. You can skip this step if you did a custom split (for example, you need to split by patients).
 
 ```
 python3 1-split.py
