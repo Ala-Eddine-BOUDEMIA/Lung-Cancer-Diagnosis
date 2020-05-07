@@ -99,3 +99,5 @@ def calculate_confusion_matrix(all_labels, all_predicts, classes = Config.args.C
 
     cm.style.hide_index()
     print(cm)
+
+    return cm
