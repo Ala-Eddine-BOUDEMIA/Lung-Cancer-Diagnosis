@@ -1,5 +1,5 @@
-# PFE
-
+# Lung Cancer Diagnosis
+ 
 Deep learning classification of lung cancer subtypes using High Resolution Microscopy Images (Whole-Slide Images)
 
 ## Requirements
