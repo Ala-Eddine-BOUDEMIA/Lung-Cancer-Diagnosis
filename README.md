@@ -29,7 +29,7 @@ python3 1-split.py
 
 Note that the data will not be duplicated but moved.
 
-**Inputs**: `All_wsi`, `Validation_WSI_Size`, `Test_WSI_Size` 
+**Inputs**: `All_WSI`, `Validation_WSI_Size`, `Test_WSI_Size` 
 
 **Outputs**: `Train_WSI`, `Validation_WSI`, `Test_WSI`
 
@@ -51,7 +51,7 @@ If your histopathology images are H&E-stained, whitespace will automatically be 
 
 **Inputs**: `Train_WSI`, `Validation_WSI`, `Test_WSI`
 
-**Outputs**: `Train_patches` (fed into model for training), `Validation_patches` (for validation), `Test_patches` (for testing)
+**Outputs**: `Train_Patches` (fed into model for training), `Validation_Patches` (for validation), `Test_Patches` (for testing)
 
 ## 3. 3-Train_Val
 
@@ -62,7 +62,7 @@ python3 3-Train_Val.py
 We are using ResNet-18 You can change the model from `Model_Utils.py`. There is an option to retrain from a previous checkpoint. Model checkpoints are saved by default every epoch in `Checkpoints`. loss history and metrics history of each epoch are saved in a csv file at `Diagnostics`. The best model parameters are saved at `Best_model_weights`
 You can put `Sanity_Check` to True, to run only one epoch when you are testing the code.
 
-**Inputs**: `Validation_patches`, `Train_patches`
+**Inputs**: `Validation_Patches`, `Train_Patches`
 
 **Outputs**: `Checkpoints`, `Diagnostics`, `Best_model_weights`
 
@@ -82,7 +82,7 @@ python3 4-Test.py
 
 We automatically choose the model with the best validation accuracy. You can also specify your own. 
 
-**Inputs**: `Test_patches`
+**Inputs**: `Test_Patches`
 
 **Outputs**: `Predictions`
 
