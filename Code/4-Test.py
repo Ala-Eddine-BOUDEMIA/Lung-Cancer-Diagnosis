@@ -10,7 +10,7 @@ from torch import nn
 ####################
 
 def test(batch_size = Config.args.batch_size, device = Config.device, predictions_folder = Config.args.Predictions,
-	path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches, 
+	path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches,
 	diagnostics_path = Config.args.Diagnostics):
 	
 	model = Model_Utils.create_model()
@@ -55,7 +55,7 @@ def test(batch_size = Config.args.batch_size, device = Config.device, prediction
 			test_all_labels.append(x)
 		for x in test_labels.numpy():
 			test_all_predictions.append(x)
-
+	
 	Utils.create_folder(predictions_folder)
 	predictions_path = str(predictions_folder) + "/predictions.csv"
 	with open(predictions_path, "w") as f:
