@@ -9,15 +9,18 @@ import torch
 from torch import nn 
 ####################
 
-def test(batch_size = Config.args.batch_size, device = Config.device, predictions_folder = Config.args.Predictions,
-	path2weights = Config.args.Path2Weights, Test_Patches_path = Config.args.Test_Patches,
-	diagnostics_path = Config.args.Diagnostics):
+def test(batch_size = Config.args.batch_size, device = Config.device, path2weights = Config.args.Path2Weights,
+	predictions_directory = Config.args.Predictions_Directory, Test_Patches_path = Config.args.Test_Patches, 
+	prediction_file = Config.args.Predictions, diagnostics_directory = Config.args.Diagnostics_Directory):
+
+	Utils.create_folder(predictions_directory)
 	
 	model = Model_Utils.create_model()
 	model.load_state_dict(torch.load(path2weights))
 	
 	model.eval()
 
+	print("\nLoading testing data ...")
 	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, batch_size = batch_size, Train = False)
 	test_len_data = len(test_set)
 
@@ -56,16 +59,14 @@ def test(batch_size = Config.args.batch_size, device = Config.device, prediction
 		for x in test_labels.numpy():
 			test_all_predictions.append(x)
 	
-	Utils.create_folder(predictions_folder)
-	predictions_path = str(predictions_folder) + "/predictions.csv"
-	with open(predictions_path, "w") as f:
+	with open(prediction_file, "w") as f:
 		writer = csv.writer(f, delimiter = "\t")
 		writer.writerow(["Patch name", "Prediction", "Confidence"])
 		for x in range(0, test_len_data):
 			writer.writerow([names[x], preds[x], f"{100*confidence_stats[x]:.6}"])
 
 	cm = Code_from_deepslide.calculate_confusion_matrix(test_all_labels, test_all_predictions)
-	cm.to_csv(str(diagnostics_path)+f"/cm_test.csv", sep='\t')
+	cm.to_csv(str(diagnostics_directory)+f"/cm_test.csv", sep='\t')
 
 	print(f"Accuracy of the network on the {test_len_data} test images: {100 * test_running_metric / test_len_data}\n"
 		f"Averge confidence of the model on the {test_len_data} test images: {100 * confidence_running_metric / test_len_data}\n")
