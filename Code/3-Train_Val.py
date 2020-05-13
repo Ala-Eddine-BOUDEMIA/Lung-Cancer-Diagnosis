@@ -16,21 +16,28 @@ from torch import optim
 from torch.optim import lr_scheduler              
 from torch.optim.lr_scheduler import ExponentialLR      
 ################################################## 
-
+import sys
 def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(), 
-	batch_size = Config.args.batch_size, diagnostics_path = Config.args.Diagnostics,
+	batch_size = Config.args.batch_size, diagnostic_path = Config.args.Diagnostics,
 	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
 	checkpoints_folder = Config.args.Checkpoints_folder, save_interval = Config.args.Save_interval, 
 	resume_checkpoint = Config.args.Resume_checkpoint, checkpoint_file =Config.args.Checkpoint_file,
 	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
-	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches):
+	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches,
+	diagnostics_directory = Config.args.Diagnostics_Directory):
 
+	Utils.create_folder(diagnostics_directory)
+	
+	print(f"Training started at: {datetime.datetime.now()}")
 	since = time.time()
-
+	
+	print("\nLoading training data ...")
 	train_loader, train_set = Model_Utils.load_data(path = Train_Patches_path, shuffle = True, batch_size = batch_size)
+	print("\nLoading validation data ...")
 	val_loader, val_set = Model_Utils.load_data(path = Validation_Patches_path, shuffle = False, batch_size = batch_size, Train = False)
 
+	print("\nCreating the model ...")
 	model = Model_Utils.create_model()
 	model.to(device)
 	best_model = copy.deepcopy(model.state_dict())
@@ -52,8 +59,6 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	loss_history = {"train": [], "val": []}
 	metric_history = {"train": [], "val": []}
 
-	Utils.create_folder(diagnostics_path)
-	diagnostic_path = str(diagnostics_path) + "/Model_Diagnostics.csv"
 	with open(diagnostic_path, 'w') as file:
 		writer = csv.writer(file, delimiter = '\t')
 		writer.writerow(["Date", "Epoch", "Batch size", "Train loss", "Train accuracy", "Val loss", "Val accuracy"])

@@ -78,6 +78,7 @@ def save_work(epoch, save_interval, checkpoints_folder, model, opt, scheduler, v
 	if epoch % save_interval == 0:
 		output_path = checkpoints_folder.joinpath(f"resnet18_e{epoch}_val{val_metric:.5f}.pt")
 		Utils.create_folder(checkpoints_folder)
+		print(f"Saving work to: {output_path}")
 
 		torch.save(obj = {
 			"model_state_dict": model.state_dict(),
