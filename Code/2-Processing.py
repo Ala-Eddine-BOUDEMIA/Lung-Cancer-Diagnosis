@@ -9,10 +9,8 @@ import numpy as np
 from PIL import Image
 #####################
 
-def generate_patches(Train_WSI = Config.args.Train_WSI, Validation_WSI = Config.args.Validation_WSI,
-	Test_WSI = Config.args.Test_WSI, Train_Patches = Config.args.Train_Patches, Test_Patches = Config.args.Test_Patches,
-	Validation_Patches = Config.args.Validation_Patches, Window_size = Config.args.Window_size, 
-	compression_factor = Config.args.Compression_factor):
+def generate_patches(Test_WSI, Train_WSI, Window_size, Test_Patches, Train_Patches, 
+	Validation_WSI, Validation_Patches, compression_factor):
 
 	WSI_sets = [Train_WSI, Validation_WSI, Test_WSI]
 	output_folders = [Train_Patches, Validation_Patches, Test_Patches]
@@ -90,4 +88,12 @@ def generate_patches(Train_WSI = Config.args.Train_WSI, Validation_WSI = Config.
 				writer.writerow([image_name, str(j)])
 
 if __name__ == '__main__':
-	generate_patches()
+	generate_patches(
+	Test_WSI = Config.args.Test_WSI, 
+	Train_WSI = Config.args.Train_WSI, 
+	Window_size = Config.args.Window_size, 
+	Test_Patches = Config.args.Test_Patches,
+	Train_Patches = Config.args.Train_Patches, 
+	Validation_WSI = Config.args.Validation_WSI,
+	Validation_Patches = Config.args.Validation_Patches, 
+	compression_factor = Config.args.Compression_factor)

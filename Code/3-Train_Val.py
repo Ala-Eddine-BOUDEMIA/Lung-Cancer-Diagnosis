@@ -17,15 +17,9 @@ from torch.optim import lr_scheduler
 from torch.optim.lr_scheduler import ExponentialLR      
 ################################################## 
 
-def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
-	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(), 
-	batch_size = Config.args.batch_size, diagnostic_path = Config.args.Diagnostics,
-	weight_decay = Config.args.weight_decay, path2weights = Config.args.Path2Weights, 
-	checkpoints_folder = Config.args.Checkpoints_folder, save_interval = Config.args.Save_interval, 
-	resume_checkpoint = Config.args.Resume_checkpoint, checkpoint_file =Config.args.Checkpoint_file,
-	learning_rate = Config.args.learning_rate, learning_rate_decay = Config.args.learning_rate_decay, 
-	Train_Patches_path = Config.args.Train_Patches, Validation_Patches_path = Config.args.Validation_Patches,
-	diagnostics_directory = Config.args.Diagnostics_Directory):
+def train_val(device, num_epochs, batch_size, loss_function, weight_decay, path2weights, sanity_check, learning_rate,
+	save_interval, diagnostic_path, checkpoint_file, Train_Patches_path, resume_checkpoint, checkpoints_folder, 
+	learning_rate_decay, Validation_Patches_path, diagnostics_directory):
 
 	Utils.create_folder(diagnostics_directory)
 	
@@ -166,4 +160,21 @@ def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 
 if __name__ == '__main__':
 
-    model = train_val()
+    model = train_val(
+    device = Config.device,
+    num_epochs = Config.args.num_epochs, 
+	batch_size = Config.args.batch_size, 
+	loss_function = nn.CrossEntropyLoss(), 
+	weight_decay = Config.args.weight_decay, 
+	path2weights = Config.args.Path2Weights, 
+	sanity_check = Config.args.Sanity_Check, 
+	learning_rate = Config.args.learning_rate, 
+	save_interval = Config.args.Save_interval, 
+	diagnostic_path = Config.args.Diagnostics,
+	checkpoint_file = Config.args.Checkpoint_file,
+	Train_Patches_path = Config.args.Train_Patches, 
+	resume_checkpoint = Config.args.Resume_checkpoint, 
+	checkpoints_folder = Config.args.Checkpoints_folder, 
+	learning_rate_decay = Config.args.learning_rate_decay, 
+	Validation_Patches_path = Config.args.Validation_Patches,
+	diagnostics_directory = Config.args.Diagnostics_Directory)

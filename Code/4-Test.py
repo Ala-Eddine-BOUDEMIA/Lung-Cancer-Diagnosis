@@ -9,9 +9,7 @@ import torch
 from torch import nn 
 ####################
 
-def test(batch_size = Config.args.batch_size, device = Config.device, path2weights = Config.args.Path2Weights,
-	predictions_directory = Config.args.Predictions_Directory, Test_Patches_path = Config.args.Test_Patches, 
-	prediction_file = Config.args.Predictions, diagnostics_directory = Config.args.Diagnostics_Directory):
+def test(device, batch_size, path2weights, prediction_file, Test_Patches_path, predictions_directory, diagnostics_directory):
 
 	Utils.create_folder(predictions_directory)
 	
@@ -73,4 +71,11 @@ def test(batch_size = Config.args.batch_size, device = Config.device, path2weigh
 
 if __name__ == '__main__':
 
-    test()
+    test(
+    device = Config.device, 
+    batch_size = Config.args.batch_size, 
+    path2weights = Config.args.Path2Weights,
+	prediction_file = Config.args.Predictions, 
+	Test_Patches_path = Config.args.Test_Patches, 
+	predictions_directory = Config.args.Predictions_Directory, 
+	diagnostics_directory = Config.args.Diagnostics_Directory)

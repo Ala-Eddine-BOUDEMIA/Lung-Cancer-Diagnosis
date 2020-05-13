@@ -6,9 +6,7 @@ import shutil
 from pathlib import Path
 ########################
 
-def split(Test_WSI = Config.args.Test_WSI, Train_WSI = Config.args.Train_WSI,
-	All_WSI = Config.args.All_WSI, Validation_WSI = Config.args.Validation_WSI, 
-	Validation_WSI_Size = Config.args.Validation_WSI_Size, Test_WSI_Size = Config.args.Test_WSI_Size):
+def split(All_WSI, Test_WSI, Train_WSI, Test_WSI_Size, Validation_WSI, Validation_WSI_Size):
 	
 	path_list, wsi_paths = Utils.parse_dir(All_WSI, "svs")
 
@@ -39,4 +37,10 @@ def split(Test_WSI = Config.args.Test_WSI, Train_WSI = Config.args.Train_WSI,
 	#Utils.Make_csv_labels_files(FoldersToBeCreated)
 
 if __name__ == '__main__':
-	split()
+	split(
+	All_WSI = Config.args.All_WSI, 
+	Test_WSI = Config.args.Test_WSI, 
+	Train_WSI = Config.args.Train_WSI,
+	Test_WSI_Size = Config.args.Test_WSI_Size,
+	Validation_WSI = Config.args.Validation_WSI,  
+	Validation_WSI_Size = Config.args.Validation_WSI_Size)
