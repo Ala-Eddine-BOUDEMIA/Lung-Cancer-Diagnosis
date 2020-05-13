@@ -151,9 +151,14 @@ parser.add_argument("--Sanity_Check",
 					default = True,
 					help = "Weither to stop training after one batch or not")
 
-parser.add_argument("--Predictions",
+parser.add_argument("--Predictions_Directory",
 					type = Path,
 					default = Path("Train_folder/Model/Predictions/"),
+					help = "Location to write out the predictions.")
+
+parser.add_argument("--Predictions",
+					type = Path,
+					default = Path("Train_folder/Model/Predictions/predictions.csv"),
 					help = "Location to write out the predictions.")
 
 parser.add_argument("--Diagnostics_Directory",
