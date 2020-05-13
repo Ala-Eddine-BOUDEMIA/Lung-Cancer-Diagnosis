@@ -16,7 +16,7 @@ from torch import optim
 from torch.optim import lr_scheduler              
 from torch.optim.lr_scheduler import ExponentialLR      
 ################################################## 
-import sys
+
 def train_val(num_epochs = Config.args.num_epochs, device = Config.device,
 	sanity_check = Config.args.Sanity_Check, loss_function = nn.CrossEntropyLoss(), 
 	batch_size = Config.args.batch_size, diagnostic_path = Config.args.Diagnostics,
