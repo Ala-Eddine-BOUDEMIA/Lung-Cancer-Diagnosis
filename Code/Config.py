@@ -156,9 +156,14 @@ parser.add_argument("--Predictions",
 					default = Path("Train_folder/Model/Predictions/"),
 					help = "Location to write out the predictions.")
 
-parser.add_argument("--Diagnostics",
+parser.add_argument("--Diagnostics_Directory",
 					type = Path,
 					default = Path("Train_folder/Model/Diagnostics/"),
+					help = "Location to write out the diagnostics.")
+
+parser.add_argument("--Diagnostics",
+					type = Path,
+					default = Path("Train_folder/Model/Diagnostics/Model_Diagnostics.csv"),
 					help = "Location to write out the diagnostics.")
 
 parser.add_argument("--Save_interval",
