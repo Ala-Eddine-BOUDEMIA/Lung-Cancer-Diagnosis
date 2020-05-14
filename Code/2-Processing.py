@@ -22,7 +22,7 @@ def generate_patches(Test_WSI, Train_WSI, Window_size, Test_Patches, Train_Patch
 		
 		with open(str(output_folders[k]) + "/" + "images names.csv", "w") as f:
 			writer = csv.writer(f, delimiter = "\t")
-			writer.writerow(["WSI name", "Number of generated patches"])
+			writer.writerow(["WSI name", "W", "H", "Number of generated patches", "increment_x", "increment_y"])
 			
 			for i in range(len(wsi_paths)): 
 
@@ -32,7 +32,7 @@ def generate_patches(Test_WSI, Train_WSI, Window_size, Test_Patches, Train_Patch
 				l = img.level_count
 				print("The number of the levels in the slide : ", l)
 				
-				w,h = img.level_dimensions[0] 
+				w, h = img.level_dimensions[0] 
 				print("converting image.svs with width ", w," and height ", h)
 				if w % Window_size == 0:
 					increment_x = w // Window_size  
@@ -54,26 +54,27 @@ def generate_patches(Test_WSI, Train_WSI, Window_size, Test_Patches, Train_Patch
 						end_y = min(h, begin_y + Window_size)
 						patch_w = end_x - begin_x
 						patch_h = end_y - begin_y
+						
 						if patch_w != Window_size:
 							begin_x = begin_x - (Window_size - patch_w) 
 							patch_w = end_x - begin_x
 						if patch_h != Window_size:
 							begin_y = begin_y - (Window_size - patch_h)
-							patch_y = end_y - begin_y
+							patch_h = end_y - begin_y
 
 						print("N°: ",i)
 						print('begin x: ', begin_x, " end x: ", end_x)
 						print('begin y: ', begin_y, " end y: ", end_y)
 						print("Size of the patch : ",patch_w," * ", patch_h)
 
-						patch = img.read_region((begin_x,begin_y),0,(patch_w,patch_h))
+						patch = img.read_region((begin_x, begin_y),0,(patch_w, patch_h))
 						
 						patch_rgb = Image.new("RGB", patch.size,(255,255,255))
 						patch_rgb.paste(patch) 
 						patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), 
 									int(patch_h/compression_factor)), Image.ANTIALIAS) 
 						
-						patch_name = image_name + "_" + str(incre_x).zfill(4) + "_" + str(incre_y).zfill(4) + '.jpeg'
+						patch_name = image_name + "_" + str(incre_x).zfill(4) + "_" + str(incre_y).zfill(4) + "_" + str(begin_x) + "_" + str(begin_y) +'.jpeg'
 						path = str(output_folders[k]) + "/" + patch_name
 						if k != 2 :
 							if Code_from_deepslide.is_purple(patch_rgb) == True :
@@ -85,7 +86,7 @@ def generate_patches(Test_WSI, Train_WSI, Window_size, Test_Patches, Train_Patch
 
 						i += 1
 
-				writer.writerow([image_name, str(j)])
+				writer.writerow([image_name, w, h, str(j), increment_x, increment_y])
 
 if __name__ == '__main__':
 	generate_patches(
