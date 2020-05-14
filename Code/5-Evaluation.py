@@ -23,7 +23,7 @@ def get_prediction(Train_folder, output_folder):
 			for name_line in islice(names, 0, None):
 				classe = {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0}
 				conf = {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0}
-				wsi_name, patches_number = name_line.split("\t")
+				wsi_name, w, h, patches_number, increment_x, increment_y = name_line.split("\t")
 				with open(str(output_folder) + "/" + wsi_name + ".csv", "w") as w:
 					writer = csv.writer(w, delimiter = '\t')
 					#writer.writerow(["name", "prediction", "confidence"])
