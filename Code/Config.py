@@ -191,6 +191,14 @@ parser.add_argument("--Checkpoint_file",
     				default = Path("Train_folder/Model/Checkpoints/resnet18_e0_val0.50000.pt"),
     				help = "Checkpoint file to load if resume_checkpoint_path is True")
 
+##########################
+######__Processing__######
+##########################
+parser.add_argument("--Visualize",
+					type = Path,
+					default = Path("Train_folder/Visaulize/"),
+					help = "Location to store images")
+
 #########################
 ######__Arguments__######
 #########################
