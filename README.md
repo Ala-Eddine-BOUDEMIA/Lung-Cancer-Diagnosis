@@ -1,101 +1,48 @@
 # Lung Cancer Diagnosis
  
-Deep learning classification of lung cancer subtypes using High Resolution Microscopy Images (Whole-Slide Images)
+## Articles : 
 
-## Requirements
+1. "Pathologist-level classification of histologic patterns on resected lung adenocarcinoma slides with deep neural networks."
 
-- [NumPy 1.16](https://numpy.org/)
-- [OpenSlide Python](https://openslide.org/api/python/)
-- [pandas](https://pandas.pydata.org/)
-- [PIL](https://pillow.readthedocs.io/en/5.3.x/)
-- [Python 3.6](https://www.python.org/downloads/release/python-360/)
-- [PyTorch](https://pytorch.org/)
-- [scikit-image](https://scikit-image.org/)
-- [scikit-learn](https://scikit-learn.org/stable/install.html)
-- [NVIDIA GPU](https://www.nvidia.com/en-us/)
-- [Ubuntu](https://ubuntu.com/)
+2. "Convolutional neural networks can accurately distinguish four histologic growth patterns of lung adenocarcinoma in digital slides"
 
-# Usage
+3. "A Multi-resolution Deep Learning Framework for Lung Adenocarcinoma Growth Pattern Classification: 22nd Conference, MIUA 2018, Southampton, UK, July 9-11, 2018, Proceedings."
 
-Take a look at `Config.py` before you begin to get a feel for what parameters can be changed.
+## Approche :
 
-## 1. 1-Split:
+### Pre-processing :
 
-Splits the data into a validation and test set. Default validation whole-slide images (WSI) per class is 20 and test images per class is 30. You can change these numbers by changing the `Validation_WSI_Size` and `Test_WSI_Size` flags at runtime. You can skip this step if you did a custom split (for example, you need to split by patients).
+- Utilisation des 26 WSI annotées de l'article (2) pour générer des patches pour 5 classes.
 
-```
-python3 1-split.py
-```
+- Les classes sont :  Acinar, Solid, Micropapillary, Cribriform, Non-Tumor
 
-Note that the data will not be duplicated but moved.
+- Augmentation du nombre des patches par des techniques de traitement d'images.
 
-**Inputs**: `All_WSI`, `Validation_WSI_Size`, `Test_WSI_Size` 
+### 1-Split :
 
-**Outputs**: `Train_WSI`, `Validation_WSI`, `Test_WSI`
+- Distribution aléatoire et équilibrée des patches générés sur les 5 classes.
 
-### Example
-```
-python3 1-split.py --Validation_WSI_Size 10 --Test_WSI_Size 20
-```
+- Nombre de patches souhaité par classe est de 10,000 à 20,000.
 
-## 2. 2-Processing
+### 2-Train-Validate-Test :
 
-- Generate patches for the training set.
-- Generate patches for the validation set.
-- Generate patches for the testing set
+- Entrainer, valider et tester le model (resnet18).
 
-```
-python3 2-Processing.py
-```
-If your histopathology images are H&E-stained, whitespace will automatically be filtered. .
+- Utiliser le model pour annoté le reste de la base de données (LUAD, Lung and Colon Cancer Histopathological Image Dataset (LC25000))
 
-**Inputs**: `Train_WSI`, `Validation_WSI`, `Test_WSI`
+- Redistribuer les patches.
 
-**Outputs**: `Train_Patches` (fed into model for training), `Validation_Patches` (for validation), `Test_Patches` (for testing)
+- Entrainer, valider et tester un nouveau model (resnet ou inception).
 
-## 3. 3-Train_Val
+### 3-Evaluation :
 
-```
-python3 3-Train_Val.py
-```
+- Aggrégation de prédictions des patches par l'une des méthodes suivantes :
 
-We are using ResNet-18 You can change the model from `Model_Utils.py`. There is an option to retrain from a previous checkpoint. Model checkpoints are saved by default every epoch in `Checkpoints`. loss history and metrics history of each epoch are saved in a csv file at `Diagnostics`. The best model parameters are saved at `Best_model_weights`
-You can put `Sanity_Check` to True, to run only one epoch when you are testing the code.
+    1. Majority voting.
+    2. Patch averages.
+    3. Thresholding.
+    4. Attention-Based Classification. 
 
-**Inputs**: `Validation_Patches`, `Train_Patches`
+- Calculer les matrices : exactitude, précision, et score F1 par classe. 
 
-**Outputs**: `Checkpoints`, `Diagnostics`, `Best_model_weights`
-
-### Example
-```
-python3 3-Train_Val.py --batch_size 32 --num_epochs 100 --save_interval 5
-```
-
-## 4. 4-Test
-
-Run the model on all the patches in the Test_patches folder generated previously.
-Patches should be organized by subtypes, for example : Test_patches/classe_a/image1.jpeg
-
-```
-python3 4-Test.py
-```
-
-We automatically choose the model with the best validation accuracy. You can also specify your own. 
-
-**Inputs**: `Test_Patches`
-
-**Outputs**: `Predictions`
-
-## 5. 5-Evaluation
-
-Use the outputed csv file from `4-Test.py` and predict on WSI level, the results will be outputed in a csv file with the name of the WSI image and will contain classes that were predicted, the ratio of the predicted class ans its confidence.
-
-```
-python3 5-Evaluation.py
-```
-
-We automatically choose the model with the best validation accuracy. You can also specify your own. 
-
-**Inputs**: `Predictions`
-
-**Outputs**: `WSI_Predictions`
+- Visualisation des résultats (segmentation nécessaire).
