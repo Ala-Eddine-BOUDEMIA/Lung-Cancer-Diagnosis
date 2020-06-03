@@ -3,7 +3,8 @@ import Config
 import Model_Utils
 ##################
 import csv
-##########
+import numpy as np
+##################
 import torch
 from torch import nn 
 ####################
@@ -21,7 +22,14 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 	print("\nLoading testing data ...")
 	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, 
 												batch_size = batch_size, Train = False)
+
 	test_len_data = len(test_set)
+
+	tb_images = SummaryWriter()
+	test_images, test_labels = next(iter(test_loader))
+	test_grid = torchvision.utils.make_grid(test_images)
+	tb_images.add_image("test_images", test_grid)
+	tb_images.close()
 
 	test_all_labels, test_all_predictions, names, confidence_stats, preds = [], [], [], [], []
 	test_running_metric, confidence_running_metric = 0.0, 0.0
@@ -64,8 +72,11 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		for x in range(0, test_len_data):
 			writer.writerow([names[x], preds[x], f"{100*confidence_stats[x]:.6}"])
 
+	tb_metrics = SummaryWriter()
 	cm_test_heatmap, cm_test = Model_Utils.c_m(test_all_labels, test_all_predictions, classes)
 	cr_test_heatmap, cr_test = Model_Utils.c_r(test_all_labels, test_all_predictions, classes)
+	tb_metrics.add_figure("Test Confusion matrix epoch: " + str(epoch), cm_test_heatmap)
+	tb_metrics.add_figure("Test Classification report epoch: " + str(epoch), cr_test****_heatmap)	
 	np.savetxt(str(diagnostics_directory)+f"/cm_test.csv", cm_test, delimiter = '\t')
 	cr_test.to_csv(str(diagnostics_directory)+f"/cr_test.csv", sep = '\t')
 
