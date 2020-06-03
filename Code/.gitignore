@@ -1,5 +1,7 @@
-__pycache__/
-All_WSI/
-All_Data_sets/
-Train_folder/
-
+./Code
+/All_WSI
+/Annotations
+/Patches
+/__pycache__
+/Train_folder
+/runs
