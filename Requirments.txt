@@ -1,0 +1,10 @@
+openslide
+PIL
+numpy
+pandas
+py-torch
+tensorboard
+matplotlib
+scikit-learn
+seaborn
+
