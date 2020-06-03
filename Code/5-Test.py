@@ -6,8 +6,12 @@ import csv
 import numpy as np
 ##################
 import torch
-from torch import nn 
-####################
+import torchvision                          
+from torch import nn    
+import torch.nn.functional as F   
+###############################
+from torch.utils.tensorboard import SummaryWriter
+#################################################
 
 def test(device, classes, batch_size, path2weights, prediction_file, 
 	Test_Patches_path, predictions_directory, diagnostics_directory):
@@ -25,13 +29,14 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 
 	test_len_data = len(test_set)
 
-	tb_images = SummaryWriter()
+	tb_images = SummaryWriter("Tensorboard/Test")
 	test_images, test_labels = next(iter(test_loader))
 	test_grid = torchvision.utils.make_grid(test_images)
 	tb_images.add_image("test_images", test_grid)
 	tb_images.close()
 
-	test_all_labels, test_all_predictions, names, confidence_stats, preds = [], [], [], [], []
+	test_all_labels, test_all_predictions, class_probs, class_preds = [], [], [], [] 
+	names, preds, confidence_stats = [], [], []
 	test_running_metric, confidence_running_metric = 0.0, 0.0
 
 	for i, (inputs, labels) in enumerate(test_loader):
@@ -51,7 +56,12 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		__, predicted = torch.max(test_outputs.data, 1)
 		corrects = (predicted == test_labels).sum().item()
 		test_running_metric += corrects
-		confidences = nn.Softmax(dim = 1)(test_outputs)
+		confidences = [F.softmax(el, dim=0) for el in test_outputs]
+
+		for x in predicted.numpy():
+			test_all_predictions.append(x)
+		for x in test_labels.numpy():
+			test_all_labels.append(x)
 
 		for p in predicted:
 			preds.append(p.item())
@@ -60,25 +70,30 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 			confidence = torch.max(confidence).item()
 			confidence_running_metric += confidence
 			confidence_stats.append(confidence)
+
+		class_probs.append(confidences)
+		class_preds.append(predicted)
+		test_probs = torch.cat([torch.stack(batch) for batch in class_probs])
+		test_preds = torch.cat(class_preds)
 		
-		for x in predicted.numpy():
-			test_all_labels.append(x)
-		for x in test_labels.numpy():
-			test_all_predictions.append(x)
+	for i in range(len(classes)):
+		Model_Utils.pr_curve(i, test_probs, test_preds, classes)
+
+	tb_metrics = SummaryWriter("Tensorboard/Test")
+	cm_test_heatmap, cm_test = Model_Utils.c_m(test_all_labels, test_all_predictions, classes)
+	cr_test_heatmap, cr_test = Model_Utils.c_r(test_all_labels, test_all_predictions, classes)
+	tb_metrics.add_figure("Test Confusion matrix: ", cm_test_heatmap)
+	tb_metrics.add_figure("Test Classification report: ", cr_test_heatmap)	
+	tb_metrics.close()
+
+	np.savetxt(str(diagnostics_directory)+f"/cm_test.csv", cm_test, delimiter = '\t')
+	cr_test.to_csv(str(diagnostics_directory)+f"/cr_test.csv", sep = '\t')
 	
 	with open(prediction_file, "w") as f:
 		writer = csv.writer(f, delimiter = "\t")
 		writer.writerow(["Patch name", "Prediction", "Confidence"])
 		for x in range(0, test_len_data):
 			writer.writerow([names[x], preds[x], f"{100*confidence_stats[x]:.6}"])
-
-	tb_metrics = SummaryWriter()
-	cm_test_heatmap, cm_test = Model_Utils.c_m(test_all_labels, test_all_predictions, classes)
-	cr_test_heatmap, cr_test = Model_Utils.c_r(test_all_labels, test_all_predictions, classes)
-	tb_metrics.add_figure("Test Confusion matrix epoch: " + str(epoch), cm_test_heatmap)
-	tb_metrics.add_figure("Test Classification report epoch: " + str(epoch), cr_test****_heatmap)	
-	np.savetxt(str(diagnostics_directory)+f"/cm_test.csv", cm_test, delimiter = '\t')
-	cr_test.to_csv(str(diagnostics_directory)+f"/cr_test.csv", sep = '\t')
 
 	print(f"Accuracy of the network on the: {test_len_data}",
 		f" test images: {100 * test_running_metric / test_len_data}\n"

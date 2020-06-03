@@ -17,6 +17,8 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 #################################################
+from torch.utils.tensorboard import SummaryWriter
+#################################################
 
 def create_model():
                                                 
@@ -104,3 +106,15 @@ def c_r(actual, predicted, classes):
 	ax2.set_title('Classification report')
 
 	return f2, cr
+
+def pr_curve(class_index, test_probs, test_preds, classes, global_step = 0):
+
+    tensorboard_preds = test_preds == class_index
+    tensorboard_probs = test_probs[:, class_index]
+
+    tb_pr = SummaryWriter("Tensorboard")
+    tb_pr.add_pr_curve(classes[class_index],
+                        tensorboard_preds,
+                        tensorboard_probs,
+                        global_step = global_step)
+    tb_pr.close()
