@@ -45,7 +45,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 	opt = optim.Adam(params = model.parameters(), lr = learning_rate, weight_decay = weight_decay)
 	scheduler = lr_scheduler.ExponentialLR(optimizer = opt, gamma = learning_rate_decay)
 	
-	tb_images = SummaryWriter()
+	tb_images = SummaryWriter("Train_Val")
 	train_images, train_labels = next(iter(train_loader))
 	train_grid = torchvision.utils.make_grid(train_images)
 	tb_images.add_image("train_images", train_grid)
@@ -54,7 +54,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 	tb_images.add_image("Validation_images", val_grid)
 	tb_images.close()
 
-	tb_model = SummaryWriter()
+	tb_model = SummaryWriter("Train_Val")
 	tb_model.add_graph(model, train_images)
 	tb_model.close()
 
@@ -117,7 +117,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 				for x in train_labels.numpy():
 					train_all_predictions.append(x)
 
-			tb_metrics = SummaryWriter()
+			tb_metrics = SummaryWriter("Train_Val")
 			cm_train_heatmap, cm_train = Model_Utils.c_m(train_all_labels, train_all_predictions, classes)
 			cr_train_heatmap, cr_train = Model_Utils.c_r(train_all_labels, train_all_predictions, classes)
 			tb_metrics.add_figure("Train Confusion matrix epoch: " + str(epoch), cm_train_heatmap)
