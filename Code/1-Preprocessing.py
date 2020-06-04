@@ -1,6 +1,7 @@
 import Utils
 import Config
-#############
+import Code_from_deepslide
+##########################
 import os
 import csv
 ##########
@@ -99,7 +100,8 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 						class_path = "/".join([Text, patch_name])
 						full_path = patches.joinpath(class_path)
-						patch_rgb.save(full_path) 
+						if Code_from_deepslide.is_purple(patch_rgb):
+							patch_rgb.save(full_path) 
 
 						i += 1
 
