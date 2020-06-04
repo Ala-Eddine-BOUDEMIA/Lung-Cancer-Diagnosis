@@ -1,6 +1,7 @@
 import Utils
 import Config
 #############
+import time
 import random
 import shutil
 from pathlib import Path
@@ -8,14 +9,18 @@ from pathlib import Path
 
 def split(Patches, Test_Patches, Test_Set_Size, Train_Patches, Validation_Patches, Validation_Set_Size):
 	
+	since = time.time()
+
 	paths_per_class = {}
 	set_size_per_class = {}
 	directory_per_class = sorted([d for d in Patches.iterdir() if d.is_dir()])
 	for each_directory in directory_per_class:
 		tiff_paths = sorted([f for f in each_directory.iterdir() if f.is_file()])
 		paths_per_class[str(each_directory).split("/")[-1]] = tiff_paths
-		set_size_per_class[str(each_directory).split("/")[-1]] = [Validation_Set_Size, Test_Set_Size, 
-													len(tiff_paths) - (Validation_Set_Size + Test_Set_Size)]
+		Train_set_size = len(tiff_paths) - (Validation_Set_Size + Test_Set_Size)
+		set_size_per_class[str(each_directory).split("/")[-1]] = [Validation_Set_Size,
+																 Test_Set_Size, 
+																 Train_set_size]
 
 	FoldersToBeCreated = [Validation_Patches, Test_Patches, Train_Patches]
 	folders_per_set = {}
@@ -34,12 +39,17 @@ def split(Patches, Test_Patches, Test_Set_Size, Train_Patches, Validation_Patche
 			while length < set_size[i]:
 				n = random.randint(0, len(input_paths) - 1)
 				if n not in r :
-					if input_paths[n].exists() == True:
-						src = str(input_paths[n])
-						dst = "/".join([str(FoldersToBeCreated[i]), "/".join(str(src).split('/')[1:])])
-						shutil.move(src, dst)
-						r.append(n)
-						length += 1
+					patch_name = "_".join(str(input_paths[n]).split("/")[-1].split("_")[0:5])
+					for index in range(len(input_paths)):
+						if "_".join(str(input_paths[index]).split("/")[-1].split("_")[0:5]) == patch_name:
+							if input_paths[index].exists() == True and length < set_size[i]:
+								src = str(input_paths[index])
+								dst = "/".join([str(FoldersToBeCreated[i]), "/".join(str(src).split('/')[1:])])
+								shutil.move(src, dst)
+								r.append(index)
+								length += 1
+
+	print(f"\nSplit complete in: {(time.time() - since) // 60:.2f} minutes")
 
 if __name__ == '__main__':
 	split(
