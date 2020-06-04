@@ -30,6 +30,11 @@ parser.add_argument("--Patches",
 					default = Path("Patches"), 
 					help = "Location to store the generated patches")
 
+parser.add_argument("--CSV_files",
+					type = Path, 
+					default = Path("CSV_files"), 
+					help = "Location to store the generated patches")
+
 parser.add_argument("--Classes",
 					type = list,
 					default = ["ACINAR", "CRIB", "MICROPAP", "NC", "SOLID"],
@@ -52,7 +57,7 @@ parser.add_argument("--Overlap",
 
 parser.add_argument("--Maximum",
 					type = int,
-					default = 20000,
+					default = 10000,
 					help = "Number of patches per class")
 
 #####################
@@ -84,12 +89,12 @@ parser.add_argument("--Test_Patches",
 
 parser.add_argument("--Validation_Set_Size", 
 					type = int, 
-					default = 2000, 
+					default = 1000, 
 					help = "Number of patches per class in validation set")
 
 parser.add_argument("--Test_Set_Size", 
 					type = int, 
-					default = 2000, 
+					default = 1000, 
 					help = "Number of patches per class in Test set")
 
 #####################
@@ -137,12 +142,12 @@ parser.add_argument("--Path2Weights",
 
 parser.add_argument("--Diagnostics_Directory",
 					type = Path,
-					default = Path("Train_folder/Model/Diagnostics/"),
+					default = Path("CSV_files/Diagnostics/"),
 					help = "Location to write out the diagnostics.")
 
 parser.add_argument("--Diagnostics",
 					type = Path,
-					default = Path("Train_folder/Model/Diagnostics/Model_Diagnostics.csv"),
+					default = Path("CSV_files/Diagnostics/Model_Diagnostics.csv"),
 					help = "Location to write out the diagnostics.")
 
 parser.add_argument("--Resume_checkpoint",
@@ -167,12 +172,12 @@ parser.add_argument("--Checkpoint_file",
 
 parser.add_argument("--Predictions_Directory",
 					type = Path,
-					default = Path("Train_folder/Model/Predictions/"),
+					default = Path("CSV_files/Predictions/"),
 					help = "Location to write out the predictions.")
 
 parser.add_argument("--Predictions",
 					type = Path,
-					default = Path("Train_folder/Model/Predictions/predictions.csv"),
+					default = Path("CSV_files/Predictions/predictions.csv"),
 					help = "Location to write out the predictions.")
 
 #########################
