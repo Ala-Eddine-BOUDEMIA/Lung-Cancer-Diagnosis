@@ -48,9 +48,10 @@ def get_prediction(csv_files, predictions, output_folder, predictions_dir):
 			for sc in sorted_classe:
 				pourcentage = 100 * sc[1]/float(patches_number)
 				confidence_total = conf[sc[0]]/(sc[1] + 1e-7)
-				print(f"\nCancer subtype: {sc[0]}",
-					f"\nRatio: {pourcentage}",
-					f"\nConfidence: {confidence_total}")
+				if pourcentage > 0.0:
+					print(f"\nCancer subtype: {sc[0]}",
+						f"\nRatio: {pourcentage}",
+						f"\nConfidence: {confidence_total}")
 
 if __name__ == '__main__':
 	get_prediction(
