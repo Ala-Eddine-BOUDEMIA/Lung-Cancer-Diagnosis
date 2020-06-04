@@ -112,7 +112,7 @@ def pr_curve(class_index, test_probs, test_preds, classes, global_step = 0):
     tensorboard_preds = test_preds == class_index
     tensorboard_probs = test_probs[:, class_index]
 
-    tb_pr = SummaryWriter("Tensorboard")
+    tb_pr = SummaryWriter("Tensorboard/pr_curve")
     tb_pr.add_pr_curve(classes[class_index],
                         tensorboard_preds,
                         tensorboard_probs,
