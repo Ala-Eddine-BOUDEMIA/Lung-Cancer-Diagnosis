@@ -1,3 +1,5 @@
+from torch.utils.tensorboard import SummaryWriter
+#################################################
 import Utils                
 import Config
 import Model_Utils
@@ -10,8 +12,6 @@ import torchvision
 from torch import nn    
 import torch.nn.functional as F   
 ###############################
-from torch.utils.tensorboard import SummaryWriter
-#################################################
 
 def test(device, classes, batch_size, path2weights, prediction_file, 
 	Test_Patches_path, predictions_directory, diagnostics_directory):

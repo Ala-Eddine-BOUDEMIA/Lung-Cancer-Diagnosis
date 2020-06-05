@@ -1,3 +1,5 @@
+from torch.utils.tensorboard import SummaryWriter
+#################################################
 import Utils
 import Config
 import Model_Utils
@@ -16,8 +18,6 @@ from torch import optim
 from torch.optim import lr_scheduler              
 from torch.optim.lr_scheduler import ExponentialLR      
 ##################################################
-from torch.utils.tensorboard import SummaryWriter
-#################################################
 
 def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weights, weight_decay, path2weights, 
 	sanity_check, learning_rate, save_interval, diagnostic_path, checkpoint_file, Train_Patches_path, 

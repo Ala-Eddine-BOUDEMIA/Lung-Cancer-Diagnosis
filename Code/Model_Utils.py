@@ -1,3 +1,5 @@
+from torch.utils.tensorboard import SummaryWriter
+#################################################
 import Utils
 ############
 import numpy as np
@@ -16,8 +18,6 @@ from matplotlib import pyplot as plt
 ####################################
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
-#################################################
-from torch.utils.tensorboard import SummaryWriter
 #################################################
 
 def create_model():

@@ -4,5 +4,5 @@
 /CSV_files
 /Patches
 /__pycache__
-/runs
+/Tensorboard
 /Train_folder
