@@ -25,7 +25,7 @@ Diagnosis of histologic growth patterns of lung cancer in digital slides using r
 
 ## Usage
 
-Take a look at `code/Config.py` before you begin to get a feel for what parameters can be changed.
+Take a look at `Code/Config.py` before you begin to get a feel for what parameters can be changed.
 
 ## 1. Preprocessing:
 
