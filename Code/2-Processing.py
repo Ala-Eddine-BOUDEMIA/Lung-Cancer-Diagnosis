@@ -1,14 +1,15 @@
-import Utils
-import Config
-#############
-import random
-from pathlib import Path
-########################
-import PIL
-from PIL import Image
-from PIL import ImageFilter
+#####################################
 from PIL.ImageOps import flip, mirror
-########################################
+from PIL import ImageFilter
+from PIL import Image
+import PIL
+########################
+from pathlib import Path
+import random
+#############
+import Config
+import Utils
+############
 
 def transforms(key, image):
 

@@ -1,11 +1,12 @@
-import torch
-############
-import argparse
-###############
-from typing import Dict
-#######################
+########################
 from pathlib import Path
 ########################
+from typing import Dict
+#######################
+import argparse
+###############
+import torch
+############
 #source: https://docs.python.org/3/library/argparse.html
 ########################################################
 parser = argparse.ArgumentParser(description = "Tools and parameters", 

@@ -1,11 +1,13 @@
-import Utils
-import Config 
-#############
-import csv
-import operator
-###############
-from itertools import islice
 ############################
+from itertools import islice
+###############
+import operator
+#############
+import Config 
+import Utils
+############
+import csv
+##########
 
 def get_prediction(csv_files, predictions, output_folder, predictions_dir):
 

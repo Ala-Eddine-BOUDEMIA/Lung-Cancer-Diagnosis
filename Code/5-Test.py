@@ -1,17 +1,18 @@
-from torch.utils.tensorboard import SummaryWriter
 #################################################
-import Utils                
-import Config
-import Model_Utils
-##################
-import csv
-import numpy as np
-##################
-import torch
-import torchvision                          
-from torch import nn    
-import torch.nn.functional as F   
+from torch.utils.tensorboard import SummaryWriter
 ###############################
+import torch.nn.functional as F   
+from torch import nn    
+import torchvision                          
+import torch
+##################
+import Model_Utils
+import Config
+import Utils                
+##################
+import numpy as np
+import csv
+##########
 
 def test(device, classes, batch_size, path2weights, prediction_file, 
 	Test_Patches_path, predictions_directory, diagnostics_directory):
@@ -20,13 +21,14 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 
 	model = Model_Utils.create_model()
 	model.load_state_dict(torch.load(path2weights))
-	
+	configs = [dict(model_type = 'resnet', arch = model, layer_name = 'layer4')]
 	model.eval()
+
+	cams = [[cls.from_config(**config) for cls in (GradCAM, GradCAMpp)] for config in configs]
 
 	print("\nLoading testing data ...")
 	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, 
 												batch_size = batch_size, Train = False)
-
 	test_len_data = len(test_set)
 
 	tb_images = SummaryWriter("Tensorboard/Test")
@@ -40,7 +42,7 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 	test_running_metric, confidence_running_metric = 0.0, 0.0
 
 	for i, (inputs, labels) in enumerate(test_loader):
-		
+
 		test_inputs = inputs.to(device)
 		test_labels = labels.to(device)
 

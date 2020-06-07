@@ -1,19 +1,19 @@
-import Utils
-import Config
-import Code_from_deepslide
-##########################
-import os
-import csv
-##########
-import openslide
-################
-import numpy as np
-from PIL import Image
-#####################
-from pathlib import Path
-########################
-from xml.dom import minidom
 ###########################
+from xml.dom import minidom
+##########################
+import Code_from_deepslide
+import Config
+import Utils
+########################
+from pathlib import Path
+#####################
+from PIL import Image
+import numpy as np
+################
+import openslide
+##########
+import csv
+##########s
 
 def generate_patches(patches, classes, all_wsi, overlap, 
 	csv_files, annotations, Window_size, compression_factor):

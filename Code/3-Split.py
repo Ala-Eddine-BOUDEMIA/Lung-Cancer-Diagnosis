@@ -1,11 +1,12 @@
-import Utils
-import Config
-#############
-import time
-import random
-import shutil
-from pathlib import Path
 ########################
+from pathlib import Path
+import shutil
+import random
+#############
+import Config
+import Utils
+import time
+###########
 
 def split(Patches, Test_Patches, Test_Set_Size, Train_Patches, Validation_Patches, Validation_Set_Size):
 	

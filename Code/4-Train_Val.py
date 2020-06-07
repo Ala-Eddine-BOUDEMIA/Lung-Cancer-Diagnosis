@@ -1,23 +1,24 @@
-from torch.utils.tensorboard import SummaryWriter
 #################################################
-import Utils
-import Config
-import Model_Utils
+from torch.utils.tensorboard import SummaryWriter
+##################################################
+from torch.optim.lr_scheduler import ExponentialLR      
+from torch.optim import lr_scheduler              
+from torch import optim                                   
+from torch import nn                        
+import torchvision                          
+import torch                                
 ##################
-import csv
+import Model_Utils
+import Config
+import Utils
+################### 
+import pandas as pd                                                            
+import numpy as np
+import datetime
 import time 
 import copy
-import datetime
-import numpy as np
-import pandas as pd                                                            
-################### 
-import torch                                
-import torchvision                          
-from torch import nn                        
-from torch import optim                                   
-from torch.optim import lr_scheduler              
-from torch.optim.lr_scheduler import ExponentialLR      
-##################################################
+import csv
+##########
 
 def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weights, weight_decay, path2weights, 
 	sanity_check, learning_rate, save_interval, diagnostic_path, checkpoint_file, Train_Patches_path, 
