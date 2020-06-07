@@ -181,6 +181,14 @@ parser.add_argument("--Predictions",
 					default = Path("CSV_files/Predictions/predictions.csv"),
 					help = "Location to write out the predictions.")
 
+#############################
+######__Visualization__######
+#############################
+parser.add_argument("--Visualization",
+					type = Path,
+					default = Path("Visualization"),
+					help = "Location to save visualization")
+
 #########################
 ######__Arguments__######
 #########################
