@@ -7,4 +7,5 @@ tensorboard
 matplotlib
 scikit-learn
 seaborn
+torchcam
 
