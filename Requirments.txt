@@ -1,7 +1,0 @@
-openslide
-PIL
-pytorch-gradcam
-py-torch
-scikit-learn
-seaborn
-tensorboard

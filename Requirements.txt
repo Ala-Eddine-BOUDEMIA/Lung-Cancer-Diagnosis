@@ -1,0 +1,11 @@
+#Note that tensorboard may require "sudo" to install properly.
+#Also tensorboard should always be imported first to avoid conflicts.
+openslide-python
+PIL
+pytorch
+pytorch-gradcam
+scikit-image
+scikit-learn
+seaborn
+tensorboard 
+torchvision
