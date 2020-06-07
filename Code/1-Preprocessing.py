@@ -32,7 +32,8 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 		with open("/".join([str(csv_files), image_name + ".csv"]), "w") as w:
 			writer = csv.writer(w, delimiter = "\t")
-			writer.writerow(["Patch name", "Type", "ID", "begin X", "begin Y", "overlap factor"])
+			writer.writerow(["Patch name", "W", "H", "Type", "ID",
+							"begin X", "begin Y", "overlap factor"])
 
 			xmldoc = minidom.parse(str(file))
 			regions = xmldoc.getElementsByTagName('Region')
@@ -105,7 +106,7 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 						i += 1
 
-						writer.writerow([patch_name, Text, Id, begin_x, begin_y, overlap[Text]])
+						writer.writerow([patch_name, w, h, Text, Id, begin_x, begin_y, overlap[Text]])
 
 if __name__ == '__main__':
 	generate_patches(

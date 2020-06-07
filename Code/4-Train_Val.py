@@ -46,16 +46,17 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 	opt = optim.Adam(params = model.parameters(), lr = learning_rate, weight_decay = weight_decay)
 	scheduler = lr_scheduler.ExponentialLR(optimizer = opt, gamma = learning_rate_decay)
 	
-	tb_images = SummaryWriter("Tensorboard/Train_Val")
 	train_images, train_labels = next(iter(train_loader))
 	train_grid = torchvision.utils.make_grid(train_images)
-	tb_images.add_image("train_images", train_grid)
 	val_images, val_labels = next(iter(val_loader))
 	val_grid = torchvision.utils.make_grid(val_images)
+	
+	tb_images = SummaryWriter("Tensorboard/Train_Val")
+	tb_images.add_image("train_images", train_grid)
 	tb_images.add_image("Validation_images", val_grid)
 	tb_images.close()
 
-	tb_model = SummaryWriter("Tensorboard")
+	tb_model = SummaryWriter("Tensorboard/Model")
 	tb_model.add_graph(model, train_images)
 	tb_model.close()
 

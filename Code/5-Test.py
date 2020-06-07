@@ -21,10 +21,7 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 
 	model = Model_Utils.create_model()
 	model.load_state_dict(torch.load(path2weights))
-	configs = [dict(model_type = 'resnet', arch = model, layer_name = 'layer4')]
 	model.eval()
-
-	cams = [[cls.from_config(**config) for cls in (GradCAM, GradCAMpp)] for config in configs]
 
 	print("\nLoading testing data ...")
 	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, 
