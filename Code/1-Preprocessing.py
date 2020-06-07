@@ -101,9 +101,8 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 						class_path = "/".join([Text, patch_name])
 						full_path = patches.joinpath(class_path)
-						if Code_from_deepslide.is_purple(patch_rgb):
-							patch_rgb.save(full_path) 
-
+						if Code_from_deepslide.is_purple(Image.open(input_paths[index])):
+ 							patch_rgb.save(full_path)
 						i += 1
 
 						writer.writerow([patch_name, w, h, Text, Id, begin_x, begin_y, overlap[Text]])

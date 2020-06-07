@@ -1,11 +1,7 @@
 openslide
 PIL
-numpy
-pandas
+pytorch-gradcam
 py-torch
-tensorboard
-matplotlib
 scikit-learn
 seaborn
-torchcam
-
+tensorboard

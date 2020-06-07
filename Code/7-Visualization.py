@@ -31,7 +31,7 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 	
 	for file in files:
 		wsi_name = str(file).split("/")[-1][:-4]
-		directory = Utils.create_folder(visualization.joinpath('/'.join(["Heatmap", wsi_name])))
+		directory = Utils.create_folder(visualization.joinpath('/'.join(["Patchs", wsi_name])))
 		
 		with open(file, "r") as reader:
 			for line in islice(reader, 1, None):
