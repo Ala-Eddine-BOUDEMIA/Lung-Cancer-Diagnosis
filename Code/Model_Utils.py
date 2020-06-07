@@ -1,24 +1,25 @@
+#################################################
 from torch.utils.tensorboard import SummaryWriter
 #################################################
-import Utils
-############
-import numpy as np
-import pandas as pd
-import seaborn as sns
-#####################
-import torch
-from torch import nn 
-from torchvision import models 
-import torch.nn.functional as F
-from torchsummary import summary
-from torchvision import datasets
-from torchvision import transforms                      
-##################################
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+############################################
 from matplotlib import pyplot as plt
 ####################################
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import classification_report
-#################################################
+from torchvision import transforms                      
+from torchvision import datasets
+from torchsummary import summary
+import torch.nn.functional as F
+from torchvision import models 
+from torch import nn 
+import torch
+#####################
+import seaborn as sns
+import pandas as pd
+import numpy as np
+#################
+import Utils
+############
 
 def create_model():
                                                 
@@ -29,22 +30,24 @@ def create_model():
 
     return model
 
-def get_data_transforms(Train, path):
+def get_data_transforms(Train):
 
 	if Train:
 		data_transforms = transforms.Compose(transforms = [ 
 			transforms.ColorJitter(brightness = 0.5, contrast = 0.5, saturation = 0.5, hue = 0.2),
-            transforms.ToTensor()])
+            transforms.ToTensor(),
+            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
 	else :
 		data_transforms = transforms.Compose(transforms = [ 
-			transforms.ToTensor()])
+			transforms.ToTensor(),
+			transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
 
 	return data_transforms
 
 def load_data(path, shuffle, batch_size, Train = True):
 
 	images_dataset = datasets.ImageFolder(root = str(path), 
-										transform = get_data_transforms(Train, path)) 
+										transform = get_data_transforms(Train)) 
 	dataloaders = torch.utils.data.DataLoader(dataset = images_dataset, batch_size = batch_size, 
 											shuffle = shuffle, num_workers = 8)
 
