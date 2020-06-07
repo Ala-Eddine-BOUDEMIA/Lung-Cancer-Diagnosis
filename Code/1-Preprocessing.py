@@ -32,8 +32,8 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 		with open("/".join([str(csv_files), image_name + ".csv"]), "w") as w:
 			writer = csv.writer(w, delimiter = "\t")
-			writer.writerow(["Patch name", "W", "H", "Type", "ID",
-							"begin X", "begin Y", "overlap factor"])
+			writer.writerow(["Patch name", "W", "H", "Type", "Region ID",
+							"Region begin X", "Region begin Y", "overlap factor"])
 
 			xmldoc = minidom.parse(str(file))
 			regions = xmldoc.getElementsByTagName('Region')
@@ -101,11 +101,12 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 						class_path = "/".join([Text, patch_name])
 						full_path = patches.joinpath(class_path)
-						if Code_from_deepslide.is_purple(Image.open(input_paths[index])):
+						if Code_from_deepslide.is_purple(patch_rgb):
  							patch_rgb.save(full_path)
 						i += 1
 
-						writer.writerow([patch_name, w, h, Text, Id, begin_x, begin_y, overlap[Text]])
+						writer.writerow([patch_name, w, h, Text, Id,
+										crop_begin_x, crop_begin_y, overlap[Text]])
 
 if __name__ == '__main__':
 	generate_patches(
