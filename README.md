@@ -159,9 +159,9 @@ python3 Code/7_visualization.py
 
 - [ ] Try diffrent architectures.
 - [ ] Optimize the code to :
-	-[ ] To reduce computation time.
-	-[ ] To support multiprocessing.
-	-[ ] To handle diffrent situations.
+	* To reduce computation time.
+	* To support multiprocessing.
+	* To handle diffrent situations.
 - [ ] Visualize on WSI level.
 - [ ] Create a web interface. 
 
