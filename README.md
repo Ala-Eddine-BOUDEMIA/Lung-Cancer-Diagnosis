@@ -69,7 +69,7 @@ Note that this may take some time and eventually a significant amount of space. 
 
 ## 3. Split:
 
-Splits the data into a train, validation and test set. Default validation and test patchs per class is 1000 and.
+Splits the data into a train, validation and test set. Default validation and test patchs per class is 1000.
 You can change these numbers by changing the `--Validation_Set_Size` and `--Test_Set_Size`. 
 You can skip this step if you did a custom split (for example, you need to split by patients).
 
