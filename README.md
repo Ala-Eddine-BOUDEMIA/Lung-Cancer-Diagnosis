@@ -7,8 +7,8 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 * [General Information](#General-Information)
 * [Requirements](#Requirements)
 * [Usage](#Usage)
-* [Future Work](#Future-Work)
 * [Known Issues and Limitations](#Known-Issues-and-Limitations)
+* [Future Work](#Future-Work)
 * [Sources](#Sources)
 
 # General Information
