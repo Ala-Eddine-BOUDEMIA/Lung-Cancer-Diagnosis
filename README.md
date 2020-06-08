@@ -1,16 +1,28 @@
 # Lung Cancer Diagnosis
 
-Diagnosis of histologic growth patterns of lung cancer in digital slides using residual neural networks.
+__Diagnosis of histologic growth patterns of lung cancer in digital slides using deep learning.__
 
-## Table of contents
+# Table of contents
 
+* [General Information](#General-Information)
 * [Requirements](#Requirements)
 * [Usage](#Usage)
 * [Future Work](#Future-Work)
 * [Known Issues and Limitations](#Known-Issues-and-Limitations)
 * [Sources](#Sources)
 
-## Requirements
+# General Information
+
+- _This is a final year graduation project._
+- We are using 26 whole-slide images obtained from The Cancer Genome Atlas (LUAD).
+* Distribution of data among histologic patterns is as follows:
+
+Histologic pattern | ACINAR | CRIBRIFORM | MACROPAPILLARY | NON CANCEROUS | SOLID 
+_________________________________________________________________________________
+Crops | 22 | 4 | 23 | 53 |85
+Patches (overlap = 1) | 1328 | 85 | 4053 | 8418 | 5821
+ 
+# Requirements
 
 - [OpenSlide Python](https://openslide.org/api/python/)
 - [PIL](https://pillow.readthedocs.io/en/5.3.x/)
@@ -23,7 +35,7 @@ Diagnosis of histologic growth patterns of lung cancer in digital slides using r
 - [tensorboard](https://www.tensorflow.org/tensorboard)
 - [torchvision](https://pytorch.org/docs/stable/torchvision/index.html#module-torchvision)
 
-## Usage
+# Usage
 
 Take a look at `Code/Config.py` before you begin to get a feel for what parameters can be changed.
 
@@ -31,7 +43,7 @@ Take a look at `Code/Config.py` before you begin to get a feel for what paramete
 
 - Reads from `Annotations` folder that contains XML annotation files.
 - Reads from `All_WSI` folder that contains Whole Slide Images.
-- Generates patchs and saves information about the patchs in a csv file.
+- Generates patches and saves information about the patches in a csv file.
 
 
 ```
@@ -42,7 +54,7 @@ python3 Code/1_Preprocessing.py
 
 **Outputs**: `Patches/SUBTYPE`, `CSV_files/Annotations`
 
-- Note that: `SUBTYPE == ACINAR, CRIBRIFORM, MICROPAPILLARY, NON-CANCEROUS, SOLID`.
+- Note that: `SUBTYPE == ACINAR, CRIB, MICROPAP, NC, SOLID`.
 
 If your histopathology images are H&E-stained, whitespace will automatically be filtered. 
 You can change overlapping area using the `--Overlap` option.
@@ -51,10 +63,10 @@ You can change overlapping area using the `--Overlap` option.
 
 The goal of this code is to balance data using data augmentation techniques.
 
-- Reads patchs randomly from each subtype directory at a time.
+- Reads patches randomly from each subtype directory at a time.
 - Applies diffrent transformations to the image.
 - The nature and number of transformations applied to an image are chosen randomly.
-- Modified patchs are saved in the same directory as the original image.
+- Modified patches are saved in the same directory as the original image.
 
 
 ```
@@ -69,7 +81,7 @@ Note that this may take some time and eventually a significant amount of space. 
 
 ## 3. Split:
 
-Splits the data into a train, validation and test set. Default validation and test patchs per class is 1000.
+Splits the data into a train, validation and test set. Default validation and test patches per class is 1000.
 You can change these numbers by changing the `--Validation_Set_Size` and `--Test_Set_Size`. 
 You can skip this step if you did a custom split (for example, you need to split by patients).
 
@@ -111,7 +123,7 @@ We automatically choose the model with the best validation accuracy while traini
 ## Tensorboard
 
 We are using tensorboard to evaluate the model. 
-- Uploads a grid of train and validation images to make sure that the patchs are good. 
+- Uploads a grid of train and validation images to make sure that the patches are good. 
 - Uploads the model's graph.
 - Uploads confusion matrix and classification report of each epoch.
 - Plots the loss function.
@@ -119,7 +131,7 @@ We are using tensorboard to evaluate the model.
 
 ## 6. Evaluation:
 
-Aggregates the patchs predictions from the Test code to predict a label at the whole-slide level.
+Aggregates the patches predictions from the Test code to predict a label at the whole-slide level.
 There are various methods to do so, we decided to perform patch averages. Therefore we average the probabilities of all patch predictions, and take the class with the highest probability.
 
 
@@ -167,11 +179,9 @@ python3 Code/7_visualization.py
 
 # Sources
 
-1. "Pathologist-level classification of histologic patterns on resected lung adenocarcinoma slides with deep neural networks."
+1. Jason Wei, Laura Tafe, Yevgeniy Linnik, Louis Vaickus, Naofumi Tomita, Saeed Hassanpour, "Pathologist-level Classification of Histologic Patterns on Resected Lung Adenocarcinoma Slides with Deep Neural Networks", Scientific Reports;9:3358 (2019).
 
-2. "Convolutional neural networks can accurately distinguish four histologic growth patterns of lung adenocarcinoma in digital slides"
-
-3. "A Multi-resolution Deep Learning Framework for Lung Adenocarcinoma Growth Pattern Classification: 22nd Conference, MIUA 2018, Southampton, UK, July 9-11, 2018, Proceedings."
+2. Gertych, A., Swiderska-Chadaj, Z., Ma, Z. et al. Convolutional neural networks can accurately distinguish four histologic growth patterns of lung adenocarcinoma in digital slides. Sci Rep 9, 1483 (2019). (https://doi.org/10.1038/s41598-018-37638-9) 
 
 # License
 [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/)
