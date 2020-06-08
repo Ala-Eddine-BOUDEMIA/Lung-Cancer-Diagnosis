@@ -53,7 +53,7 @@ parser.add_argument("--Compression_factor",
 
 parser.add_argument("--Overlap",
 					type = Dict,
-					default = {"ACINAR": 0.25, "CRIB": 0.25, "MICROPAP": 0.5, "NC": 1, "SOLID": 1},
+					default = {"ACINAR": 0.5, "CRIB": 0.25, "MICROPAP": 1, "NC": 1, "SOLID": 1},
 					help = "Overlap factor while generating patches")
 
 parser.add_argument("--Maximum",
