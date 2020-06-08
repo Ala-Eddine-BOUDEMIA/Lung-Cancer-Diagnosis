@@ -18,7 +18,7 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 * Distribution of data among histologic patterns is as follows:
 
 Histologic pattern | ACINAR | CRIBRIFORM | MACROPAPILLARY | NON CANCEROUS | SOLID 
-_________________________________________________________________________________
+___________________|________|____________|________________|_______________|______
 Crops | 22 | 4 | 23 | 53 |85
 Patches (overlap = 1) | 1328 | 85 | 4053 | 8418 | 5821
  
