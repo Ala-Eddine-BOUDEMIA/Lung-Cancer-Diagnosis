@@ -41,45 +41,53 @@ Patches (overlap = 1) | 1328 | 85 | 4053 | 8418 | 5821
 
 ## Download rpository:
 
+```
+git clone https://github.com/Ala-Eddine-BOUDEMIA/Lung-Cancer-Diagnosis.git
+```
 
-`git clone https://github.com/Ala-Eddine-BOUDEMIA/Lung-Cancer-Diagnosis.git`
-
-
-`cd Lung-Cancer-Diagnosis`
-
+```
+cd Lung-Cancer-Diagnosis
+```
 
 ## Install packages:
 
-
-`sudo pip3 install -r requirements.txt`
-
+```
+sudo pip3 install -r requirements.txt
+```
 
 ## Run project:
 
+```
+cd Code
+```
 
-`cd Code`
+```
+python3 1-Preprocessing.py
+```
 
+```
+python3 2-Processing.py
+```
 
-`python3 1-Preprocessing.py`
+```
+python3 3-Split.py
+```
 
+```
+python3 4-Train_Val.py
+```
 
-`python3 2-Processing.py`
+```
+python3 5-Test.py
+```
 
+```
+python3 6-Evaluation.py
+```
 
-`python3 3-Split.py`
-
-
-`python3 4-Train_Val.py`
-
-
-`python3 5-Test.py`
-
-
-`python3 6-Evaluation.py`
-
-
-`python3 7-Visualization.py`
-
+```
+python3 7-Visualization.py
+```
 
 # Usage
 
