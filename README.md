@@ -6,6 +6,7 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 
 * [General Information](#General-Information)
 * [Requirements](#Requirements)
+* [Installation](#Installation)
 * [Usage](#Usage)
 * [Known Issues and Limitations](#Known-Issues-and-Limitations)
 * [Future Work](#Future-Work)
@@ -34,6 +35,51 @@ Patches (overlap = 1) | 1328 | 85 | 4053 | 8418 | 5821
 - [seaborn](https://seaborn.pydata.org/installing.html)
 - [tensorboard](https://www.tensorflow.org/tensorboard)
 - [torchvision](https://pytorch.org/docs/stable/torchvision/index.html#module-torchvision)
+- [torchsummary](https://pypi.org/project/torchsummary/)
+
+# Installation 
+
+## Download rpository:
+
+
+`git clone https://github.com/Ala-Eddine-BOUDEMIA/Lung-Cancer-Diagnosis.git`
+
+
+`cd Lung-Cancer-Diagnosis`
+
+
+## Install packages:
+
+
+`sudo pip3 install -r requirements.txt`
+
+
+## Run project:
+
+
+`cd Code`
+
+
+`python3 1-Preprocessing.py`
+
+
+`python3 2-Processing.py`
+
+
+`python3 3-Split.py`
+
+
+`python3 4-Train_Val.py`
+
+
+`python3 5-Test.py`
+
+
+`python3 6-Evaluation.py`
+
+
+`python3 7-Visualization.py`
+
 
 # Usage
 
