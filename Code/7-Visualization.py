@@ -1,23 +1,16 @@
-########################################
 from torchvision.utils import save_image
 from torchvision import transforms   
 import torchvision                          
 import torch
-#######################################
 from gradcam.utils import visualize_cam
 from gradcam import GradCAM
-############################
 from itertools import islice
-#####################
 from PIL import Image
-##################
 import Model_Utils
 import Config
 import Utils                
-##################
 import numpy as np
 import csv
-##########
 
 def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization):
 
@@ -53,9 +46,9 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 if __name__ == '__main__':
 
 	viz(
-	device = Config.device,
-	csv_files = Config.args.CSV_files,
-    batch_size = Config.args.batch_size, 
-    path2weights = Config.args.Path2Weights,
-	Train_folder = Config.args.Train_folder,
-	visualization = Config.args.Visualization)
+		device = Config.device,
+		csv_files = Config.args.CSV_files,
+	    batch_size = Config.args.batch_size, 
+	    path2weights = Config.args.Path2Weights,
+		Train_folder = Config.args.Train_folder,
+		visualization = Config.args.Visualization)

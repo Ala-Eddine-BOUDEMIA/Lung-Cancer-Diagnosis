@@ -1,11 +1,7 @@
-#################################################
 from torch.utils.tensorboard import SummaryWriter
-#################################################
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
-############################################
 from matplotlib import pyplot as plt
-####################################
 from torchvision import transforms                      
 from torchvision import datasets
 from torchsummary import summary
@@ -13,13 +9,10 @@ import torch.nn.functional as F
 from torchvision import models 
 from torch import nn 
 import torch
-#####################
 import seaborn as sns
 import pandas as pd
 import numpy as np
-#################
 import Utils
-############
 
 def create_model():
                                                 

@@ -1,10 +1,7 @@
-############################
 from itertools import islice 
-########################
 from pathlib import Path 
 from os import path
 import os
-#########
 
 def create_folder(output_folder):
 

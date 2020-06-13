@@ -1,24 +1,19 @@
-#################################################
 from torch.utils.tensorboard import SummaryWriter
-##################################################
 from torch.optim.lr_scheduler import ExponentialLR      
 from torch.optim import lr_scheduler              
 from torch import optim                                   
 from torch import nn                        
 import torchvision                          
 import torch                                
-##################
 import Model_Utils
 import Config
 import Utils
-################### 
 import pandas as pd                                                            
 import numpy as np
 import datetime
 import time 
 import copy
 import csv
-##########
 
 def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weights, weight_decay, path2weights, 
 	sanity_check, learning_rate, save_interval, diagnostic_path, checkpoint_file, Train_Patches_path, 
@@ -204,22 +199,22 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 if __name__ == '__main__':
 
 	model = train_val(
-    device = Config.device,
-	classes = Config.args.Classes,
-    num_epochs = Config.args.num_epochs, 
-	batch_size = Config.args.batch_size, 
-	loss_function = nn.CrossEntropyLoss(), 
-	besy_weights = Config.args.BestWeights,
-	weight_decay = Config.args.weight_decay, 
-	path2weights = Config.args.Path2Weights, 
-	sanity_check = Config.args.Sanity_Check, 
-	learning_rate = Config.args.learning_rate, 
-	save_interval = Config.args.Save_interval, 
-	diagnostic_path = Config.args.Diagnostics,
-	checkpoint_file = Config.args.Checkpoint_file,
-	Train_Patches_path = Config.args.Train_Patches, 
-	resume_checkpoint = Config.args.Resume_checkpoint, 
-	checkpoints_folder = Config.args.Checkpoints_folder, 
-	learning_rate_decay = Config.args.learning_rate_decay, 
-	Validation_Patches_path = Config.args.Validation_Patches,
-	diagnostics_directory = Config.args.Diagnostics_Directory)
+	    device = Config.device,
+		classes = Config.args.Classes,
+	    num_epochs = Config.args.num_epochs, 
+		batch_size = Config.args.batch_size, 
+		loss_function = nn.CrossEntropyLoss(), 
+		besy_weights = Config.args.BestWeights,
+		weight_decay = Config.args.weight_decay, 
+		path2weights = Config.args.Path2Weights, 
+		sanity_check = Config.args.Sanity_Check, 
+		learning_rate = Config.args.learning_rate, 
+		save_interval = Config.args.Save_interval, 
+		diagnostic_path = Config.args.Diagnostics,
+		checkpoint_file = Config.args.Checkpoint_file,
+		Train_Patches_path = Config.args.Train_Patches, 
+		resume_checkpoint = Config.args.Resume_checkpoint, 
+		checkpoints_folder = Config.args.Checkpoints_folder, 
+		learning_rate_decay = Config.args.learning_rate_decay, 
+		Validation_Patches_path = Config.args.Validation_Patches,
+		diagnostics_directory = Config.args.Diagnostics_Directory)

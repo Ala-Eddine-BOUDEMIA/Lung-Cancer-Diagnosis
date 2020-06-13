@@ -1,12 +1,9 @@
-########################
 from pathlib import Path
 import shutil
 import random
-#############
 import Config
 import Utils
 import time
-###########
 
 def split(Patches, Test_Patches, Test_Set_Size, Train_Patches, Validation_Patches, Validation_Set_Size):
 	
@@ -55,9 +52,9 @@ def split(Patches, Test_Patches, Test_Set_Size, Train_Patches, Validation_Patche
 
 if __name__ == '__main__':
 	split(
-	Patches = Config.args.Patches, 
-	Test_Patches = Config.args.Test_Patches, 
-	Test_Set_Size = Config.args.Test_Set_Size,
-	Train_Patches = Config.args.Train_Patches,
-	Validation_Patches = Config.args.Validation_Patches,  
-	Validation_Set_Size = Config.args.Validation_Set_Size)
+		Patches = Config.args.Patches, 
+		Test_Patches = Config.args.Test_Patches, 
+		Test_Set_Size = Config.args.Test_Set_Size,
+		Train_Patches = Config.args.Train_Patches,
+		Validation_Patches = Config.args.Validation_Patches,  
+		Validation_Set_Size = Config.args.Validation_Set_Size)

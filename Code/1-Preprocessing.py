@@ -1,19 +1,12 @@
-###########################
 from xml.dom import minidom
-##########################
 import Code_from_deepslide
-import Config
-import Utils
-########################
 from pathlib import Path
-#####################
 from PIL import Image
 import numpy as np
-################
 import openslide
-##########
+import Config
+import Utils
 import csv
-##########s
 
 def generate_patches(patches, classes, all_wsi, overlap, 
 	csv_files, annotations, Window_size, compression_factor):
@@ -110,11 +103,11 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 if __name__ == '__main__':
 	generate_patches(
-	patches = Config.args.Patches,
-	classes = Config.args.Classes,
-	all_wsi = Config.args.All_WSI,
-	overlap = Config.args.Overlap,
-	csv_files = Config.args.CSV_files,
-	annotations = Config.args.Annotations,
-	Window_size = Config.args.Window_size, 
-	compression_factor = Config.args.Compression_factor)
+		patches = Config.args.Patches,
+		classes = Config.args.Classes,
+		all_wsi = Config.args.All_WSI,
+		overlap = Config.args.Overlap,
+		csv_files = Config.args.CSV_files,
+		annotations = Config.args.Annotations,
+		Window_size = Config.args.Window_size, 
+		compression_factor = Config.args.Compression_factor)

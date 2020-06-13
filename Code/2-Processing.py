@@ -1,15 +1,11 @@
-#####################################
 from PIL.ImageOps import flip, mirror
 from PIL import ImageFilter
+from pathlib import Path
 from PIL import Image
 import PIL
-########################
-from pathlib import Path
 import random
-#############
 import Config
 import Utils
-############
 
 def transforms(key, image):
 
@@ -75,6 +71,6 @@ def augmentor(patches, classes, maximum):
 
 if __name__ == '__main__':
 	augmentor(
-	patches = Config.args.Patches,
-	classes = Config.args.Classes,
-	maximum = Config.args.Maximum)
+		patches = Config.args.Patches,
+		classes = Config.args.Classes,
+		maximum = Config.args.Maximum)

@@ -1,14 +1,10 @@
-########################
 from pathlib import Path
-########################
 from typing import Dict
-#######################
 import argparse
-###############
 import torch
-############
-#source: https://docs.python.org/3/library/argparse.html
-########################################################
+
+# source: https://docs.python.org/3/library/argparse.html
+
 parser = argparse.ArgumentParser(description = "Tools and parameters", 
 								formatter_class = argparse.ArgumentDefaultsHelpFormatter)
 
