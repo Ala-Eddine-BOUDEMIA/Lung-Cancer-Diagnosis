@@ -21,7 +21,8 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 Histologic pattern | ACINAR | CRIBRIFORM | MACROPAPILLARY | NON CANCEROUS | SOLID 
 -------------------|--------|------------|----------------|---------------|------
 Crops | 22 | 4 | 23 | 53 |85
-Patches (overlap = 1) | 1328 | 85 | 4053 | 8418 | 5821
+Patches (no overlap) | 1328 | 85 | 4053 | 8418 | 5821
+Patches (overlap) | 5321 (0.5) | 929 (0.3) | 5292 (0.85) | 5488 (1.2) | 5821 (1)
  
 # Requirements
 
