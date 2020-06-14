@@ -15,7 +15,7 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 # General Information
 
 - _This is a final year graduation project._
-- We are using 26 whole-slide images obtained from [The Cancer Genome Atlas (LUAD)].(https://portal.gdc.cancer.gov/projects/TCGA-LUAD)
+- We are using 26 whole-slide images obtained from [The Cancer Genome Atlas (LUAD)](https://portal.gdc.cancer.gov/projects/TCGA-LUAD).
 - Download annotations from [here](https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-018-37638-9/MediaObjects/41598_2018_37638_MOESM2_ESM.zip)
 - Annotations were acquired from the second [source](#Sources)
 	* Distribution of data among histologic patterns is as follows:
