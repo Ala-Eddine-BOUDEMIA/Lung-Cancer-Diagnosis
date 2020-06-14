@@ -158,6 +158,13 @@ We are using tensorboard to evaluate the model.
 - Plots the loss function.
 - Plots precision recall curve for each class. 
 
+to run Tensorboard write the following in your Terminal and it will create a local host for you.
+
+
+```
+tensorboard --logdir=Tensorboard
+```
+
 ## 6. Evaluation:
 
 Aggregates the patches predictions from the Test code to predict a label at the whole-slide level.
