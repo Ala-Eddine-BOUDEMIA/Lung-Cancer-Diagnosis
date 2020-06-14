@@ -15,14 +15,18 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 # General Information
 
 - _This is a final year graduation project._
-- We are using 26 whole-slide images obtained from The Cancer Genome Atlas (LUAD).
-* Distribution of data among histologic patterns is as follows:
+- We are using 26 whole-slide images obtained from [The Cancer Genome Atlas (LUAD)].(https://portal.gdc.cancer.gov/projects/TCGA-LUAD)
+- Download annotations from [here](https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-018-37638-9/MediaObjects/41598_2018_37638_MOESM2_ESM.zip)
+- Annotations were acquired from the second [source](#Sources)
+	* Distribution of data among histologic patterns is as follows:
 
-Histologic pattern | ACINAR | CRIBRIFORM | MACROPAPILLARY | NON CANCEROUS | SOLID 
--------------------|--------|------------|----------------|---------------|------
-Crops | 22 | 4 | 23 | 53 |85
-Patches (no overlap) | 1328 | 85 | 4053 | 8418 | 5821
-Patches (overlap) | 5321 (0.5) | 929 (0.3) | 5292 (0.85) | 5488 (1.2) | 5821 (1)
+__Histologic pattern__ | __ACINAR__| __CRIBRIFORM__ | __MACROPAPILLARY__ | __NON CANCEROUS__ | __SOLID__
+-------------------|--------|------------|----------------|---------------|-----------------------------
+__Crops__ | 22 | 4 | 23 | 53 |85
+__Patches (no overlap)__ | 1328 | 85 | 4053 | 8418 | 5821
+__Patches (overlap)__ | 5321 (0.5) | 929 (0.3) | 5292 (0.85) | 5488 (1.2) | 5821 (1)
+
+- We augmented data to 10000 patches per class.
  
 # Requirements
 
@@ -56,40 +60,6 @@ cd Lung-Cancer-Diagnosis
 sudo pip3 install -r requirements.txt
 ```
 
-## Run project:
-
-```
-cd Code
-```
-
-```
-python3 1-Preprocessing.py
-```
-
-```
-python3 2-Processing.py
-```
-
-```
-python3 3-Split.py
-```
-
-```
-python3 4-Train_Val.py
-```
-
-```
-python3 5-Test.py
-```
-
-```
-python3 6-Evaluation.py
-```
-
-```
-python3 7-Visualization.py
-```
-
 # Usage
 
 Take a look at `Code/Config.py` before you begin to get a feel for what parameters can be changed.
@@ -104,6 +74,7 @@ Take a look at `Code/Config.py` before you begin to get a feel for what paramete
 ```
 python3 Code/1_Preprocessing.py
 ```
+
 
 **Inputs**: `All_WSI`, `Annotations`
 
@@ -128,6 +99,7 @@ The goal of this code is to balance data using data augmentation techniques.
 python3 Code/2_Preprocessing.py
 ```
 
+
 Note that this may take some time and eventually a significant amount of space. Change `--Maximum` to be smaller if you wish not to generate as many windows. 
 
 **Inputs**: `Patches/SUBTYPE`
@@ -146,6 +118,7 @@ Note that the modified images will be ditributed to the same set as the original
 ```
 python3 Code/3_split.py
 ```
+
 
 **Inputs**: `Patches` 
 
@@ -168,6 +141,7 @@ Run the model on all the patches for each WSI in the test set.
 ```
 python3 Code/5_test.py
 ```
+
 
 We automatically choose the model with the best validation accuracy while training. You can also specify your own. 
 
@@ -194,6 +168,7 @@ There are various methods to do so, we decided to perform patch averages. Theref
 python3 Code/6_Evaluation.py
 ```
 
+
 **Inputs**: `CSV_files/Predictions`
 
 **Outputs**: `CSV_files/Predictions_cleaned`, `CSV_files/WSI_Name_Prediction.csv`
@@ -210,6 +185,7 @@ Note that The visualization is a patch level visualization using GradCAM.
 ```
 python3 Code/7_visualization.py
 ```
+
 
 **Inputs**: `CSV_files`, `Train_folder`
 
