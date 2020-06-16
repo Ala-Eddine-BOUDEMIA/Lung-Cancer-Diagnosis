@@ -44,21 +44,25 @@ __Patches (overlap)__ | 5321 (0.5) | 929 (0.3) | 5292 (0.85) | 5488 (1.2) | 5821
 
 # Installation 
 
-## Download rpository:
+## Install packages:
+
+
+```
+sudo pip3 install -r requirements.txt
+```
+
+
+## Download repository:
 
 ```
 git clone https://github.com/Ala-Eddine-BOUDEMIA/Lung-Cancer-Diagnosis.git
 ```
 
-```
-cd Lung-Cancer-Diagnosis
-```
-
-## Install packages:
 
 ```
-sudo pip3 install -r requirements.txt
+cd Lung-Cancer-Diagnosis/
 ```
+
 
 # Usage
 
@@ -66,6 +70,7 @@ Take a look at `Code/Config.py` before you begin to get a feel for what paramete
 
 ## 1. Preprocessing:
 
+This code is meant to :
 - Reads from `Annotations` folder that contains XML annotation files.
 - Reads from `All_WSI` folder that contains Whole Slide Images.
 - Generates patches and saves information about the patches in a csv file.

@@ -99,7 +99,7 @@ parser.add_argument("--Test_Set_Size",
 #####################
 parser.add_argument("--num_epochs",
                     type = int,
-                    default = 2,
+                    default = 50,
                     help = "Number of epochs for training")
 
 parser.add_argument("--learning_rate",
@@ -109,7 +109,7 @@ parser.add_argument("--learning_rate",
 
 parser.add_argument("--batch_size",
                     type = int,
-                    default = 3,
+                    default = 16,
                     help = "Mini-batch size to use for training")
 
 parser.add_argument("--learning_rate_decay",
