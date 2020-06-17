@@ -77,7 +77,7 @@ This code is meant to :
 
 
 ```
-python3 Code/1_Preprocessing.py
+python3 Code/1-Preprocessing.py
 ```
 
 
@@ -101,7 +101,7 @@ The goal of this code is to balance data using data augmentation techniques.
 
 
 ```
-python3 Code/2_Preprocessing.py
+python3 Code/2-Preprocessing.py
 ```
 
 
@@ -121,7 +121,7 @@ Note that the modified images will be ditributed to the same set as the original
 
 
 ```
-python3 Code/3_split.py
+python3 Code/3-split.py
 ```
 
 
@@ -144,7 +144,7 @@ Run the model on all the patches for each WSI in the test set.
 
 
 ```
-python3 Code/5_test.py
+python3 Code/5-test.py
 ```
 
 
@@ -177,7 +177,7 @@ There are various methods to do so, we decided to perform patch averages. Theref
 
 
 ```
-python3 Code/6_Evaluation.py
+python3 Code/6-Evaluation.py
 ```
 
 
@@ -195,7 +195,7 @@ Note that The visualization is a patch level visualization using GradCAM.
 
 
 ```
-python3 Code/7_visualization.py
+python3 Code/7-visualization.py
 ```
 
 
