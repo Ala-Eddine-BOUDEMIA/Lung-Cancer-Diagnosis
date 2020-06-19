@@ -114,7 +114,7 @@ parser.add_argument("--batch_size",
 
 parser.add_argument("--learning_rate_decay",
                     type = float,
-                    default = 0.0001,
+                    default = 0.9,
                     help = "Learning rate decay amount per epoch")
 
 parser.add_argument("--weight_decay",
