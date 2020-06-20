@@ -75,6 +75,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 						"Train accuracy", "Val loss", "Val accuracy"])
 
 		train_tb_loss, val_tb_loss = 0.0, 0.0
+		tb = SummaryWriter("Tensorboard/Model")
 
 		for epoch in range(num_epochs):
 
@@ -110,9 +111,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				if corrects is not None:
 					train_runing_metric += corrects
 
-				for x in predicted.numpy():
+				for x in predicted.cpu().numpy():
 					train_all_labels.append(x)
-				for x in train_labels.numpy():
+				for x in train_labels.cpu().numpy():
 					train_all_predictions.append(x)
 
 			tb_metrics = SummaryWriter("Tensorboard/Train_Val")
@@ -161,10 +162,10 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				if corrects is not None:
 					val_runing_metric += corrects
 
-				for x in predicted.numpy():
+				for x in predicted.cpu().numpy():
 					val_all_labels.append(x)
 				for x in train_labels.numpy():
-					val_all_predictions.append(x)
+					val_all_predictions.cpu().append(x)
 
 				if sanity_check is True:
 					break
@@ -190,6 +191,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			Model_Utils.save_work(epoch, save_interval, checkpoints_folder, model, opt, scheduler, val_metric)
 			writer.writerow([datetime.datetime.now(), epoch+1, batch_size, 
 							train_loss, train_metric, val_loss, val_metric])
+		tb.close()
 	
 	print(f"\ntraining complete in: {(time.time() - since) // 60:.2f} minutes")
 
