@@ -15,12 +15,12 @@ import time
 import copy
 import csv
 
-def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weights, weight_decay, path2weights, 
+def train_val(device, classes, num_epochs, batch_size, loss_function, best_weights, weight_decay, path2weights, 
 	sanity_check, learning_rate, save_interval, diagnostic_path, checkpoint_file, Train_Patches_path, 
 	resume_checkpoint, checkpoints_folder, learning_rate_decay, Validation_Patches_path, diagnostics_directory):
 
 	Utils.create_folder(diagnostics_directory)
-	Utils.create_folder(besy_weights)
+	Utils.create_folder(best_weights)
 	
 	print(f"Training started at: {datetime.datetime.now()}")
 	since = time.time()
@@ -34,7 +34,6 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 													batch_size = batch_size, Train = False)
 	print("\nCreating the model ...")
 	model = Model_Utils.create_model()
-	model.to(device)
 	best_model = copy.deepcopy(model.state_dict())
 	best_loss = float("inf")
 
@@ -54,6 +53,8 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 	tb_model = SummaryWriter("Tensorboard/Model")
 	tb_model.add_graph(model, train_images)
 	tb_model.close()
+
+	model.to(device)
 
 	if resume_checkpoint:
 		ckpt = torch.load(f = checkpoint_file)
@@ -199,12 +200,12 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, besy_weigh
 if __name__ == '__main__':
 
 	model = train_val(
-	    device = Config.device,
+		device = Config.device,
 		classes = Config.args.Classes,
-	    num_epochs = Config.args.num_epochs, 
+		num_epochs = Config.args.num_epochs, 
 		batch_size = Config.args.batch_size, 
 		loss_function = nn.CrossEntropyLoss(), 
-		besy_weights = Config.args.BestWeights,
+		best_weights = Config.args.BestWeights,
 		weight_decay = Config.args.weight_decay, 
 		path2weights = Config.args.Path2Weights, 
 		sanity_check = Config.args.Sanity_Check, 
