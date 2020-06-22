@@ -19,7 +19,7 @@ def create_model():
     model = models.resnet18(pretrained = True)  
     num_ftrs = model.fc.in_features             
     model.fc = nn.Linear(num_ftrs, 5)              
-    model_summary = summary(model, (3,224,224))
+    #model_summary = summary(model, (3,224,224))
 
     return model
 
@@ -28,12 +28,10 @@ def get_data_transforms(Train):
 	if Train:
 		data_transforms = transforms.Compose(transforms = [ 
 			transforms.ColorJitter(brightness = 0.5, contrast = 0.5, saturation = 0.5, hue = 0.2),
-            transforms.ToTensor(),
-            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+            transforms.ToTensor()])
 	else :
 		data_transforms = transforms.Compose(transforms = [ 
-			transforms.ToTensor(),
-			transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+			transforms.ToTensor()])
 
 	return data_transforms
 

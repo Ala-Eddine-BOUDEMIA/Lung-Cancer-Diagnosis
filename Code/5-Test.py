@@ -15,7 +15,7 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 	Utils.create_folder(predictions_directory)
 
 	model = Model_Utils.create_model()
-	model.load_state_dict(torch.load(path2weights))
+	model.load_state_dict(torch.load(path2weights, map_location=torch.device('cpu')))
 	model.eval()
 
 	print("\nLoading testing data ...")
@@ -38,8 +38,8 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		test_inputs = inputs.to(device)
 		test_labels = labels.to(device)
 
-		start = i * batch_size 
-		end = start + batch_size
+		start = i * len(inputs)
+		end = start + len(labels)
 
 		for j in range(start, end):
 			sample_name, _ = test_loader.dataset.samples[j]
@@ -51,11 +51,6 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		corrects = (predicted == test_labels).sum().item()
 		test_running_metric += corrects
 		confidences = [F.softmax(el, dim=0) for el in test_outputs]
-
-		for x in predicted.numpy():
-			test_all_predictions.append(x)
-		for x in test_labels.numpy():
-			test_all_labels.append(x)
 
 		for p in predicted:
 			preds.append(p.item())
@@ -70,6 +65,11 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		test_probs = torch.cat([torch.stack(batch) for batch in class_probs])
 		test_preds = torch.cat(class_preds)
 		
+		for x in predicted.detach().cpu().numpy():
+			test_all_predictions.append(x)
+		for x in test_labels.detach().cpu().numpy():
+			test_all_labels.append(x)
+
 	for i in range(len(classes)):
 		Model_Utils.pr_curve(i, test_probs, test_preds, classes)
 

@@ -34,6 +34,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 													batch_size = batch_size, Train = False)
 	print("\nCreating the model ...")
 	model = Model_Utils.create_model()
+	model.to(device)
 	best_model = copy.deepcopy(model.state_dict())
 	best_loss = float("inf")
 
@@ -51,10 +52,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 	tb_images.close()
 
 	tb_model = SummaryWriter("Tensorboard/Model")
-	tb_model.add_graph(model, train_images)
+	tb_model.add_graph(model, train_images.to(device))
 	tb_model.close()
 
-	model.to(device)
 
 	if resume_checkpoint:
 		ckpt = torch.load(f = checkpoint_file)
@@ -162,10 +162,10 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				if corrects is not None:
 					val_runing_metric += corrects
 
-				for x in predicted.cpu().numpy():
+				for x in predicted.detach().cpu().numpy():
 					val_all_labels.append(x)
-				for x in train_labels.numpy():
-					val_all_predictions.cpu().append(x)
+				for x in train_labels.detach().cpu().numpy():
+					val_all_predictions.append(x)
 
 				if sanity_check is True:
 					break
