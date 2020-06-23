@@ -34,7 +34,6 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 													batch_size = batch_size, Train = False)
 	print("\nCreating the model ...")
 	model = Model_Utils.create_model()
-	model.to(device)
 	best_model = copy.deepcopy(model.state_dict())
 	best_loss = float("inf")
 
@@ -52,9 +51,10 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 	tb_images.close()
 
 	tb_model = SummaryWriter("Tensorboard/Model")
-	tb_model.add_graph(model, train_images.to(device))
+	tb_model.add_graph(model, train_images)
 	tb_model.close()
 
+	model.to(device)
 
 	if resume_checkpoint:
 		ckpt = torch.load(f = checkpoint_file)
@@ -91,16 +91,15 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				train_inputs = inputs.to(device)
 				train_labels = labels.to(device)
 
-				train_outputs = model(train_inputs)
-				__, predicted = torch.max(train_outputs.data, dim = 1)
+				with torch.set_grad_enabled(mode = True):
+
+					train_outputs = model(train_inputs)
+					__, predicted = torch.max(train_outputs.data, dim = 1)
+					train_loss = loss_function(train_outputs, train_labels) 
+					train_loss.backward()
+					opt.step()
+
 				corrects = predicted.eq(train_labels.view_as(predicted)).sum().item()
-				
-				train_loss = loss_function(train_outputs, train_labels) 
-
-				opt.zero_grad()
-				train_loss.backward()
-				opt.step()
-
 				train_running_loss += train_loss.item()
 
 				train_tb_loss += train_loss.item()
@@ -130,6 +129,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			loss_history["train"].append(train_loss)
 			metric_history["train"].append(train_metric)
 
+			if torch.cuda.is_available():
+				torch.cuda.empty_cache()
+
 			model.eval()
 			val_running_loss, val_runing_metric = 0.0, 0.0
 			val_all_labels, val_all_predictions = [], []
@@ -139,18 +141,18 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				val_inputs = inputs.to(device)
 				val_labels = labels.to(device)
 
-				with torch.no_grad():
+				with torch.set_grad_enabled(mode = False):
 					val_outputs = model(val_inputs)
 					__, predicted = torch.max(val_outputs.data, dim = 1)
-					corrects = predicted.eq(val_labels.view_as(predicted)).sum().item()
-					
 					val_loss = loss_function(val_outputs, val_labels) 
-
-					if val_loss < best_loss:
-						best_loss = val_loss
-						best_model = copy.deepcopy(model.state_dict())
-						torch.save(model.state_dict(), path2weights) 
-						print("Copied best model weights")
+					
+				corrects = predicted.eq(val_labels.view_as(predicted)).sum().item()
+					
+				if val_loss < best_loss:
+					best_loss = val_loss
+					best_model = copy.deepcopy(model.state_dict())
+					torch.save(model.state_dict(), path2weights) 
+					print("Copied best model weights")
 
 				val_running_loss += val_loss.item()
 
@@ -183,6 +185,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			val_metric = val_runing_metric / float(val_len_data)
 			loss_history["val"].append(val_loss)
 			metric_history["val"].append(val_metric)
+
+			if torch.cuda.is_available():
+            	torch.cuda.empty_cache()
 
 			print("train loss: %.6f, val loss: %.6f, accuracy: %.2f"%(train_loss, val_loss, val_metric))
 			
