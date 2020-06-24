@@ -23,7 +23,7 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 __Histologic pattern__ | __ACINAR__| __CRIBRIFORM__ | __MACROPAPILLARY__ | __NON CANCEROUS__ | __SOLID__
 -------------------|--------|------------|----------------|---------------|-----------------------------
 __Crops__ | 22 | 4 | 23 | 53 |85
-__Patches (no overlap)__ | 1328 | 85 | 4053 | 8418 | 5821
+__Patches (no-overlap)__ | 1328 | 85 | 4053 | 6222 | 5207
 __Patches (overlap)__ | 5277 (0.45) | 921 (0.3) | 5706 (0.75) | 6222 (1) | 5207 (1)
 
 - We augmented data to 10000 patches per class.
@@ -72,7 +72,11 @@ Take a look at `Code/Config.py` before you begin to get a feel for what paramete
 
 This code is meant to :
 - Reads from `Annotations` folder that contains XML annotation files.
+	- XML files must be directly contained in the `Annotations` folder.
+	- For example : `Annotations/annotation_1.xml`
 - Reads from `All_WSI` folder that contains Whole Slide Images.
+	- Make sure that the WSIs are contained in at least one subfolder in the `All_WSI` folder.
+	- For example : `All_WSI/WSI_1/Image.svs`
 - Generates patches and saves information about the patches in a csv file.
 
 
@@ -105,7 +109,9 @@ python3 Code/2-Preprocessing.py
 ```
 
 
-Note that this may take some time and eventually a significant amount of space. Change `--Maximum` to be smaller if you wish not to generate as many windows. 
+Note that this may take some time and eventually a significant amount of space. 
+	* Change `--Maximum` to be smaller if you wish not to generate as many windows. 
+	* Make sure that `--Maximum` is not more than __15 times__ greater than the initial number of patches contained in the least represented class. 
 
 **Inputs**: `Patches/SUBTYPE`
 
