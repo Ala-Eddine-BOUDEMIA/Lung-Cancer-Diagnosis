@@ -109,7 +109,7 @@ python3 Code/2-Preprocessing.py
 ```
 
 
-Note that this may take some time and eventually a significant amount of space. 
+- Note that this may take some time and eventually a significant amount of space. 
 	- Change `--Maximum` to be smaller if you wish not to generate as many windows. 
 	- Make sure that `--Maximum` is not more than __15 times__ greater than the initial number of patches contained in the least represented class. 
 
