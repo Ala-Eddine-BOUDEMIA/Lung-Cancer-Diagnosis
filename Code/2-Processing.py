@@ -62,15 +62,15 @@ def augmentor(patches, classes, maximum):
 						transformed_image = transforms(key, transformed_image)
 						num_transforms += 1
 
-				new_path = '/'.join([str(patches), str(subclass), 
-							image_name + "_" + "_".join(sorted(keys))]) + ".tiff"
+				new_path = Path('/'.join([str(patches), str(subclass), 
+							image_name + "_" + "_".join(sorted(keys))]) + ".tiff")
 
-				if Path(new_path).exists() == False:
+				if new_path.exists() == False:
 					transformed_image.save(new_path)
 					num_images_generated +=1
 
 if __name__ == '__main__':
 	augmentor(
-		patches = Config.args.Patches,
-		classes = Config.args.Classes,
-		maximum = Config.args.Maximum)
+	patches = Config.args.Patches,
+	classes = Config.args.Classes,
+	maximum = Config.args.Maximum)

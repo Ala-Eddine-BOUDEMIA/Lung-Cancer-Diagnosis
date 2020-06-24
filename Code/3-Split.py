@@ -42,8 +42,8 @@ def split(Patches, Test_Patches, Test_Set_Size, Train_Patches, Validation_Patche
 						if "_".join(str(input_paths[index]).split("/")[-1].split("_")[0:5]) == patch_name:
 							if input_paths[index].exists() == True and length < set_size[i]:
 								src = str(input_paths[index])
-								dst = "/".join([str(FoldersToBeCreated[i]), 
-										"/".join(str(src).split('/')[1:])])
+								dst = Path("/".join([str(FoldersToBeCreated[i]), 
+										"/".join(str(src).split('/')[1:])]))
 								shutil.move(src, dst)
 								r.append(index)
 								length += 1
@@ -52,9 +52,9 @@ def split(Patches, Test_Patches, Test_Set_Size, Train_Patches, Validation_Patche
 
 if __name__ == '__main__':
 	split(
-		Patches = Config.args.Patches, 
-		Test_Patches = Config.args.Test_Patches, 
-		Test_Set_Size = Config.args.Test_Set_Size,
-		Train_Patches = Config.args.Train_Patches,
-		Validation_Patches = Config.args.Validation_Patches,  
-		Validation_Set_Size = Config.args.Validation_Set_Size)
+	Patches = Config.args.Patches, 
+	Test_Patches = Config.args.Test_Patches, 
+	Test_Set_Size = Config.args.Test_Set_Size,
+	Train_Patches = Config.args.Train_Patches,
+	Validation_Patches = Config.args.Validation_Patches,  
+	Validation_Set_Size = Config.args.Validation_Set_Size)

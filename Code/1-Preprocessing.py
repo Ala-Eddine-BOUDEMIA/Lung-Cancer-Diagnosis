@@ -23,7 +23,7 @@ def generate_patches(patches, classes, all_wsi, overlap,
 		image_name = str(wsi).split("/")[-1][:-4]
 		img = openslide.OpenSlide(str(wsi))
 
-		with open("/".join([str(csv_files), image_name + ".csv"]), "w") as w:
+		with open(Path("/".join([str(csv_files), image_name + ".csv"])), "w") as w:
 			writer = csv.writer(w, delimiter = "\t")
 			writer.writerow(["Patch name", "W", "H", "Type", "Region ID",
 							"Region begin X", "Region begin Y", "overlap factor"])
@@ -89,10 +89,10 @@ def generate_patches(patches, classes, all_wsi, overlap,
 						patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), 
 									int(patch_h/compression_factor)), Image.ANTIALIAS) 
 						
-						patch_name = "_".join([image_name, str(incre_x).zfill(4), 
-									str(incre_y).zfill(4), str(begin_x), str(begin_y)]) +'.tiff'
+						patch_name = Path("_".join([image_name, str(incre_x).zfill(4), 
+									str(incre_y).zfill(4), str(begin_x), str(begin_y)]) +'.tiff')
 
-						class_path = "/".join([Text, patch_name])
+						class_path = Path("/".join([Text, str(patch_name)]))
 						full_path = patches.joinpath(class_path)
 						if Code_from_deepslide.is_purple(patch_rgb):
  							patch_rgb.save(full_path)
@@ -103,11 +103,11 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 if __name__ == '__main__':
 	generate_patches(
-		patches = Config.args.Patches,
-		classes = Config.args.Classes,
-		all_wsi = Config.args.All_WSI,
-		overlap = Config.args.Overlap,
-		csv_files = Config.args.CSV_files,
-		annotations = Config.args.Annotations,
-		Window_size = Config.args.Window_size, 
-		compression_factor = Config.args.Compression_factor)
+	patches = Config.args.Patches,
+	classes = Config.args.Classes,
+	all_wsi = Config.args.All_WSI,
+	overlap = Config.args.Overlap,
+	csv_files = Config.args.CSV_files,
+	annotations = Config.args.Annotations,
+	Window_size = Config.args.Window_size, 
+	compression_factor = Config.args.Compression_factor)

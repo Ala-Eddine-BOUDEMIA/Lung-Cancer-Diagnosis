@@ -46,9 +46,9 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 if __name__ == '__main__':
 
 	viz(
-		device = Config.device,
-		csv_files = Config.args.CSV_files,
-		batch_size = Config.args.batch_size, 
-		path2weights = Config.args.Path2Weights,
-		Train_folder = Config.args.Train_folder,
-		visualization = Config.args.Visualization)
+	device = Config.device,
+	csv_files = Config.args.CSV_files,
+	batch_size = Config.args.batch_size, 
+	path2weights = Config.args.Path2Weights,
+	Train_folder = Config.args.Train_folder,
+	visualization = Config.args.Visualization)

@@ -97,11 +97,11 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 if __name__ == '__main__':
 
 	test(
-		device = Config.device,
-		classes = Config.args.Classes, 
-		batch_size = Config.args.batch_size, 
-		path2weights = Config.args.Path2Weights,
-		prediction_file = Config.args.Predictions, 
-		Test_Patches_path = Config.args.Test_Patches, 
-		predictions_directory = Config.args.Predictions_Directory, 
-		diagnostics_directory = Config.args.Diagnostics_Directory)
+	device = Config.device,
+	classes = Config.args.Classes, 
+	batch_size = Config.args.batch_size, 
+	path2weights = Config.args.Path2Weights,
+	prediction_file = Config.args.Predictions, 
+	Test_Patches_path = Config.args.Test_Patches, 
+	predictions_directory = Config.args.Predictions_Directory, 
+	diagnostics_directory = Config.args.Diagnostics_Directory)

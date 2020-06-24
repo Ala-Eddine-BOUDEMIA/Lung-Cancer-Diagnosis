@@ -55,7 +55,7 @@ def get_prediction(csv_files, predictions, output_folder, predictions_dir):
 
 if __name__ == '__main__':
 	get_prediction(
-		csv_files = Config.args.CSV_files, 
-		predictions = Config.args.Predictions,
-		output_folder = Config.args.Predictions,
-		predictions_dir = Config.args.Predictions_Directory)
+	csv_files = Config.args.CSV_files, 
+	predictions = Config.args.Predictions,
+	output_folder = Config.args.Predictions,
+	predictions_dir = Config.args.Predictions_Directory)

@@ -24,7 +24,7 @@ __Histologic pattern__ | __ACINAR__| __CRIBRIFORM__ | __MACROPAPILLARY__ | __NON
 -------------------|--------|------------|----------------|---------------|-----------------------------
 __Crops__ | 22 | 4 | 23 | 53 |85
 __Patches (no overlap)__ | 1328 | 85 | 4053 | 8418 | 5821
-__Patches (overlap)__ | 5321 (0.5) | 929 (0.3) | 5292 (0.85) | 5488 (1.2) | 5821 (1)
+__Patches (overlap)__ | 5277 (0.45) | 921 (0.3) | 5706 (0.75) | 6222 (1) | 5207 (1)
 
 - We augmented data to 10000 patches per class.
  

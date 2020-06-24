@@ -49,7 +49,7 @@ parser.add_argument("--Compression_factor",
 
 parser.add_argument("--Overlap",
 					type = Dict,
-					default = {"ACINAR": 0.5, "CRIB": 0.3, "MICROPAP": 0.85, "NC": 1.2, "SOLID": 1},
+					default = {"ACINAR": 0.45, "CRIB": 0.3, "MICROPAP": 0.75, "NC": 1, "SOLID": 1},
 					help = "Overlap factor while generating patches")
 
 parser.add_argument("--Maximum",
@@ -164,7 +164,7 @@ parser.add_argument("--Checkpoints_folder",
 
 parser.add_argument("--Checkpoint_file",
     				type = Path,
-    				default = Path("Train_folder/Model/Checkpoints/resnet18_e0_val0.50000.pt"),
+    				default = Path("Train_folder/Model/Checkpoints/'replace with checkpoint file name'"),
     				help = "Checkpoint file to load if resume_checkpoint_path is True")
 
 parser.add_argument("--Predictions_Directory",
