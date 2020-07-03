@@ -89,10 +89,10 @@ def generate_patches(patches, classes, all_wsi, overlap,
 						patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), 
 									int(patch_h/compression_factor)), Image.ANTIALIAS) 
 						
-						patch_name = Path("_".join([image_name, str(incre_x).zfill(4), 
-									str(incre_y).zfill(4), str(begin_x), str(begin_y)]) +'.tiff')
+						patch_name = "_".join([image_name, str(incre_x).zfill(4), 
+									str(incre_y).zfill(4), str(begin_x), str(begin_y)]) + '.tiff'
 
-						class_path = Path("/".join([Text, str(patch_name)]))
+						class_path = Path("/".join([Text, patch_name]))
 						full_path = patches.joinpath(class_path)
 						if Code_from_deepslide.is_purple(patch_rgb):
  							patch_rgb.save(full_path)

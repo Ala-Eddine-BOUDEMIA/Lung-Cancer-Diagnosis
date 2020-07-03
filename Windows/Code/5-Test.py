@@ -15,12 +15,12 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 	Utils.create_folder(predictions_directory)
 
 	model = Model_Utils.create_model()
-	model.load_state_dict(torch.load(path2weights, map_location=torch.device('cpu')))
+	model.load_state_dict(torch.load(path2weights, map_location=torch.device(device)))
 	model.eval()
 
 	print("\nLoading testing data ...")
 	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, 
-												batch_size = batch_size, Train = False)
+													batch_size = batch_size, Train = False)
 	test_len_data = len(test_set)
 
 	tb_images = SummaryWriter("Tensorboard/Test")
@@ -33,6 +33,8 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 	names, preds, confidence_stats = [], [], []
 	test_running_metric, confidence_running_metric = 0.0, 0.0
 
+	model.to(device)
+
 	for i, (inputs, labels) in enumerate(test_loader):
 
 		test_inputs = inputs.to(device)
@@ -43,14 +45,15 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 
 		for j in range(start, end):
 			sample_name, _ = test_loader.dataset.samples[j]
-			sample_name = sample_name.split("/")[-1][:-5]
+			sample_name = sample_name.split("\\")[-1][:-5]
 			names.append(sample_name)
 
-		test_outputs = model(test_inputs)
-		__, predicted = torch.max(test_outputs.data, 1)
-		corrects = (predicted == test_labels).sum().item()
-		test_running_metric += corrects
-		confidences = [F.softmax(el, dim=0) for el in test_outputs]
+		with torch.set_grad_enabled(mode = False):
+			test_outputs = model(test_inputs)
+			__, predicted = torch.max(test_outputs.data, 1)
+			corrects = (predicted == test_labels).sum().item()
+			test_running_metric += corrects
+			confidences = [F.softmax(el, dim=0) for el in test_outputs]
 
 		for p in predicted:
 			preds.append(p.item())
@@ -91,7 +94,7 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 
 	print(f"Accuracy of the network on the: {test_len_data}",
 		f" test images: {100 * test_running_metric / test_len_data}\n"
-		f"Averge confidence of the model on the: {test_len_data}",
+		f" Averge confidence of the model on the: {test_len_data}",
 		f" test images: {100 * confidence_running_metric / test_len_data}\n")
 
 if __name__ == '__main__':
