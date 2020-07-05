@@ -12,7 +12,7 @@ def get_prediction(csv_files, predictions, output_folder, predictions_dir):
 		writer.writerow(["Name", "Prediction", "Confidence"])
 		with open(predictions, "r") as preds:
 			wsi_names = []
-			for preds_line in islice(preds, 1, None):
+			for preds_line in islice(preds, 0, None):
 				patch_name, predicted, confidence = preds_line.split("\t")
 				wsi_name = patch_name.split("_")[0]
 				if wsi_name not in wsi_names:

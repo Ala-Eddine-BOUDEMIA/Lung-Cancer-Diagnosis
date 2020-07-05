@@ -16,6 +16,7 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 
 	model = Model_Utils.create_model()
 	model.load_state_dict(torch.load(path2weights))
+	model.to(device)
 	config = dict(model_type = 'resnet', arch = model, layer_name = 'layer4')
 	gradcam = GradCAM.from_config(**config) 
 	model.eval()
@@ -36,7 +37,7 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 					if tiff_name == patch_name:
 						tiff_img = Image.open(tiff)
 						tiff_image = transforms.Compose([transforms.ToTensor()])(tiff_img).to(device)
-						normed_tiff_img = transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])(tiff_image)[None]
+						normed_tiff_img = transforms.Normalize([0, 0, 0], [1, 1, 1])(tiff_image)[None]
 						
 						mask, _ = gradcam(normed_tiff_img)
 						heatmap, result = visualize_cam(mask, tiff_image)

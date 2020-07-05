@@ -92,9 +92,9 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 			writer.writerow([names[x], preds[x], f"{100*confidence_stats[x]:.6}"])
 
 	print(f"Accuracy of the network on the: {test_len_data}",
-		f" test images: {100 * test_running_metric / test_len_data}\n"
+		f"test images: {100 * test_running_metric / test_len_data}\n"
 		f"Averge confidence of the model on the: {test_len_data}",
-		f" test images: {100 * confidence_running_metric / test_len_data}\n")
+		f"test images: {100 * confidence_running_metric / test_len_data}\n")
 
 if __name__ == '__main__':
 

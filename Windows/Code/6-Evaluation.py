@@ -13,14 +13,15 @@ def get_prediction(csv_files, predictions, output_folder, predictions_dir):
 		with open(predictions, "r") as preds:
 			wsi_names = []
 			for preds_line in islice(preds, 1, None):
-				patch_name, predicted, confidence = preds_line.split("\t")
-				wsi_name = patch_name.split("_")[0]
-				if wsi_name not in wsi_names:
-					wsi_names.append(wsi_name)
-				confidence = confidence.replace('\n','')
-				patch_name = patch_name.split("_")
-				if len(patch_name) == 5:
-					writer.writerow(["_".join(patch_name), predicted, confidence])
+				if preds_line.split('\t') != ['\n']:
+					patch_name, predicted, confidence = preds_line.split("\t")
+					wsi_name = patch_name.split("_")[0]
+					if wsi_name not in wsi_names:
+						wsi_names.append(wsi_name)
+					confidence = confidence.replace('\n','')
+					patch_name = patch_name.split("_")
+					if len(patch_name) == 5:
+						writer.writerow(["_".join(patch_name), predicted, confidence])
 	
 	for wsi_name in wsi_names:
 		classe = {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0}
@@ -30,13 +31,14 @@ def get_prediction(csv_files, predictions, output_folder, predictions_dir):
 
 		with open(predictions_cleaned, "r") as preds:
 			for preds_line in islice(preds, 1, None):
-				patch_name, prediction, confidence = preds_line.split("\t")
-				confidence = float(confidence.replace('\n',''))
-				if wsi_name == patch_name.split("_")[0]:
-					if confidence > 90:
-						classe[prediction] += 1 
-						conf[prediction] += confidence
-						patches_number += 1
+				if preds_line.split('\t') != ['\n']:
+					patch_name, prediction, confidence = preds_line.split("\t")
+					confidence = float(confidence.replace('\n',''))
+					if wsi_name == patch_name.split("_")[0]:
+						if confidence > 90:
+							classe[prediction] += 1 
+							conf[prediction] += confidence
+							patches_number += 1
 
 			sorted_classe = sorted(classe.items(), key = operator.itemgetter(1), reverse = True)
 			for sc in sorted_classe:
