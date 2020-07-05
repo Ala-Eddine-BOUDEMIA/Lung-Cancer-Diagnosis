@@ -126,9 +126,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			cr_train.to_csv(str(diagnostics_directory)+f"/cr_{epoch}_train.csv", sep = '\t')
 			
 			train_len_data = len(train_set)
-			train_loss = train_running_loss / float(train_len_data)
+			training_loss = train_running_loss / float(train_len_data)
 			train_metric = train_runing_metric / float(train_len_data)
-			loss_history["train"].append(train_loss)
+			loss_history["train"].append(training_loss)
 			metric_history["train"].append(train_metric)
 
 			if torch.cuda.is_available():
@@ -185,21 +185,22 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			cr_val.to_csv(str(diagnostics_directory)+f"/cr_{epoch}_val.csv", sep = '\t')
 
 			val_len_data = len(val_set)
-			val_loss = val_running_loss / float(val_len_data)
+			validation_loss = val_running_loss / float(val_len_data)
 			val_metric = val_runing_metric / float(val_len_data)
-			loss_history["val"].append(val_loss)
+			loss_history["val"].append(validation_loss)
 			metric_history["val"].append(val_metric)
 
 			if torch.cuda.is_available():
 				torch.cuda.empty_cache()
 
-			print("train loss: %.6f, val loss: %.6f, accuracy: %.2f"%(train_loss, val_loss, val_metric))
+			print("Epoch train loss: %.6f, Epoch val loss: %.6f, accuracy: %.2f"%(training_loss, 
+																	validation_loss, val_metric))
 			
 			scheduler.step()
 
 			Model_Utils.save_work(epoch, save_interval, checkpoints_folder, model, opt, scheduler, val_metric)
 			writer.writerow([datetime.datetime.now(), epoch+1, batch_size, 
-							train_loss, train_metric, val_loss, val_metric])
+							training_loss, train_metric, validation_loss, val_metric])
 		tb.close()
 	
 	print(f"\ntraining complete in: {(time.time() - since) // 60:.2f} minutes")
