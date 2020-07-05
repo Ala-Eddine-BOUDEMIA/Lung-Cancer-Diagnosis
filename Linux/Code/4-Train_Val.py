@@ -164,9 +164,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				if corrects is not None:
 					val_runing_metric += corrects
 
-				for x in predicted.detach().cpu().numpy():
+				for x in predicted.cpu().numpy():
 					val_all_labels.append(x)
-				for x in train_labels.detach().cpu().numpy():
+				for x in train_labels.cpu().numpy():
 					val_all_predictions.append(x)
 
 				if sanity_check is True:
