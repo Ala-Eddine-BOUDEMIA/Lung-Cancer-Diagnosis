@@ -94,12 +94,12 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				with torch.set_grad_enabled(mode = True):
 
 					train_outputs = model(train_inputs)
-					__, predicted = torch.max(train_outputs.data, dim = 1)
+					__, train_predicted = torch.max(train_outputs.data, dim = 1)
 					train_loss = loss_function(train_outputs, train_labels) 
 					train_loss.backward()
 					opt.step()
 
-				corrects = predicted.eq(train_labels.view_as(predicted)).sum().item()
+				corrects = train_predicted.eq(train_labels.view_as(train_predicted)).sum().item()
 				train_running_loss += train_loss.item()
 
 				train_tb_loss += train_loss.item()
@@ -112,7 +112,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 
 				for x in train_labels.cpu().numpy():
 					train_all_labels.append(x)
-				for x in predicted.cpu().numpy():
+				for x in train_predicted.cpu().numpy():
 					train_all_predictions.append(x)
 
 			tb_metrics = SummaryWriter("Tensorboard/Train_Val")
@@ -145,10 +145,10 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 
 				with torch.set_grad_enabled(mode = False):
 					val_outputs = model(val_inputs)
-					__, predicted = torch.max(val_outputs.data, dim = 1)
+					__, val_predicted = torch.max(val_outputs.data, dim = 1)
 					val_loss = loss_function(val_outputs, val_labels) 
 					
-				corrects = predicted.eq(val_labels.view_as(predicted)).sum().item()
+				corrects = val_predicted.eq(val_labels.view_as(val_predicted)).sum().item()
 					
 				if val_loss < best_loss:
 					best_loss = val_loss
@@ -166,9 +166,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				if corrects is not None:
 					val_runing_metric += corrects
 
-				for x in train_labels.cpu().numpy():
+				for x in val_labels.cpu().numpy():
 					val_all_labels.append(x)
-				for x in predicted.cpu().numpy():
+				for x in val_predicted.cpu().numpy():
 					val_all_predictions.append(x)
 
 				if sanity_check is True:

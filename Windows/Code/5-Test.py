@@ -68,9 +68,9 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		test_probs = torch.cat([torch.stack(batch) for batch in class_probs])
 		test_preds = torch.cat(class_preds)
 		
-		for x in predicted.detach().cpu().numpy():
+		for x in predicted.cpu().numpy():
 			test_all_predictions.append(x)
-		for x in test_labels.detach().cpu().numpy():
+		for x in test_labels.cpu().numpy():
 			test_all_labels.append(x)
 
 	for i in range(len(classes)):
