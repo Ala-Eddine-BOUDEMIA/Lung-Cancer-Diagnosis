@@ -187,7 +187,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			metric_history["val"].append(val_metric)
 
 			if torch.cuda.is_available():
-            	torch.cuda.empty_cache()
+				torch.cuda.empty_cache()
 
 			print("train loss: %.6f, val loss: %.6f, accuracy: %.2f"%(train_loss, val_loss, val_metric))
 			

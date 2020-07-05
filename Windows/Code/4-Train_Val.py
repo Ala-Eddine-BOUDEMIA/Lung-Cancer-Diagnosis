@@ -26,12 +26,10 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 	since = time.time()
 	
 	print("\nLoading training data ...")
-	train_loader, train_set = Model_Utils.load_data(path = Train_Patches_path, shuffle = True, 
-													batch_size = batch_size)
+	train_loader, train_set = Model_Utils.load_data(path = Train_Patches_path, shuffle = True, batch_size = batch_size)
 
 	print("\nLoading validation data ...")
-	val_loader, val_set = Model_Utils.load_data(path = Validation_Patches_path, shuffle = False, 
-												batch_size = batch_size, Train = False)
+	val_loader, val_set = Model_Utils.load_data(path = Validation_Patches_path, shuffle = False, batch_size = batch_size, Train = False)
 	print("\nCreating the model ...")
 	model = Model_Utils.create_model()
 	best_model = copy.deepcopy(model.state_dict())
@@ -71,8 +69,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 
 	with open(diagnostic_path, 'w') as file:
 		writer = csv.writer(file, delimiter = '\t')
-		writer.writerow(["Date", "Epoch", "Batch size", "Train loss", 
-			"Train accuracy", "Val loss", "Val accuracy"])
+		writer.writerow(["Date", "Epoch", "Batch size", "Train loss", "Train accuracy", "Val loss", "Val accuracy"])
 
 		train_tb_loss, val_tb_loss = 0.0, 0.0
 		tb = SummaryWriter("Tensorboard/Model")
@@ -194,8 +191,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			scheduler.step()
 
 			Model_Utils.save_work(epoch, save_interval, checkpoints_folder, model, opt, scheduler, val_metric)
-			writer.writerow([datetime.datetime.now(), epoch+1, batch_size, 
-				train_loss, train_metric, val_loss, val_metric])
+			writer.writerow([datetime.datetime.now(), epoch+1, batch_size, train_loss, train_metric, val_loss, val_metric])
 			
 		tb.close()
 	
