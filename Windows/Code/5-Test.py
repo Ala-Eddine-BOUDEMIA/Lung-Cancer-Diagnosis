@@ -77,8 +77,8 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		Model_Utils.pr_curve(i, test_probs, test_preds, classes)
 
 	tb_metrics = SummaryWriter("Tensorboard/Test")
-	cm_test_heatmap, cm_test = Model_Utils.c_m(test_all_labels, test_all_predictions, classes)
-	cr_test_heatmap, cr_test = Model_Utils.c_r(test_all_labels, test_all_predictions, classes)
+	cm_test_heatmap, cm_test = Model_Utils.c_m(np.array(test_all_labels), np.array(test_all_predictions), classes)
+	cr_test_heatmap, cr_test = Model_Utils.c_r(np.array(test_all_labels), np.array(test_all_predictions), classes)
 	tb_metrics.add_figure("Test Confusion matrix: ", cm_test_heatmap)
 	tb_metrics.add_figure("Test Classification report: ", cr_test_heatmap)	
 	tb_metrics.close()

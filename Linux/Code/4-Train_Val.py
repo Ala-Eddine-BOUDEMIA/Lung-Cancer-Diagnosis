@@ -110,14 +110,16 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				if corrects is not None:
 					train_runing_metric += corrects
 
-				for x in predicted.cpu().numpy():
-					train_all_labels.append(x)
 				for x in train_labels.cpu().numpy():
+					train_all_labels.append(x)
+				for x in predicted.cpu().numpy():
 					train_all_predictions.append(x)
 
 			tb_metrics = SummaryWriter("Tensorboard/Train_Val")
-			cm_train_heatmap, cm_train = Model_Utils.c_m(train_all_labels, train_all_predictions, classes)
-			cr_train_heatmap, cr_train = Model_Utils.c_r(train_all_labels, train_all_predictions, classes)
+			cm_train_heatmap, cm_train = Model_Utils.c_m(np.array(train_all_labels), 
+											np.array(train_all_predictions), classes)
+			cr_train_heatmap, cr_train = Model_Utils.c_r(np.array(train_all_labels), 
+											np.array(train_all_predictions), classes)
 			tb_metrics.add_figure("Train Confusion matrix epoch: " + str(epoch), cm_train_heatmap)
 			tb_metrics.add_figure("Train Classification report epoch: " + str(epoch), cr_train_heatmap)
 			np.savetxt(str(diagnostics_directory)+f"/cm_{epoch}_train.csv", cm_train, delimiter = '\t')
@@ -164,16 +166,18 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 				if corrects is not None:
 					val_runing_metric += corrects
 
-				for x in predicted.cpu().numpy():
-					val_all_labels.append(x)
 				for x in train_labels.cpu().numpy():
+					val_all_labels.append(x)
+				for x in predicted.cpu().numpy():
 					val_all_predictions.append(x)
 
 				if sanity_check is True:
 					break
 
-			cm_val_heatmap, cm_val = Model_Utils.c_m(val_all_labels, val_all_predictions, classes)
-			cr_val_heatmap, cr_val = Model_Utils.c_r(val_all_labels, val_all_predictions, classes)
+			cm_val_heatmap, cm_val = Model_Utils.c_m(np.array(val_all_labels), 
+										np.array(val_all_predictions), classes)
+			cr_val_heatmap, cr_val = Model_Utils.c_r(np.array(val_all_labels), 
+										np.array(val_all_predictions), classes)
 			tb_metrics.add_figure("Validation Confusion matrix epoch: " + str(epoch), cm_val_heatmap)
 			tb_metrics.add_figure("Validation Classification report epoch: " + str(epoch), cr_val_heatmap)			
 			tb_metrics.close()
