@@ -15,7 +15,7 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 	Utils.create_folder(predictions_directory)
 
 	model = Model_Utils.create_model()
-	model.load_state_dict(torch.load(path2weights, map_location=torch.device(device)))
+	model.load_state_dict(torch.load(path2weights, map_location = torch.device(device)))
 	model.eval()
 
 	print("\nLoading testing data ...")
