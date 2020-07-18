@@ -28,7 +28,7 @@ def get_data_transforms(Train):
 
 	if Train:
 		data_transforms = transforms.Compose(transforms = [ 
-			transforms.ColorJitter(brightness = 0.5, contrast = 0.5, saturation = 0.5, hue = 0.2),
+			#transforms.ColorJitter(brightness = 0.5, contrast = 0.5, saturation = 0.5, hue = 0.2),
             transforms.ToTensor()])
 	else :
 		data_transforms = transforms.Compose(transforms = [ 
@@ -53,7 +53,7 @@ def get_current_lr(opt):
 
 	return current_lr
 
-def save_work(epoch, save_interval, checkpoints_folder, model, opt, scheduler, val_metric):
+def save_work(epoch, save_interval, checkpoints_folder, model, opt, val_metric): #, scheduler):
 
 	if epoch % save_interval == 0:
 		output_path = checkpoints_folder.joinpath(f"resnet18_e{epoch}_val{val_metric:.5f}.pt")
@@ -63,7 +63,7 @@ def save_work(epoch, save_interval, checkpoints_folder, model, opt, scheduler, v
 		torch.save(obj = {
 			"model_state_dict": model.state_dict(),
 			"optimizer_state_dict": opt.state_dict(),
-			"scheduler_state_dict": scheduler.state_dict(),
+			#"scheduler_state_dict": scheduler.state_dict(),
 			"epoch": epoch + 1}, f = str(output_path))
 
 def c_m(actual, predicted, classes):

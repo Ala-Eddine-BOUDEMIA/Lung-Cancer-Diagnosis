@@ -37,8 +37,8 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 	best_model = copy.deepcopy(model.state_dict())
 	best_loss = float("inf")
 
-	opt = optim.Adam(params = model.parameters(), lr = learning_rate, weight_decay = weight_decay)
-	scheduler = lr_scheduler.ExponentialLR(optimizer = opt, gamma = learning_rate_decay)
+	opt = optim.Adam(params = model.parameters(), lr = learning_rate)#, weight_decay = weight_decay)
+	#scheduler = lr_scheduler.ExponentialLR(optimizer = opt, gamma = learning_rate_decay)
 	
 	train_images, train_labels = next(iter(train_loader))
 	train_grid = torchvision.utils.make_grid(train_images)
@@ -60,7 +60,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 		ckpt = torch.load(f = checkpoint_file)
 		model.load_state_dict(state_dict = ckpt["model_state_dict"])
 		opt.load_state_dict(state_dict = ckpt["optimizer_state_dict"])
-		scheduler.load_state_dict(state_dict = ckpt["scheduler_state_dict"])
+		#scheduler.load_state_dict(state_dict = ckpt["scheduler_state_dict"])
 		start_epoch = ckpt["epoch"]
 		print("Model loaded from: ", checkpoint_file)
 	else:
@@ -80,7 +80,8 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 		for epoch in range(num_epochs):
 
 			current_lr = Model_Utils.get_current_lr(opt)
-			print('\nEpoch {}/{}, current lr={}'.format(epoch + 1, num_epochs, current_lr))
+			print("\n_____________________________")
+			print('Epoch {}/{}, current lr={}'.format(epoch + 1, num_epochs, current_lr))
 
 			model.train()
 			train_running_loss, train_runing_metric = 0.0, 0.0
@@ -154,7 +155,9 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 					best_loss = val_loss
 					best_model = copy.deepcopy(model.state_dict())
 					torch.save(model.state_dict(), path2weights) 
-					print("Copied best model weights")
+					print("\nCopied best model weights")
+					print("Best loss: ", best_loss.item())
+					print(f"Best model's accuracy: {100*(corrects/len(val_inputs)):.5f}")
 
 				val_running_loss += val_loss.item()
 
@@ -193,12 +196,12 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 			if torch.cuda.is_available():
 				torch.cuda.empty_cache()
 
-			print("Epoch train loss: %.6f, Epoch val loss: %.6f, accuracy: %.2f"%(training_loss, 
-																	validation_loss, val_metric))
+			print("\nEpoch train loss: %.6f, Epoch val loss: %.6f, accuracy: %.2f"%(training_loss, 
+																	validation_loss, 100 * val_metric))
 			
-			scheduler.step()
+			#scheduler.step()
 
-			Model_Utils.save_work(epoch, save_interval, checkpoints_folder, model, opt, scheduler, val_metric)
+			Model_Utils.save_work(epoch, save_interval, checkpoints_folder, model, opt, val_metric)#, scheduler)
 			writer.writerow([datetime.datetime.now(), epoch+1, batch_size, 
 							training_loss, train_metric, validation_loss, val_metric])
 		tb.close()

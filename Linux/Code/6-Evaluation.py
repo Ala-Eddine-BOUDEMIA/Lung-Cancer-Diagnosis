@@ -33,7 +33,7 @@ def get_prediction(csv_files, predictions, output_folder, predictions_dir):
 				patch_name, prediction, confidence = preds_line.split("\t")
 				confidence = float(confidence.replace('\n',''))
 				if wsi_name == patch_name.split("_")[0]:
-					if confidence > 90:
+					if confidence >= 00:
 						classe[prediction] += 1 
 						conf[prediction] += confidence
 						patches_number += 1
