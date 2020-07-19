@@ -152,7 +152,7 @@ def train_val(device, classes, num_epochs, batch_size, loss_function, best_weigh
 					torch.save(model.state_dict(), path2weights) 
 					print("Copied best model weights")
 					print("Best loss: ", best_loss)
-					print(f"Best model's accuracy : {100*(corrects/len(val_inputs)):.5f}")
+					print(f"Best model's accuracy on the {len(val_inputs)} validation images: {100*(corrects/len(val_inputs)):.5f}")
 
 				val_running_loss += val_loss.item()
 
