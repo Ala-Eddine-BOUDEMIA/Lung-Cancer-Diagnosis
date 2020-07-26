@@ -18,7 +18,7 @@ def create_model():
                                                 
     model = models.resnet18(pretrained = True)  
     num_ftrs = model.fc.in_features             
-    model.fc = nn.Linear(num_ftrs, 4)              
+    model.fc = nn.Linear(num_ftrs, 5)              
     #model_summary = summary(model, (3,224,224))
 
     return model
