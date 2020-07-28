@@ -2,7 +2,6 @@ from xml.dom import minidom
 import Code_from_deepslide
 from pathlib import Path
 from PIL import Image
-import numpy as np
 import openslide
 import Config
 import Utils
@@ -13,6 +12,7 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 	csv_files = Utils.create_folder(csv_files.joinpath("Annotations"))
 	Utils.create_folder(patches)
+	
 	for classe in classes:
 		Utils.create_folder(patches.joinpath(classe))
 
@@ -25,7 +25,8 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 		with open(Path("/".join([str(csv_files), image_name + ".csv"])), "w") as w:
 			writer = csv.writer(w, delimiter = "\t")
-			writer.writerow(["Patch name", "W", "H", "Type", "Region ID", 
+			writer.writerow(
+				["Patch name", "W", "H", "Type", "Region ID", 
 				"Region begin X", "Region begin Y", "overlap factor"])
 
 			xmldoc = minidom.parse(str(file))
@@ -52,10 +53,13 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 				if w % Window_size == 0:
 					increment_x = w // Window_size  
+				
 				else:
 					increment_x = w // Window_size + 1
+				
 				if h % Window_size == 0:
 					increment_y = h // Window_size  
+				
 				else:
 					increment_y = h // Window_size + 1
 
@@ -73,6 +77,7 @@ def generate_patches(patches, classes, all_wsi, overlap,
 						if patch_w != Window_size:
 							begin_x = begin_x - (Window_size - patch_w) 
 							patch_w = end_x - begin_x
+						
 						if patch_h != Window_size:
 							begin_y = begin_y - (Window_size - patch_h)
 							patch_h = end_y - begin_y
@@ -86,11 +91,13 @@ def generate_patches(patches, classes, all_wsi, overlap,
 
 						patch_rgb = Image.new("RGB", patch.size, (255,255,255))
 						patch_rgb.paste(patch) 
-						patch_rgb = patch_rgb.resize((int(patch_w/compression_factor), 
-							int(patch_h/compression_factor)), Image.ANTIALIAS) 
+						patch_rgb = patch_rgb.resize(
+							(int(patch_w/compression_factor), int(patch_h/compression_factor)), 
+							Image.ANTIALIAS) 
 						
-						patch_name = "_".join([image_name, str(incre_x).zfill(4), 
-							str(incre_y).zfill(4), str(begin_x), str(begin_y)]) + '.tiff'
+						patch_name = "_".join(
+							[image_name, str(incre_x).zfill(4), str(incre_y).zfill(4), 
+							str(begin_x), str(begin_y)]) + '.tiff'
 
 						class_path = Path("/".join([Text, patch_name]))
 						full_path = patches.joinpath(class_path)
@@ -98,16 +105,17 @@ def generate_patches(patches, classes, all_wsi, overlap,
  							patch_rgb.save(full_path)
 						i += 1
 
-						writer.writerow([patch_name, w, h, Text, Id, 
+						writer.writerow(
+							[patch_name, w, h, Text, Id, 
 							crop_begin_x, crop_begin_y, overlap[Text]])
 
 if __name__ == '__main__':
 	generate_patches(
-	patches = Config.args.Patches,
-	classes = Config.args.Classes,
-	all_wsi = Config.args.All_WSI,
-	overlap = Config.args.Overlap,
-	csv_files = Config.args.CSV_files,
-	annotations = Config.args.Annotations,
-	Window_size = Config.args.Window_size, 
-	compression_factor = Config.args.Compression_factor)
+		patches = Config.args.Patches,
+		classes = Config.args.Classes,
+		all_wsi = Config.args.All_WSI,
+		overlap = Config.args.Overlap,
+		csv_files = Config.args.CSV_files,
+		annotations = Config.args.Annotations,
+		Window_size = Config.args.Window_size, 
+		compression_factor = Config.args.Compression_factor)

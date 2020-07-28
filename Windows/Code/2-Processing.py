@@ -11,10 +11,13 @@ def transforms(key, image):
 
 	if key == "RandomNoise": 
 		transformed_image = image.filter(ImageFilter.GaussianBlur(1))
+	
 	elif key == "RandomRotation": 
 		transformed_image = image.rotate(random.choice([90, 180, 270]))
+	
 	elif key == "flip": 
 		transformed_image = flip(image)
+	
 	elif key == "mirror": 
 		transformed_image = mirror(image)
 
@@ -57,12 +60,14 @@ def augmentor(patches, classes, maximum):
 				keys = []
 				while num_transforms < num_transforms_to_apply:
 					key = random.choice(transformations)
+					
 					while key not in keys:
 						keys.append(key)
 						transformed_image = transforms(key, transformed_image)
 						num_transforms += 1
 
-				new_path = Path('/'.join([str(patches), str(subclass),
+				new_path = Path('/'.join(
+					[str(patches), str(subclass),
 					image_name + "_" + "_".join(sorted(keys))]) + ".tiff")
 
 				if new_path.exists() == False:
@@ -71,6 +76,6 @@ def augmentor(patches, classes, maximum):
 
 if __name__ == '__main__':
 	augmentor(
-	patches = Config.args.Patches,
-	classes = Config.args.Classes,
-	maximum = Config.args.Maximum)
+		patches = Config.args.Patches,
+		classes = Config.args.Classes,
+		maximum = Config.args.Maximum)

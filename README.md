@@ -27,7 +27,7 @@ __Crops__ | 22 | 4 | 23 | 53 |85
 __Patches (no-overlap)__ | 1328 | 85 | 4053 | 6222 | 5207
 __Patches (overlap)__ | 5277 (0.45) | 921 (0.3) | 5706 (0.75) | 6222 (1) | 5207 (1)
 
-- We augmented data to 10000 patches per class.
+- We augmented data to 7000 patches per class.
  
 # Requirements
 
@@ -122,7 +122,7 @@ python3 Code/2-Preprocessing.py
 
 Splits the data into a train, validation and test set. Default validation and test patches per class is 1000.
 You can change these numbers by changing the `--Validation_Set_Size` and `--Test_Set_Size`. 
-You can skip this step if you did a custom split (for example, you need to split by patients).
+You can skip this step if you did a custom split.
 
 Note that the modified images will be ditributed to the same set as the original, so the model won't be memorizing patterns.
 

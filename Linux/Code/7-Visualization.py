@@ -9,23 +9,32 @@ from PIL import Image
 import Model_Utils
 import Config
 import Utils                
-import numpy as np
 import csv
 
 def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization):
 
 	model = Model_Utils.create_model()
-	model.load_state_dict(torch.load(path2weights))
+	
+	try:
+		model.load_state_dict(torch.load(path2weights))
+	except:
+		ckpt = torch.load(f = path2weights)
+		model.load_state_dict(state_dict = ckpt["model_state_dict"])
+	
 	model.to(device)
+	
 	config = dict(model_type = 'resnet', arch = model, layer_name = 'layer4')
 	gradcam = GradCAM.from_config(**config) 
+	
 	model.eval()
 	
-	files = sorted([f for f in (csv_files.joinpath('Annotations')).iterdir() if f.is_file()])
+	files = sorted(
+		[f for f in (csv_files.joinpath('Annotations')).iterdir() if f.is_file()])
 	
 	for file in files:
 		wsi_name = str(file).split("/")[-1][:-4]
-		directory = Utils.create_folder(visualization.joinpath('/'.join(["Patchs", wsi_name])))
+		directory = Utils.create_folder(
+			visualization.joinpath('/'.join(["Patchs", wsi_name])))
 		
 		with open(file, "r") as reader:
 			for line in islice(reader, 1, None):
@@ -34,10 +43,14 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 				paths_list, tiff_list = Utils.parse_dir(Train_folder, "tiff") 
 				for tiff in tiff_list:
 					tiff_name = str(tiff).split('/')[-1]
+					
 					if tiff_name == patch_name:
 						tiff_img = Image.open(tiff)
-						tiff_image = transforms.Compose([transforms.ToTensor()])(tiff_img).to(device)
-						normed_tiff_img = transforms.Normalize([0, 0, 0], [1, 1, 1])(tiff_image)[None]
+						tiff_image = transforms.Compose(
+							[transforms.ToTensor()])(tiff_img).to(device)
+
+						normed_tiff_img = transforms.Normalize(
+							[0, 0, 0], [1, 1, 1])(tiff_image)[None]
 						
 						mask, _ = gradcam(normed_tiff_img)
 						heatmap, result = visualize_cam(mask, tiff_image)
@@ -47,9 +60,9 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 if __name__ == '__main__':
 
 	viz(
-	device = Config.device,
-	csv_files = Config.args.CSV_files,
-	batch_size = Config.args.batch_size, 
-	path2weights = Config.args.Path2Weights,
-	Train_folder = Config.args.Train_folder,
-	visualization = Config.args.Visualization)
+		device = Config.device,
+		csv_files = Config.args.CSV_files,
+		batch_size = Config.args.batch_size, 
+		path2weights = Config.args.Path2Weights,
+		Train_folder = Config.args.Train_folder,
+		visualization = Config.args.Visualization)

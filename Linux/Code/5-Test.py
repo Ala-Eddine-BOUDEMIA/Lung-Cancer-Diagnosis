@@ -15,12 +15,18 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 	Utils.create_folder(predictions_directory)
 
 	model = Model_Utils.create_model()
-	model.load_state_dict(torch.load(path2weights, map_location = torch.device(device)))
+	
+	try:
+		model.load_state_dict(torch.load(path2weights, map_location = torch.device(device)))
+	except:
+		ckpt = torch.load(f = path2weights)
+		model.load_state_dict(state_dict = ckpt["model_state_dict"])
+
 	model.eval()
 
 	print("\nLoading testing data ...")
-	test_loader, test_set = Model_Utils.load_data(path = Test_Patches_path, shuffle = False, 
-												batch_size = batch_size, Train = False)
+	test_loader, test_set = Model_Utils.load_data(
+		path = Test_Patches_path, shuffle = False, batch_size = batch_size, Train = False)
 	test_len_data = len(test_set)
 
 	tb_images = SummaryWriter("Tensorboard/Test")
@@ -76,18 +82,25 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 		Model_Utils.pr_curve(i, test_probs, test_preds, classes)
 
 	tb_metrics = SummaryWriter("Tensorboard/Test")
-	cm_test_heatmap, cm_test = Model_Utils.c_m(np.array(test_all_labels), np.array(test_all_predictions), classes)
-	cr_test_heatmap, cr_test = Model_Utils.c_r(np.array(test_all_labels), np.array(test_all_predictions), classes)
+	
+	cm_test_heatmap, cm_test = Model_Utils.c_m(
+		np.array(test_all_labels), np.array(test_all_predictions), classes)
+	cr_test_heatmap, cr_test = Model_Utils.c_r(
+		np.array(test_all_labels), np.array(test_all_predictions), classes)
+	
 	tb_metrics.add_figure("Test Confusion matrix: ", cm_test_heatmap)
 	tb_metrics.add_figure("Test Classification report: ", cr_test_heatmap)	
 	tb_metrics.close()
 
-	np.savetxt(str(diagnostics_directory)+f"/cm_test.csv", cm_test, delimiter = '\t')
-	cr_test.to_csv(str(diagnostics_directory)+f"/cr_test.csv", sep = '\t')
+	np.savetxt(
+		str(diagnostics_directory) + f"/cm_test.csv", cm_test, delimiter = '\t')
+	cr_test.to_csv(
+		str(diagnostics_directory) + f"/cr_test.csv", sep = '\t')
 	
 	with open(prediction_file, "w") as f:
 		writer = csv.writer(f, delimiter = "\t")
 		writer.writerow(["Patch name", "Prediction", "Confidence"])
+		
 		for x in range(0, test_len_data):
 			writer.writerow([names[x], preds[x], f"{100*confidence_stats[x]:.6}"])
 
@@ -99,11 +112,11 @@ def test(device, classes, batch_size, path2weights, prediction_file,
 if __name__ == '__main__':
 
 	test(
-	device = Config.device,
-	classes = Config.args.Classes, 
-	batch_size = Config.args.batch_size, 
-	path2weights = Config.args.Path2Weights,
-	prediction_file = Config.args.Predictions, 
-	Test_Patches_path = Config.args.Test_Patches, 
-	predictions_directory = Config.args.Predictions_Directory, 
-	diagnostics_directory = Config.args.Diagnostics_Directory)
+		device = Config.device,
+		classes = Config.args.Classes, 
+		batch_size = Config.args.batch_size, 
+		path2weights = Config.args.Path2Weights,
+		prediction_file = Config.args.Predictions, 
+		Test_Patches_path = Config.args.Test_Patches, 
+		predictions_directory = Config.args.Predictions_Directory, 
+		diagnostics_directory = Config.args.Diagnostics_Directory)
