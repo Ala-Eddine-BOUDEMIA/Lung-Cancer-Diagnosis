@@ -1,9 +1,12 @@
-from skimage.measure import block_reduce
-from PIL import Image
-import pandas as pd
-import numpy as np
-import torchvision
 import random
+
+import numpy as np
+import pandas as pd
+
+import torchvision
+
+from PIL import Image
+from skimage.measure import block_reduce
 
 ##################################
 ######___utils_processing.py___###

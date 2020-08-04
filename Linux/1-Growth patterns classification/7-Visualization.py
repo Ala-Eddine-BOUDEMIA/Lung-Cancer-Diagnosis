@@ -1,17 +1,23 @@
-from torchvision.utils import save_image
-from torchvision import transforms   
-import torchvision                          
-import torch
-from gradcam.utils import visualize_cam
-from gradcam import GradCAM
-from itertools import islice
-from PIL import Image
-import Model_Utils
-import Config
-import Utils                
 import csv
+from itertools import islice
+from pathlib import PurePosixPath as posix
 
-def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization):
+import torch
+import torchvision                          
+from torchvision import transforms   
+from torchvision.utils import save_image
+
+from PIL import Image
+from gradcam import GradCAM
+from gradcam.utils import visualize_cam
+
+import Utils                
+import Config
+import Model_Utils
+
+
+def viz(device, batch_size, csv_files, 
+		path2weights, Train_folder, visualization):
 
 	model = Model_Utils.create_model()
 	
@@ -29,10 +35,11 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 	model.eval()
 	
 	files = sorted(
-		[f for f in (csv_files.joinpath('Annotations')).iterdir() if f.is_file()])
+		[f for f in (
+			csv_files.joinpath('Annotations')).iterdir() if f.is_file()])
 	
 	for file in files:
-		wsi_name = str(file).split("/")[-1][:-4]
+		wsi_name = str(posix(file)).split("/")[-1][:-4]
 		directory = Utils.create_folder(
 			visualization.joinpath('/'.join(["Patchs", wsi_name])))
 		
@@ -42,7 +49,7 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 
 				paths_list, tiff_list = Utils.parse_dir(Train_folder, "tiff") 
 				for tiff in tiff_list:
-					tiff_name = str(tiff).split('/')[-1]
+					tiff_name = str(posix(tiff)).split('/')[-1]
 					
 					if tiff_name == patch_name:
 						tiff_img = Image.open(tiff)
@@ -56,6 +63,7 @@ def viz(device, batch_size, csv_files, path2weights, Train_folder, visualization
 						heatmap, result = visualize_cam(mask, tiff_image)
 							
 						save_image(result, directory.joinpath(tiff_name))
+
 
 if __name__ == '__main__':
 

@@ -1,25 +1,27 @@
-from torch.utils.tensorboard import SummaryWriter
-from torch.optim.lr_scheduler import ExponentialLR      
-from torch.optim import lr_scheduler              
-from torch import optim                                   
-from torch import nn                        
-import torchvision                          
-import torch                                
-import Model_Utils
-import Config
-import Utils
-import pandas as pd                                                            
-import numpy as np
-import datetime
-import time 
-import copy
 import csv
+import copy
+import time 
+import datetime
 
-def train_val(device, classes, num_epochs, batch_size, 
-	loss_function, best_weights, weight_decay, path2weights, 
-	sanity_check, learning_rate, save_interval, diagnostic_path, 
-	checkpoint_file, Train_Patches_path, resume_checkpoint, checkpoints_folder, 
-	learning_rate_decay, Validation_Patches_path, diagnostics_directory):
+import numpy as np
+
+import torch                                
+import torchvision  
+                        
+from torch import nn                        
+from torch import optim                                   
+from torch.utils.tensorboard import SummaryWriter           
+
+import Utils                                                            
+import Config
+import Model_Utils
+
+
+def train_val(device, classes, num_epochs, batch_size, loss_function, 
+			best_weights, path2weights, sanity_check, learning_rate, 
+			save_interval, diagnostic_path, checkpoint_file, Train_Patches_path, 
+			resume_checkpoint, checkpoints_folder, Validation_Patches_path, 
+			diagnostics_directory):
 
 	Utils.create_folder(diagnostics_directory)
 	Utils.create_folder(best_weights)
@@ -29,11 +31,13 @@ def train_val(device, classes, num_epochs, batch_size,
 	
 	print("\nLoading training data ...")
 	train_loader, train_set = Model_Utils.load_data(
-		path = Train_Patches_path, shuffle = True, batch_size = batch_size)
+		path = Train_Patches_path, shuffle = True, 
+		batch_size = batch_size)
 
 	print("\nLoading validation data ...")
 	val_loader, val_set = Model_Utils.load_data(
-		path = Validation_Patches_path, shuffle = False, batch_size = batch_size, Train = False)
+		path = Validation_Patches_path, shuffle = False, 
+		batch_size = batch_size, Train = False)
 	
 	print("\nCreating the model ...")
 	model = Model_Utils.create_model()
@@ -83,7 +87,8 @@ def train_val(device, classes, num_epochs, batch_size,
 
 			current_lr = Model_Utils.get_current_lr(opt)
 			print("\n_____________________________")
-			print('Epoch {}/{}, current lr={}'.format(epoch + 1, num_epochs, current_lr))
+			print('Epoch {}/{}, current lr={}'.format(
+				epoch + 1, num_epochs, current_lr))
 
 			model.train()
 			train_running_loss, train_runing_metric = 0.0, 0.0
@@ -104,11 +109,14 @@ def train_val(device, classes, num_epochs, batch_size,
 
 				corrects = train_predicted.eq(
 					train_labels.view_as(train_predicted)).sum().item()
+				
 				train_running_loss += train_loss.item()
 
 				train_tb_loss += train_loss.item()
 				if i % 1000 == 999:
-					tb.add_scalar("Training loss", train_tb_loss / 1000, epoch * len(train_loader) + i)
+					tb.add_scalar(
+						"Training loss", train_tb_loss / 1000, 
+						epoch * len(train_loader) + i)
 					train_tb_loss = 0.0
 				
 				if corrects is not None:
@@ -120,21 +128,27 @@ def train_val(device, classes, num_epochs, batch_size,
 					train_all_predictions.append(x)
 
 			tb_metrics = SummaryWriter("Tensorboard/Train_Val")
-
+			
 			cm_train_heatmap, cm_train = Model_Utils.c_m(
-				np.array(train_all_labels), np.array(train_all_predictions), classes)
+				np.array(train_all_labels), 
+				np.array(train_all_predictions), classes)
 			cr_train_heatmap, cr_train = Model_Utils.c_r(
-				np.array(train_all_labels), np.array(train_all_predictions), classes)
+				np.array(train_all_labels), 
+				np.array(train_all_predictions), classes)
 			
 			tb_metrics.add_figure(
-				"Train Confusion matrix epoch: " + str(epoch), cm_train_heatmap)
+				"Train Confusion matrix epoch: " + str(epoch), 
+				cm_train_heatmap)
 			tb_metrics.add_figure(
-				"Train Classification report epoch: " + str(epoch), cr_train_heatmap)
+				"Train Classification report epoch: " + str(epoch), 
+				cr_train_heatmap)
 			
 			np.savetxt(
-				str(diagnostics_directory)+f"/cm_{epoch}_train.csv", cm_train, delimiter = '\t')
+				str(diagnostics_directory) + f"/cm_{epoch}_train.csv", 
+				cm_train, delimiter = '\t')
 			cr_train.to_csv(
-				str(diagnostics_directory)+f"/cr_{epoch}_train.csv", sep = '\t')
+				str(diagnostics_directory) + f"/cr_{epoch}_train.csv", 
+				sep = '\t')
 			
 			train_len_data = len(train_set)
 			training_loss = train_running_loss / float(train_len_data)
@@ -166,16 +180,19 @@ def train_val(device, classes, num_epochs, batch_size,
 					best_loss = val_loss
 					best_model = copy.deepcopy(model.state_dict())
 					torch.save(model.state_dict(), path2weights) 
-					print("Copied best model weights")
-					print("Best loss: ", best_loss)
-					print(f"Best model's accuracy on the {len(val_inputs)} " 
-						f"validation images: {100*(corrects/len(val_inputs)):.5f}\n")
+					print("\nCopied best model weights")
+					print(f"Best loss: {best_loss.item()}")
+					print(f"Best model's accuracy on the {len(val_inputs)}",
+						f"validation images: ",
+						f"{100*(corrects/len(val_inputs)):.5f}")
 
 				val_running_loss += val_loss.item()
 
 				val_tb_loss += val_loss.item()
 				if i % 1000 == 999:
-					tb.add_scalar("Validation loss", val_tb_loss / 1000, epoch * len(val_loader) + i)
+					tb.add_scalar(
+						"Validation loss", val_tb_loss / 1000, 
+						epoch * len(val_loader) + i)
 					val_tb_loss = 0.0
 
 				if corrects is not None:
@@ -190,20 +207,26 @@ def train_val(device, classes, num_epochs, batch_size,
 					break
 
 			cm_val_heatmap, cm_val = Model_Utils.c_m(
-				np.array(val_all_labels), np.array(val_all_predictions), classes)
+				np.array(val_all_labels), 
+				np.array(val_all_predictions), classes)
 			cr_val_heatmap, cr_val = Model_Utils.c_r(
-				np.array(val_all_labels), np.array(val_all_predictions), classes)
+				np.array(val_all_labels), 
+				np.array(val_all_predictions), classes)
 			
 			tb_metrics.add_figure(
-				"Validation Confusion matrix epoch: " + str(epoch), cm_val_heatmap)
+				"Validation Confusion matrix epoch: " + str(epoch), 
+				cm_val_heatmap)
 			tb_metrics.add_figure(
-				"Validation Classification report epoch: " + str(epoch), cr_val_heatmap)			
+				"Validation Classification report epoch: " + str(epoch), 
+				cr_val_heatmap)			
 			tb_metrics.close()
 			
 			np.savetxt(
-				str(diagnostics_directory)+f"/cm_{epoch}_val.csv", cm_val, delimiter = '\t')
+				str(diagnostics_directory)+f"/cm_{epoch}_val.csv", 
+				cm_val, delimiter = '\t')
 			cr_val.to_csv(
-				str(diagnostics_directory)+f"/cr_{epoch}_val.csv", sep = '\t')
+				str(diagnostics_directory)+f"/cr_{epoch}_val.csv", 
+				sep = '\t')
 
 			val_len_data = len(val_set)
 			validation_loss = val_running_loss / float(val_len_data)
@@ -214,17 +237,17 @@ def train_val(device, classes, num_epochs, batch_size,
 			if torch.cuda.is_available():
 				torch.cuda.empty_cache()
 
-			print(f"Epoch train loss: {(training_loss):.6f}\n", 
-				f"Epoch val loss: {(validation_loss):.6f}\n", 
-				f"accuracy: {(100 * val_metric):.2f}\n")
+			print(f"\nEpoch train loss: {(training_loss):.6f}", 
+				f"\nEpoch val loss: {(validation_loss):.6f}", 
+				f"\nAccuracy: {(100 * val_metric):.2f}") 
 			
-			Model_Utils.save_work(
-				epoch, save_interval, checkpoints_folder, model, opt, val_metric)
-
+			Model_Utils.save_work(epoch, save_interval, checkpoints_folder,
+				model, opt, val_metric)
+			
 			writer.writerow(
-				[datetime.datetime.now(), epoch+1, batch_size, training_loss, 
-				train_metric, validation_loss, val_metric])
-			
+				[datetime.datetime.now(), epoch+1, batch_size, 
+				training_loss, train_metric, validation_loss, val_metric])
+
 		tb.close()
 	
 	print(f"\ntraining complete in: {(time.time() - since) // 60:.2f} minutes")
@@ -232,6 +255,7 @@ def train_val(device, classes, num_epochs, batch_size,
 	model.load_state_dict(best_model)
 
 	return model
+
 
 if __name__ == '__main__':
 
@@ -242,7 +266,6 @@ if __name__ == '__main__':
 		batch_size = Config.args.batch_size, 
 		loss_function = nn.CrossEntropyLoss(), 
 		best_weights = Config.args.BestWeights,
-		weight_decay = Config.args.weight_decay, 
 		path2weights = Config.args.Path2Weights, 
 		sanity_check = Config.args.Sanity_Check, 
 		learning_rate = Config.args.learning_rate, 
@@ -252,6 +275,5 @@ if __name__ == '__main__':
 		Train_Patches_path = Config.args.Train_Patches, 
 		resume_checkpoint = Config.args.Resume_checkpoint, 
 		checkpoints_folder = Config.args.Checkpoints_folder, 
-		learning_rate_decay = Config.args.learning_rate_decay, 
 		Validation_Patches_path = Config.args.Validation_Patches,
 		diagnostics_directory = Config.args.Diagnostics_Directory)

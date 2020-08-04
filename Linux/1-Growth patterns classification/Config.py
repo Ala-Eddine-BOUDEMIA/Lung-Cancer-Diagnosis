@@ -1,12 +1,14 @@
-from pathlib import Path
-from typing import Dict
 import argparse
+from typing import Dict
+from pathlib import Path
+
 import torch
 
 # source: https://docs.python.org/3/library/argparse.html
 
-parser = argparse.ArgumentParser(description = "Tools and parameters", 
-								formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(
+	description = "Tools and parameters", 
+	formatter_class = argparse.ArgumentDefaultsHelpFormatter)
 
 ##########################################
 ######__Preprocessing__&__Processing######
@@ -129,18 +131,6 @@ parser.add_argument(
     type = int,
     default = 16,
     help = "Mini-batch size to use for training")
-
-parser.add_argument(
-	"--learning_rate_decay",
-    type = float,
-    default = 1,
-    help = "Learning rate decay amount per epoch")
-
-parser.add_argument(
-	"--weight_decay",
-    type = float,
-    default = 0,
-    help = "Weight decay (L2 penalty) to use in optimizer")
 
 parser.add_argument(
 	"--Sanity_Check",

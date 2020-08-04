@@ -1,7 +1,7 @@
-from itertools import islice 
-from pathlib import Path 
-from os import path
 import os
+from os import path
+from itertools import islice 
+
 
 def create_folder(output_folder):
 
@@ -9,6 +9,7 @@ def create_folder(output_folder):
 		os.makedirs(output_folder)
 
 	return output_folder
+
 
 def parse_dir(input_directories, forme):
 

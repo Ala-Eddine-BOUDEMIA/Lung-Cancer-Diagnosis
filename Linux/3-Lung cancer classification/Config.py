@@ -1,28 +1,23 @@
-from pathlib import Path
-from typing import Dict
 import argparse
+from typing import Dict
+from pathlib import Path
+
 import torch
 
 # source: https://docs.python.org/3/library/argparse.html
 
-parser = argparse.ArgumentParser(description = "Tools and parameters", 
-								formatter_class = argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(
+	description = "Tools and parameters", 
+	formatter_class = argparse.ArgumentDefaultsHelpFormatter)
 
 ##########################################
 ######__Preprocessing__&__Processing######
 ##########################################
 parser.add_argument(
-	"--All_WSI", 
-	metavar = 'wsi', 
+	"--All_Dataset", 
 	type = Path, 
-	default = Path("All_WSI"), 
-	help = "Location of all WSI")
-
-parser.add_argument(
-	"--Annotations",
-	type = Path, 
-	default = Path("Annotations"), 
-	help = "Annotations directory")
+	default = Path("lung_colon_image_set"), 
+	help = "Location of all images")
 
 parser.add_argument(
 	"--Patches",
@@ -39,31 +34,13 @@ parser.add_argument(
 parser.add_argument(
 	"--Classes",
 	type = list,
-	default = ["ACINAR", "CRIB", "MICROPAP", "NC", "SOLID"],
-	help = "Subtypes of lung cancer")
-
-parser.add_argument(
-	"--Window_size",  
-	type = int, 
-	default = 224 * 2, 
-	help = "Size of the sliding window")
-
-parser.add_argument(
-	"--Compression_factor",  
-	type = int, 
-	default = 2, 
-	help = "The compression factor")
-
-parser.add_argument(
-	"--Overlap",
-	type = Dict,
-	default = {"ACINAR": 0.45, "CRIB": 0.3, "MICROPAP": 0.75, "NC": 1, "SOLID": 1},
-	help = "Overlap factor while generating patches")
+	default = ["lung_aca", "lung_n", "lung_scc"],
+	help = "Subtypes of cancer")
 
 parser.add_argument(
 	"--Maximum",
 	type = int,
-	default = 7000,
+	default = 10000,
 	help = "Number of patches per class")
 
 #####################
@@ -98,6 +75,12 @@ parser.add_argument(
 	help = "Location to be created to store jpeg patches testing set")
 
 parser.add_argument(
+	"--Train_Set_Size", 
+	type = int, 
+	default = 8000, 
+	help = "Number of patches per class in validation set")
+
+parser.add_argument(
 	"--Validation_Set_Size", 
 	type = int, 
 	default = 1000, 
@@ -121,7 +104,7 @@ parser.add_argument(
 parser.add_argument(
 	"--learning_rate",
     type = float,
-    default = 0.0001,
+    default = 0.00001,
     help = "Learning rate to use for gradient descent")
 
 parser.add_argument(
@@ -129,18 +112,6 @@ parser.add_argument(
     type = int,
     default = 16,
     help = "Mini-batch size to use for training")
-
-parser.add_argument(
-	"--learning_rate_decay",
-    type = float,
-    default = 1,
-    help = "Learning rate decay amount per epoch")
-
-parser.add_argument(
-	"--weight_decay",
-    type = float,
-    default = 0,
-    help = "Weight decay (L2 penalty) to use in optimizer")
 
 parser.add_argument(
 	"--Sanity_Check",

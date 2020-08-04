@@ -1,46 +1,56 @@
-from torch.utils.tensorboard import SummaryWriter
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from matplotlib import pyplot as plt
-from torchvision import transforms                      
-from torchvision import datasets
-from torchsummary import summary
-import torch.nn.functional as F
-from torchvision import models 
-from torch import nn 
-import torch
-import seaborn as sns
-import pandas as pd
 import numpy as np
+import pandas as pd
+import seaborn as sns
+
+import torch
+from torch import nn 
+from torch.utils.tensorboard import SummaryWriter 
+
+from torchvision import models 
+from torchvision import datasets
+from torchvision import transforms                      
+
+from matplotlib import pyplot as plt
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+
 import Utils
+import Config
+
 
 def create_model():
                                                 
     model = models.resnet18(pretrained = True)  
     num_ftrs = model.fc.in_features             
     model.fc = nn.Linear(num_ftrs, 5)              
-    #model_summary = summary(model, (3,224,224))
 
     return model
+
 
 def get_data_transforms(Train):
 
 	if Train:
 		data_transforms = transforms.Compose(transforms = [ 
-            transforms.ToTensor()])
+            transforms.ToTensor()
+            ])
 	else :
 		data_transforms = transforms.Compose(transforms = [ 
-			transforms.ToTensor()])
+			transforms.ToTensor()
+			])
 
 	return data_transforms
 
+
 def load_data(path, shuffle, batch_size, Train = True):
 
-	images_dataset = datasets.ImageFolder(root = str(path), transform = get_data_transforms(Train)) 
-	dataloaders = torch.utils.data.DataLoader(dataset = images_dataset, batch_size = batch_size, 
-											shuffle = shuffle, num_workers = 0)
+	images_dataset = datasets.ImageFolder(
+		root = str(path), transform = get_data_transforms(Train)) 
+	dataloaders = torch.utils.data.DataLoader(
+		dataset = images_dataset, batch_size = batch_size, 
+		shuffle = shuffle, num_workers = 0)
 
 	return dataloaders, images_dataset
+
 
 def get_current_lr(opt):
 	
@@ -50,18 +60,20 @@ def get_current_lr(opt):
 
 	return current_lr
 
-def save_work(epoch, save_interval, checkpoints_folder, model, opt, val_metric): #, scheduler):
+
+def save_work(epoch, save_interval, checkpoints_folder, model, opt, val_metric):
 
 	if epoch % save_interval == 0:
-		output_path = checkpoints_folder.joinpath(f"resnet18_e{epoch}_val{val_metric:.5f}.pt")
+		output_path = checkpoints_folder.joinpath(
+			f"resnet18_e{epoch}_val{val_metric:.5f}.pt")
 		Utils.create_folder(checkpoints_folder)
 		print(f"Saving work to: {output_path}")
 
 		torch.save(obj = {
 			"model_state_dict": model.state_dict(),
 			"optimizer_state_dict": opt.state_dict(),
-			#"scheduler_state_dict": scheduler.state_dict(),
 			"epoch": epoch + 1}, f = str(output_path))
+
 
 def c_m(actual, predicted, classes):
 
@@ -69,8 +81,11 @@ def c_m(actual, predicted, classes):
 	for i in range(len(classes)):
 		remap_classes[i] = classes[i]
 
-	actual = np.array(pd.Series(actual).replace(remap_classes))
-	predicted = np.array(pd.Series(predicted).replace(remap_classes))
+	actual = np.array(
+		pd.Series(actual).replace(remap_classes))
+
+	predicted = np.array(
+		pd.Series(predicted).replace(remap_classes))
 
 	cm = confusion_matrix(actual, predicted, labels = classes)
 
@@ -82,17 +97,26 @@ def c_m(actual, predicted, classes):
 
 	return f1, cm
 
+
 def c_r(actual, predicted, classes):
 
 	remap_classes = {}
 	for i in range(len(classes)):
 		remap_classes[i] = classes[i]
 
-	actual = np.array(pd.Series(actual).replace(remap_classes))
-	predicted = np.array(pd.Series(predicted).replace(remap_classes))
+	actual = np.array(
+		pd.Series(actual).replace(remap_classes))
+
+	predicted = np.array(
+		pd.Series(predicted).replace(remap_classes))
 	
-	cr = classification_report(actual, predicted, labels = classes, 
-		target_names = classes, output_dict = True)
+	cr = classification_report(
+		actual, 
+		predicted, 
+		labels = classes, 
+		target_names = classes, 
+		output_dict = True)
+	
 	cr = pd.DataFrame(cr)
 	f2, ax2 = plt.subplots(1,1)
 	ax2 = sns.heatmap(cr, annot = True, cmap = "YlGnBu")
@@ -100,12 +124,16 @@ def c_r(actual, predicted, classes):
 
 	return f2, cr
 
+
 def pr_curve(class_index, test_probs, test_preds, classes, global_step = 0):
 
     tensorboard_preds = test_preds == class_index
     tensorboard_probs = test_probs[:, class_index]
 
     tb_pr = SummaryWriter("Tensorboard/pr_curve")
-    tb_pr.add_pr_curve(classes[class_index], tensorboard_preds, 
-    	tensorboard_probs, global_step = global_step)
+    tb_pr.add_pr_curve(
+    	classes[class_index],
+    	tensorboard_preds,
+    	tensorboard_probs,
+    	global_step = global_step)
     tb_pr.close()
