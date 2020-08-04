@@ -1,24 +1,23 @@
-Linux/1-Growth patterns classification/All_WSI
-Linux/1-Growth patterns classification/Annotations
-Linux/1-Growth patterns classification/CSV_files
-Linux/1-Growth patterns classification/Patches
-Linux/1-Growth patterns classification/__pycache__
-Linux/1-Growth patterns classification/Tensorboard
-Linux/1-Growth patterns classification/Train_folder
-Linux/1-Growth patterns classification/Visualization
-Linux/2-Colon lung cancer classification/lung_colon_image_set/
-Linux/2-Colon lung cancer classification/CSV_files
-Linux/2-Colon lung cancer classification/Patches
-Linux/2-Colon lung cancer classification/__pycache__
-Linux/2-Colon lung cancer classification/Tensorboard
-Linux/2-Colon lung cancer classification/Train_folder
-Linux/2-Colon lung cancer classification/Visualization
-Linux/3-Lung cancer classification/lung_colon_image_set/
-Linux/3-Lung cancer classification/CSV_files
-Linux/3-Lung cancer classification/Patches
-Linux/3-Lung cancer classification/__pycache__
-Linux/3-Lung cancer classification/Tensorboard
-Linux/3-Lung cancer classification/Train_folder
-Linux/3-Lung cancer classification/Visualization
-Linux/Results
-Windows/
+Codes/1-Growth patterns classification/All_WSI
+Codes/1-Growth patterns classification/Annotations
+Codes/1-Growth patterns classification/CSV_files
+Codes/1-Growth patterns classification/Patches
+Codes/1-Growth patterns classification/__pycache__
+Codes/1-Growth patterns classification/Tensorboard
+Codes/1-Growth patterns classification/Train_folder
+Codes/1-Growth patterns classification/Visualization
+Codes/2-Colon lung cancer classification/lung_colon_image_set/
+Codes/2-Colon lung cancer classification/CSV_files
+Codes/2-Colon lung cancer classification/Patches
+Codes/2-Colon lung cancer classification/__pycache__
+Codes/2-Colon lung cancer classification/Tensorboard
+Codes/2-Colon lung cancer classification/Train_folder
+Codes/2-Colon lung cancer classification/Visualization
+Codes/3-Lung cancer classification/lung_colon_image_set/
+Codes/3-Lung cancer classification/CSV_files
+Codes/3-Lung cancer classification/Patches
+Codes/3-Lung cancer classification/__pycache__
+Codes/3-Lung cancer classification/Tensorboard
+Codes/3-Lung cancer classification/Train_folder
+Codes/3-Lung cancer classification/Visualization
+Codes/Results
