@@ -1,5 +1,6 @@
 import random
 from pathlib import Path
+from pathlib import PurePosixPath as posix
 
 import PIL
 from PIL import Image
@@ -32,7 +33,7 @@ def augmentor(patches, classes, maximum):
 	all_paths = {}
 	for directory in directories:
 		images_paths = sorted([f for f in directory.iterdir() if f.is_file()])
-		all_paths[str(directory).split("/")[-1]] = images_paths
+		all_paths[str(posix(directory)).split("/")[-1]] = images_paths
 
 	for subclass in all_paths.keys():
 		num_images_generated = 0
@@ -44,7 +45,7 @@ def augmentor(patches, classes, maximum):
 
 		while num_images_generated < num_images_desired:
 			path = random.choice(paths)
-			image_name = str(path).split("/")[-1][:-5]
+			image_name = str(posix(path)).split("/")[-1][:-5]
 			rep = 0
 			for transform in transformations:
 				if transform in image_name.split("_"):
