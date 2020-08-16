@@ -84,132 +84,132 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 
 ## Folders structures:
 
-    Codes
-    │
-	├── 1-Growth patterns classification
+    	Codes
+    	│
+	├────── 1-Growth patterns classification
 	│	│
-	│	├── All_WSI 				
-	│	│	├── Folder_1/Image_1.svs
-	│	│	├── Folder_2/Image_2.svs
-	│	│	└── Folder_n/Image_n.svs
+	│	├────── All_WSI 				
+	│	│	├──── Folder_1/Image_1.svs
+	│	│	├──── Folder_2/Image_2.svs
+	│	│	└──── Folder_n/Image_n.svs
 	│	│
-	│	├── Annotations
-	│	│	├── Annotation_Image_1.xml
-	│	│	├── Annotation_Image_2.xml
-	│	│	└── Annotation_Image_n.xml
+	│	├────── Annotations
+	│	│	├──── Annotation_Image_1.xml
+	│	│	├──── Annotation_Image_2.xml
+	│	│	└──── Annotation_Image_n.xml
 	│	│
-	│	├── CSV_files
-	│	│	├── Annotations
-	│	│	├── Diagnostics
-	│	│	└── Predictions
+	│	├────── CSV_files
+	│	│	├──── Annotations
+	│	│	├──── Diagnostics
+	│	│	└──── Predictions
 	│	│
-	│	├── Patches
-	│	│	├── ACINAR
-	│	│	├── CRIB
-	│	│	├── MICROPAP
-	│	│	├── NC
-	│	│	└── SOLID
+	│	├────── Patches
+	│	│	├──── ACINAR
+	│	│	├──── CRIB
+	│	│	├──── MICROPAP
+	│	│	├──── NC
+	│	│	└──── SOLID
 	│	│
-	│	├── Train_folder
-	│	│	├── Model
-	│	│	│	├── Best_model_weights
-	│	│	│	└── Checkpoints
+	│	├────── Train_folder
+	│	│	├────── Model
+	│	│	│	├──── Best_model_weights
+	│	│	│	└──── Checkpoints
 	│	│	│
-	│	│	├── Test_patches
-	│	│	├── Train_patches
-	│	│	└── Validation_patches
+	│	│	├────── Test_patches
+	│	│	├────── Train_patches
+	│	│	└────── Validation_patches
 	│	│
-	│	├── Tensorboard
+	│	├────── Tensorboard
 	│	│
-	│	└── Visualization
-	│		└── Patchs
-	│			├── folder_1
-	│			│	└── Image_1_visualization.tiff
-	│			├── folder_2
-	│			│	└── Image_2_visualization.tiff
-	│			└── folder_n
-	│				└── Image_n_visualization.tiff
+	│	└────── Visualization
+	│		└────── Patchs
+	│			├────── folder_1
+	│			│	└──── Image_1_visualization.tiff
+	│			├────── folder_2
+	│			│	└──── Image_2_visualization.tiff
+	│			└────── folder_n
+	│				└──── Image_n_visualization.tiff
 	│
-	├── 2-Colon lung cancer classification
+	├────── 2-Colon lung cancer classification
 	│	│
-	│	├── CSV_files
-	│	│	├── Annotations
-	│	│	├── Diagnostics
-	│	│	└── Predictions
+	│	├────── CSV_files
+	│	│	├──── Annotations
+	│	│	├──── Diagnostics
+	│	│	└──── Predictions
 	│	│
-	│	├── lung_colon_image_set 				
-	│	│	├── colon_image_sets
-	│	│	│	├── colon_aca
-	│	│	│	└── colon_n
-	│	│	└── lung_image_sets
-	│	│		├── lung_aca
-	│	│		├── lung_n	
-	│	│		└── lung_scc
+	│	├────── lung_colon_image_set 				
+	│	│	├────── colon_image_sets
+	│	│	│	├──── colon_aca
+	│	│	│	└──── colon_n
+	│	│	└────── lung_image_sets
+	│	│		├──── lung_aca
+	│	│		├──── lung_n	
+	│	│		└──── lung_scc
 	│	│
-	│	├── Patches
-	│	│	├── colon_aca
-	│	│	├── colon_n
-	│	│	├── lung_aca
-	│	│	├── lung_n
-	│	│	└── lung_scc
+	│	├────── Patches
+	│	│	├──── colon_aca
+	│	│	├──── colon_n
+	│	│	├──── lung_aca
+	│	│	├──── lung_n
+	│	│	└──── lung_scc
 	│	│
-	│	├── Train_folder
-	│	│	├── Model
-	│	│	│	├── Best_model_weights
-	│	│	│	└── Checkpoints
+	│	├────── Train_folder
+	│	│	├────── Model
+	│	│	│	├──── Best_model_weights
+	│	│	│	└──── Checkpoints
 	│	│	│
-	│	│	├── Test_patches
-	│	│	├── Train_patches
-	│	│	└── Validation_patches
+	│	│	├────── Test_patches
+	│	│	├────── Train_patches
+	│	│	└────── Validation_patches
 	│	│
-	│	├── Tensorboard
+	│	├────── Tensorboard
 	│	│
-	│	└── Visualization
-	│		└── Patchs
-	│			├── folder_1
-	│			│	└── Image_1_visualization.tiff
-	│			├── folder_2
-	│			│	└── Image_2_visualization.tiff
-	│			└── folder_n
-	│				└── Image_n_visualization.tiff
+	│	└────── Visualization
+	│		└────── Patchs
+	│			├────── folder_1
+	│			│	└──── Image_1_visualization.jpeg
+	│			├────── folder_2
+	│			│	└──── Image_2_visualization.jpeg
+	│			└────── folder_n
+	│				└──── Image_n_visualization.jpeg
 	│	
-	└── 3-Lung cancer classification
+	└────── 3-Lung cancer classification
 		│
-		├── CSV_files
-		│	├── Annotations
-		│	├── Diagnostics
-		│	└── Predictions
+		├────── CSV_files
+		│	├──── Annotations
+		│	├──── Diagnostics
+		│	└──── Predictions
 		│
-		├── lung_colon_image_set 				
-		│	└── lung_image_sets
-		│		├── lung_aca
-		│		├── lung_n	
-		│		└── lung_scc
+		├────── lung_colon_image_set 				
+		│	└────── lung_image_sets
+		│		├──── lung_aca
+		│		├──── lung_n	
+		│		└──── lung_scc
 		│
-		├── Patches
-		│	├── lung_aca
-		│	├── lung_n
-		│	└── lung_scc
+		├────── Patches
+		│	├──── lung_aca
+		│	├──── lung_n
+		│	└──── lung_scc
 		│
-		├── Train_folder
-		│	├── Model
-		│	│	├── Best_model_weights
-		│	│	└── Checkpoints
+		├────── Train_folder
+		│	├────── Model
+		│	│	├──── Best_model_weights
+		│	│	└──── Checkpoints
 		│	│
-		│	├── Test_patches
-		│	├── Train_patches
-		│	└── Validation_patches
+		│	├────── Test_patches
+		│	├────── Train_patches
+		│	└────── Validation_patches
 		│
-		├── Tensorboard
+		├────── Tensorboard
 		│
-		└── Visualization
-			└── Patchs
-				├── folder_1
-				│	└── Image_1_visualization.jpeg
-				├── folder_2
-				│	└── Image_2_visualization.jpeg
-				└── folder_n
-					└── Image_n_visualization.jpeg
+		└────── Visualization
+			└────── Patchs
+				├────── folder_1
+				│	└──── Image_1_visualization.jpeg
+				├────── folder_2
+				│	└──── Image_2_visualization.jpeg
+				└──── folder_n
+					└──── Image_n_visualization.jpeg
 
 # Usage
 
