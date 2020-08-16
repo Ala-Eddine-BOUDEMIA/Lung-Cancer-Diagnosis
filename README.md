@@ -1,6 +1,8 @@
 # Lung Cancer Diagnosis
 
 __Diagnosis of histologic growth patterns of lung cancer in digital slides using deep learning.__
+__Classification of colon and lung cancer types in digital slides using deep learning.__
+__Classification of lung cancer types in digital slides using deep learning.__
 ![Solid visualization](/Images/Solid_visualization.png)
 
 # Table of contents
@@ -88,7 +90,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│	│	├── Folder_2/Image_2.svs
 	│	│	└── Folder_n/Image_n.svs
 	│	│
-	│   ├── Annotations
+	│	├── Annotations
 	│	│	├── Annotation_Image_1.xml
 	│	│	├── Annotation_Image_2.xml
 	│	│	└── Annotation_Image_n.xml
@@ -101,7 +103,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│	├── Patches
 	│	│	├── ACINAR
 	│	│	├── CRIB
-	│	│	├──	MICROPAP
+	│	│	├── MICROPAP
 	│	│	├── NC
 	│	│	└── SOLID
 	│	│
