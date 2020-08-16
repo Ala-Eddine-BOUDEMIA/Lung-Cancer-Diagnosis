@@ -88,7 +88,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│	│	├── Folder_2/Image_2.svs
 	│	│	└── Folder_n/Image_n.svs
 	│	│
-	│   ├── Annotations
+	│   ├── Annotations 
 	│	│	├── Annotation_Image_1.xml
 	│	│	├── Annotation_Image_2.xml
 	│	│	└── Annotation_Image_n.xml
