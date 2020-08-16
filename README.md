@@ -116,7 +116,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│	│	│	└── Checkpoints
 	│	│	│
 	│	│	├── Test_patches
-	│	│	├──	Train_patches
+	│	│	├── Train_patches
 	│	│	└── Validation_patches
 	│	│
 	│	├── Tensorboard
@@ -131,7 +131,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│				└── Image_n_visualization.tiff
 	│
 	├── 2-Colon lung cancer classification
-	│  	│
+	│	│
 	│	├── CSV_files
 	│	│	├── Annotations
 	│	│	├── Diagnostics
@@ -149,7 +149,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│	├── Patches
 	│	│	├── colon_aca
 	│	│	├── colon_n
-	│	│	├──	lung_aca
+	│	│	├── lung_aca
 	│	│	├── lung_n
 	│	│	└── lung_scc
 	│	│
@@ -159,7 +159,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│	│	│	└── Checkpoints
 	│	│	│
 	│	│	├── Test_patches
-	│	│	├──	Train_patches
+	│	│	├──Train_patches
 	│	│	└── Validation_patches
 	│	│
 	│	├── Tensorboard
@@ -174,7 +174,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│				└── Image_n_visualization.tiff
 	│	
 	└── 3-Lung cancer classification
-	  	│
+		│
 		├── CSV_files
 		│	├── Annotations
 		│	├── Diagnostics
@@ -187,7 +187,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 		│		└── lung_scc
 		│
 		├── Patches
-		│	├──	lung_aca
+		│	├──lung_aca
 		│	├── lung_n
 		│	└── lung_scc
 		│
@@ -197,7 +197,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 		│	│	└── Checkpoints
 		│	│
 		│	├── Test_patches
-		│	├──	Train_patches
+		│	├──Train_patches
 		│	└── Validation_patches
 		│
 		├── Tensorboard
