@@ -1,6 +1,7 @@
 # Lung Cancer Diagnosis
 
 __Diagnosis of histologic growth patterns of lung cancer in digital slides using deep learning.__
+![Solid visualization](/Images/Solid_visualization.png)
 
 # Table of contents
 
@@ -16,7 +17,7 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 
 - _This is a final year graduation project._
 - We are using 26 whole-slide images obtained from [The Cancer Genome Atlas (LUAD)](https://portal.gdc.cancer.gov/projects/TCGA-LUAD).
-- You can download the images using the [manifest file](gdc_manifest_Lung_data.txt).
+- You can download the images using the [manifest file](/Extra/gdc_manifest_Lung_data.txt).
 - Download annotations from [here](https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-018-37638-9/MediaObjects/41598_2018_37638_MOESM2_ESM.zip).
 - Annotations were acquired from the second [source](#Sources).
 	* Distribution of data among histologic patterns is as follows:
@@ -209,6 +210,8 @@ python3 Code/7-visualization.py
 **Inputs**: `CSV_files`, `Train_folder`
 
 **Outputs**: `Visualization/Patchs`
+
+![Example](/Images/image1.tiff)
 
 # Known Issues and Limitations
 
