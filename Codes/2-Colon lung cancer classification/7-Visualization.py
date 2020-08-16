@@ -23,9 +23,13 @@ def viz(device, batch_size, csv_files,
 	model = Model_Utils.create_model()
 	
 	try:
-		model.load_state_dict(torch.load(path2weights))
+		model.load_state_dict(
+			torch.load(path2weights), 
+			map_location = torch.device(device))
 	except:
-		ckpt = torch.load(f = path2weights)
+		ckpt = torch.load(
+			f = path2weights, 
+			map_location = torch.device(device))
 		model.load_state_dict(state_dict = ckpt["model_state_dict"])
 	
 	model.to(device)

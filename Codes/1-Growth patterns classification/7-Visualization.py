@@ -22,9 +22,13 @@ def viz(device, batch_size, csv_files,
 	model = Model_Utils.create_model()
 	
 	try:
-		model.load_state_dict(torch.load(path2weights))
+		model.load_state_dict(
+			torch.load(path2weights), 
+			map_location = torch.device(device))
 	except:
-		ckpt = torch.load(f = path2weights)
+		ckpt = torch.load(
+			f = path2weights, 
+			map_location = torch.device(device))
 		model.load_state_dict(state_dict = ckpt["model_state_dict"])
 	
 	model.to(device)
@@ -47,10 +51,10 @@ def viz(device, batch_size, csv_files,
 			for line in islice(reader, 1, None):
 				patch_name = line.split("\t")[0]
 
-				paths_list, tiff_list = Utils.parse_dir(Train_folder, "tiff") 
+				paths_list, tiff_list = Utils.parse_dir(Train_folder, "tiff")
 				for tiff in tiff_list:
 					tiff_name = str(posix(tiff)).split('/')[-1]
-					
+
 					if tiff_name == patch_name:
 						tiff_img = Image.open(tiff)
 						tiff_image = transforms.Compose(
