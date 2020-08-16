@@ -16,6 +16,9 @@ __Diagnosis of histologic growth patterns of lung cancer in digital slides using
 # General Information
 
 - _This is a final year graduation project._
+
+__1-Growth patterns classification :__
+
 - We are using 26 whole-slide images obtained from [The Cancer Genome Atlas (LUAD)](https://portal.gdc.cancer.gov/projects/TCGA-LUAD).
 - You can download the images using the [manifest file](/Extra/gdc_manifest_Lung_data.txt).
 - Download annotations from [here](https://static-content.springer.com/esm/art%3A10.1038%2Fs41598-018-37638-9/MediaObjects/41598_2018_37638_MOESM2_ESM.zip).
@@ -28,7 +31,17 @@ __Crops__ | 22 | 4 | 23 | 53 |85
 __Patches (no-overlap)__ | 1328 | 85 | 4053 | 6222 | 5207
 __Patches (overlap)__ | 5277 (0.45) | 921 (0.3) | 5706 (0.75) | 6222 (1) | 5207 (1)
 
-- We augmented data to 7000 patches per class.
+- We augmented data to 10000 patches per class.
+
+__2-Colon lung cancer classification :__ 
+
+- We used the [Lung and Colon Cancer Histopathological Image Dataset (LC25000)](https://arxiv.org/abs/1912.12142v1) dataset which contains 25000 patches of sizes (768*768*3).
+- We augmented the data to 10000 patches per class.
+
+__3-Lung cancer classification :__ 
+
+- We used the same dataset __(LC25000)__ but we only worked with the lung cancer image sets.
+- We did not perform any data augmentation.
  
 # Requirements
 
@@ -42,7 +55,6 @@ __Patches (overlap)__ | 5277 (0.45) | 921 (0.3) | 5706 (0.75) | 6222 (1) | 5207 
 - [seaborn](https://seaborn.pydata.org/installing.html)
 - [tensorboard](https://www.tensorflow.org/tensorboard)
 - [torchvision](https://pytorch.org/docs/stable/torchvision/index.html#module-torchvision)
-- [torchsummary](https://pypi.org/project/torchsummary/)
 
 # Installation 
 
@@ -196,22 +208,22 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 
 # Usage
 
-Take a look at `Code/Config.py` before you begin to get a feel for what parameters can be changed.
+- Take a look at `Config.py` before you begin to get a feel for what parameters can be changed.
 
 ## 1. Preprocessing:
 
-This code is meant to :
-- Reads from `Annotations` folder that contains XML annotation files.
+This code from __1-Growth patterns classification__ is meant to :
+- Read from `Annotations` folder that contains XML annotation files.
 	- XML files must be directly contained in the `Annotations` folder.
 	- For example : `Annotations/annotation_1.xml`
-- Reads from `All_WSI` folder that contains Whole Slide Images.
+- Read from `All_WSI` folder that contains Whole Slide Images.
 	- Make sure that the WSIs are contained in at least one subfolder in the `All_WSI` folder.
 	- For example : `All_WSI/WSI_1/Image.svs`
 - Generates patches and saves information about the patches in a csv file.
 
 
 ```
-python3 Code/1-Preprocessing.py
+python3 1-Preprocessing.py
 ```
 
 
@@ -224,6 +236,25 @@ python3 Code/1-Preprocessing.py
 If your histopathology images are H&E-stained, whitespace will automatically be filtered. 
 You can change overlapping area using the `--Overlap` option.
 
+## 1. Resize:
+
+This code from __2-Colon lung cancer classification__ and __3-Lung cancer classification__ is meant to :
+- Parse the image sets in `lung_colon_image_set` folder.
+- Resize images from (768*768*3) to (224*224*3).
+- Save the resized images in `Patches/subtype` 
+
+
+```
+python3 1-Resize.py
+```
+
+
+**Inputs**: `lung_colon_image_set`
+
+**Outputs**: `Patches/subtype`
+
+- Note that: `subtype == colon_aca, colon_n, lung_aca, lung_n, lung_scc`.
+
 ## 2. Processing:
 
 The goal of this code is to balance data using data augmentation techniques.
@@ -235,7 +266,7 @@ The goal of this code is to balance data using data augmentation techniques.
 
 
 ```
-python3 Code/2-Preprocessing.py
+python3 2-Processing.py
 ```
 
 
@@ -257,7 +288,7 @@ Note that the modified images will be ditributed to the same set as the original
 
 
 ```
-python3 Code/3-split.py
+python3 3-split.py
 ```
 
 
@@ -268,6 +299,12 @@ python3 Code/3-split.py
 ## 4. Train_val:
 
 We recommend using ResNet-18 if you are training on a relatively small histopathology dataset. You can change hyperparameters using the `argparse` flags. There is an option to retrain from a previous checkpoint. Model checkpoints are saved by default every epoch in `Train_folder/Model/Checkpoints`.
+
+
+```
+python3 4-Train_val.py
+```
+
 
 **Inputs**: `Train_folder/Train_patches`, `Train_folder/Validation_patches`
 
@@ -280,7 +317,7 @@ Run the model on all the patches for each WSI in the test set.
 
 
 ```
-python3 Code/5-test.py
+python3 5-test.py
 ```
 
 
@@ -339,14 +376,10 @@ python3 Code/7-visualization.py
 
 **Outputs**: `Visualization/Patchs`
 
-![Example](/Images/image1.png)
-
 # Known Issues and Limitations
 
-- No multiprocessing is supported.
-- This code work only when the labels are at the tissue level. In case where no XML annotation file is persent, `1_Preprocessing` will not be able to function properly, therefore neither `2_Processing` nor `3_Split` will.
-- `3_Split` Takes a lot of time since it works randomly.
-- The overall project structure might be confusing.
+- `3_Split` Takes a lot of time since it is a naive implementation.
+- `4_Train_val` should have a better way to save the best model weights.
 
 # Future Work
 
