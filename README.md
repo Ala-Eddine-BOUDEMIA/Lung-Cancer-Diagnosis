@@ -89,7 +89,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	├── 1-Growth patterns classification
 	│	│
 	│	├── All_WSI 				
-	│	│	├── Folder_1/Image_1.svs
+	│	│├── Folder_1/Image_1.svs
 	│	│	├── Folder_2/Image_2.svs
 	│	│	└── Folder_n/Image_n.svs
 	│	│
@@ -159,7 +159,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	│	│	│	└── Checkpoints
 	│	│	│
 	│	│	├── Test_patches
-	│	│	├──Train_patches
+	│	│	├── Train_patches
 	│	│	└── Validation_patches
 	│	│
 	│	├── Tensorboard
@@ -187,7 +187,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 		│		└── lung_scc
 		│
 		├── Patches
-		│	├──lung_aca
+		│	├── lung_aca
 		│	├── lung_n
 		│	└── lung_scc
 		│
@@ -197,7 +197,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 		│	│	└── Checkpoints
 		│	│
 		│	├── Test_patches
-		│	├──Train_patches
+		│	├── Train_patches
 		│	└── Validation_patches
 		│
 		├── Tensorboard
