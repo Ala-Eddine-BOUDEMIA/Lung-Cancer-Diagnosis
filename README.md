@@ -89,7 +89,7 @@ cd Lung-Cancer-Diagnosis/2-PFE_Modification/
 	├── 1-Growth patterns classification
 	│	│
 	│	├── All_WSI 				
-	│	│├── Folder_1/Image_1.svs
+	│	│	├── Folder_1/Image_1.svs
 	│	│	├── Folder_2/Image_2.svs
 	│	│	└── Folder_n/Image_n.svs
 	│	│
